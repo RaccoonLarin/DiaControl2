@@ -211,19 +211,34 @@
 
         <EditText
             android:id="@+id/foodEdit"
-            android:layout_width="match_parent"
+            android:layout_width="420dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="155dp"
+            android:layout_marginStart="55dp"
             android:layout_weight="1"
             android:ems="10"
-            android:layout_marginRight="10dp"
             android:inputType="numberDecimal" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="40dp"
+
             android:layout_weight="1"
             android:text="ХЕ" />
+
+        <Button
+            android:id="@+id/buttonFood"
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="-30dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/my_button_bg"
+            android:text="..." />
 
     </LinearLayout>
 
