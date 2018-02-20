@@ -157,6 +157,7 @@ public class DiaryFragment extends Fragment {
 
 //       String dateSet=getArguments().getString("dateSet");
 
+
         listView  = (ListView) getView().findViewById(R.id.listV);
          help = (ListView) getView().findViewById(R.id.listV);
         db=new DatabaseHelper(getActivity());
