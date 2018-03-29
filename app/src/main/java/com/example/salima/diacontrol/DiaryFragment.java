@@ -207,6 +207,7 @@ public class DiaryFragment extends Fragment {
 
 
 
+
       /*  listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener()
                 {
