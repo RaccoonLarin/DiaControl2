@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -38,6 +39,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import static com.example.salima.diacontrol.DiaryActivity.REQUEST_CODE_FUCNCTIONONE;
 
 
 /*Отображаются записи, который сделал пользователь. Показывается при нажатии кнопки "book" в DiaryActivity*/
@@ -228,6 +231,19 @@ public class DiaryFragment extends Fragment {
                     }
                 }
         );*/
+
+
+      listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+          @Override
+          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+              Intent intent = new Intent(getActivity(), AddActivity.class);
+              intent.putExtra("edit", "true");
+             intent.putExtra("item", position); //i - строка которую выбрали в listview
+
+              startActivityForResult(intent, REQUEST_CODE_FUCNCTIONONE);
+
+          }
+      });
 
 
        listView.setOnItemLongClickListener(

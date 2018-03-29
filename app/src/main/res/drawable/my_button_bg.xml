@@ -8,5 +8,6 @@
             <stroke android:color="@color/myBlue" android:width="2dp"/>
             <corners android:radius="2dp"/>
         </shape>
+
     </item>
 </selector>

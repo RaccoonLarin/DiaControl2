@@ -1,12 +1,28 @@
 package com.example.salima.diacontrol;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 
 /**
@@ -64,6 +80,8 @@ public class StatisticFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
         return inflater.inflate(R.layout.fragment_statistic, container, false);
     }
 
@@ -104,5 +122,119 @@ public class StatisticFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    private DbHelp db;
+    TextView txt;
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+        txt=(TextView) getView().findViewById(R.id.textStatistic);
+        gett_json();
+
+       /* TextView textt= (TextView) getView().findViewById(R.id.textStatistic);
+        db = new DbHelp(getActivity());
+        File databse= getContext().getDatabasePath(DbHelp.DB_NAME);
+        if(false==databse.exists()){
+            db.getReadableDatabase();
+            if(copyDataBase(getActivity())){
+                Toast.makeText(getActivity(), "Copy databse ok", Toast.LENGTH_SHORT).show();
+            } else{
+                Toast.makeText(getActivity(), "Copy databse error", Toast.LENGTH_SHORT).show();
+                return;
+
+            }
+        }
+
+        textt.setText(db.getTxt());*/
+        /*DbHelp myDbHelper;
+        myDbHelper = new DbHelp(getActivity());
+
+        try {
+
+            myDbHelper.createDataBase();
+
+        } catch (IOException ioe) {
+
+            throw new Error("Unable to create database");
+
+        }
+
+        try {
+
+            myDbHelper.openDataBase();
+
+        }catch(SQLException sqle){
+
+            throw sqle;
+
+        }
+
+        Cursor data = myDbHelper.select(1);
+
+        while (data.moveToNext()){
+            textt.setText(data.getString(1));
+        }*/
+    }
+
+    public void gett_json(){
+        String json;
+        try {
+
+            InputStream is = getActivity().getAssets().open("foodsamp.json");
+            int size= is.available();
+            byte [] buffer=new byte[size];
+            is.read(buffer);
+            is.close();
+
+            json=new String(buffer, "UTF-8");
+            JSONArray jsonArray=new JSONArray(json);
+
+
+                JSONObject obj=jsonArray.getJSONObject(0);
+                String str=new String(obj.getString("foodname").getBytes("ISO-8859-1"), "UTF-8");
+            txt.setText(obj.getString("foodname"));
+               // Toast.makeText(getActivity(), obj.getString("foodname"), Toast.LENGTH_LONG).show();
+
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private boolean copyDataBase(Context context)  {
+
+
+        try {
+            //Open your local db as the input stream
+            InputStream myInput = context.getAssets().open(DatabaseHelper.DATABASE_NAME);
+
+            // Path to the just created empty db
+            String outFileName = DbHelp.DB_PATH+ DbHelp.DB_NAME;
+
+            //Open the empty db as the output stream
+            OutputStream myOutput = new FileOutputStream(outFileName);
+
+            //transfer bytes from the inputfile to the outputfile
+            byte[] buffer = new byte[1024];
+            int length = 0;
+            while ((length = myInput.read(buffer)) > 0) {
+                myOutput.write(buffer, 0, length);
+            }
+
+            //Close the streams
+            myOutput.flush();
+            myOutput.close();
+            myInput.close();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }

@@ -44,14 +44,15 @@ public class AddActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add);
         addListenerOnButton();
 
-
-
         dateTxt=(TextView) findViewById(R.id.date);
         timeTxt=(TextView) findViewById(R.id.time);
 
         dateTxt.setPaintFlags(dateTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
         timeTxt.setPaintFlags(timeTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
         Calendar calendar  = Calendar.getInstance();
+
+
+
         year_x=calendar.get(Calendar.YEAR);
         month_x=calendar.get(Calendar.MONTH);
         day_x=calendar.get(Calendar.DAY_OF_MONTH);
@@ -67,6 +68,15 @@ public class AddActivity extends AppCompatActivity {
        timeTxt.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x));
 
         addListenerOnText();
+
+
+
+      //  String edit=getIntent().getStringExtra("edit");
+     //   if(edit.equals("true")){
+
+      //  }
+      //  int i=0;
+     //   i=getIntent().getIntExtra("item", -1);
     }
 
     DatabaseHelper db;
@@ -120,8 +130,6 @@ public class AddActivity extends AppCompatActivity {
             hour_x = i;
             minute_x = i1;
             timeTxt.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x) );
-
-
 
           //  timePickerDialog.closeOptionsMenu();
 
