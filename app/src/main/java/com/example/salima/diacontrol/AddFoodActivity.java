@@ -46,6 +46,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
     }
 
+
     public void gett_json() {
         String json;
         foodList = new ArrayList<>();
