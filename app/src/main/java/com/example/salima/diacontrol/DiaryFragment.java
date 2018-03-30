@@ -204,39 +204,6 @@ public class DiaryFragment extends Fragment {
 
     public void listViewClickListener(){
 
-
-
-
-
-      /*  listView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> arg0, View view,
-                                            int position, long id) {
-                      //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
-                        db=new DatabaseHelper(getActivity());
-                        TextView textView = (TextView) view.findViewById(R.id.dateDiary);
-                        TextView textViewSeconds = (TextView) view.findViewById(R.id.seconds);
-                        String text = textView.getText().toString();
-                        Cursor dataa =  db.delete(position, text);
-                        //while (data.moveToNext()) {
-                      //  Toast.makeText(getActivity(), Integer.toString(data.getCount()), Toast.LENGTH_SHORT).show();
-                        if(dataa.getCount()==0){
-                            Toast.makeText(getActivity(), "ehh", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            while (dataa.moveToNext()){
-                                Toast.makeText(getActivity(), dataa.getString(1), Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                       // }
-                    }
-                }
-        );*/
-
-
       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

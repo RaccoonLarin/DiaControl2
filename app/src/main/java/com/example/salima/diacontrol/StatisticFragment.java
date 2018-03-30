@@ -123,7 +123,7 @@ public class StatisticFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-    private DbHelp db;
+
     TextView txt;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -205,36 +205,5 @@ public class StatisticFragment extends Fragment {
     }
 
 
-    private boolean copyDataBase(Context context)  {
 
-
-        try {
-            //Open your local db as the input stream
-            InputStream myInput = context.getAssets().open(DatabaseHelper.DATABASE_NAME);
-
-            // Path to the just created empty db
-            String outFileName = DbHelp.DB_PATH+ DbHelp.DB_NAME;
-
-            //Open the empty db as the output stream
-            OutputStream myOutput = new FileOutputStream(outFileName);
-
-            //transfer bytes from the inputfile to the outputfile
-            byte[] buffer = new byte[1024];
-            int length = 0;
-            while ((length = myInput.read(buffer)) > 0) {
-                myOutput.write(buffer, 0, length);
-            }
-
-            //Close the streams
-            myOutput.flush();
-            myOutput.close();
-            myInput.close();
-            return true;
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
-
-    }
 }

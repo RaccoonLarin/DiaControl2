@@ -2,6 +2,7 @@ package com.example.salima.diacontrol;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import java.util.Date;
 public class AddActivity extends AppCompatActivity {
 
     private Button button;
+    ImageButton searchButton;
     TextView dateTxt;
     TextView timeTxt;
     int year_x, month_x, day_x;
@@ -50,6 +53,9 @@ public class AddActivity extends AppCompatActivity {
         dateTxt.setPaintFlags(dateTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
         timeTxt.setPaintFlags(timeTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
         Calendar calendar  = Calendar.getInstance();
+
+        searchButton=(ImageButton) findViewById(R.id.searchImageButton);
+        addListenerOnSearchImageButton();
 
 
 
@@ -173,6 +179,21 @@ public class AddActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+
+    //переход на страницу AddFoodActivity
+    public void addListenerOnSearchImageButton(){
+        searchButton.setOnClickListener( new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getApplicationContext(), AddFoodActivity.class);
+                intent.putExtra("user-age", "Roman");
+                // startActivityForResult(intent, REQUEST_CODE_FUCNCTIONONE);
+                startActivityForResult(intent, 1);
+            }
+        });
     }
 
     public void addData(){

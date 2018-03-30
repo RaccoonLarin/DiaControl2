@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,7 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DiaryActivity"
             android:label="@string/title_activity_diary">
@@ -29,7 +29,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity android:name=".SignUpActivity">
             <intent-filter>
                 <action android:name="com.example.salima.diacontrol.SignUpActivity" />
@@ -37,10 +36,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity android:name=".AddActivity" />
 
+        <activity
+            android:name=".AddFoodActivity"
+            android:label="@string/title_activity_add_food"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="com.example.salima.diacontrol.AddFoodActivity" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
