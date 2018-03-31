@@ -4,9 +4,11 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/layoutFood"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/nameFoodTxt"
@@ -20,9 +22,9 @@
             android:id="@+id/gramsEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="40sp"
             android:layout_marginRight="40sp"
+            android:layout_weight="1"
 
             android:ems="10"
             android:inputType="textPersonName" />
@@ -31,10 +33,10 @@
             android:id="@+id/foodEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
             android:layout_marginLeft="30sp"
             android:layout_marginRight="40sp"
+            android:layout_weight="1"
+            android:ems="10"
             android:inputType="textPersonName" />
     </LinearLayout>
 </LinearLayout>

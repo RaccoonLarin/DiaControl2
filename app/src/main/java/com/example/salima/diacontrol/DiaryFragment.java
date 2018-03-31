@@ -158,11 +158,8 @@ public class DiaryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-//       String dateSet=getArguments().getString("dateSet");
-
 
         listView  = (ListView) getView().findViewById(R.id.listV);
-         help = (ListView) getView().findViewById(R.id.listV);
         db=new DatabaseHelper(getActivity());
         ArrayList<String> theList=new ArrayList<>();
        // Cursor data = db.getListContentsTrial(dateSet);
