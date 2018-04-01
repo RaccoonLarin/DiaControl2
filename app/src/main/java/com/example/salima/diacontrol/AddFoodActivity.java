@@ -68,6 +68,8 @@ public class AddFoodActivity extends AppCompatActivity {
         addListenerOnButtonSaveFood();
 
 
+
+
     }
 
 
@@ -106,6 +108,9 @@ public class AddFoodActivity extends AppCompatActivity {
         }
     }
 
+
+
+
     public void setAutoCompleteTextViewListener() {
 
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -119,9 +124,6 @@ public class AddFoodActivity extends AppCompatActivity {
                 grams1.add("100");
                 xeString1.add( xeString.get(id));
                 listView = (ListView) findViewById(R.id.listviewFood);
-
-                ArrayList<String> theList = new ArrayList<>();
-
 
                 customListView = new AddFoodActivity.CustomAdapter();
                 listView.setAdapter(customListView);
@@ -143,9 +145,12 @@ public class AddFoodActivity extends AppCompatActivity {
                     View viewTelefone = listView.getChildAt(i);
                     EditText gramsEdit = (EditText) viewTelefone.findViewById(R.id.gramsEdit);
                     EditText calEdit = (EditText) viewTelefone.findViewById(R.id.foodEdit);
-                   String edd= gramsEdit.getText().toString();
+                    String edd= gramsEdit.getText().toString();
                     String eee=calEdit.getText().toString();
                 }
+
+
+
                 Intent intent = new Intent();
                 intent.putExtra("foodList", foodList1);
                // intent.putExtra("")
