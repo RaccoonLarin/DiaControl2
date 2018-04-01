@@ -1,5 +1,6 @@
 package com.example.salima.diacontrol;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +40,12 @@ public class AddFoodActivity extends AppCompatActivity {
     ArrayList<String> grams;
     ListView listView;
     CustomAdapter customListView;
+    Button buttonSaveFood;
+
+
+    ArrayList<String> foodList1;
+    ArrayList<String> xeString1;
+    ArrayList<String> grams1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,10 @@ public class AddFoodActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         textView3 = (TextView) findViewById(R.id.textView3);
-
+        foodList1 = new ArrayList<>();
+        xeString1 = new ArrayList<>();
+        grams1 = new ArrayList<>();
+        buttonSaveFood=(Button) findViewById(R.id.buttonSaveFood);
         gett_json();
 
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
@@ -54,6 +65,7 @@ public class AddFoodActivity extends AppCompatActivity {
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setAdapter(adapter);
         setAutoCompleteTextViewListener();
+        addListenerOnButtonSaveFood();
 
 
     }
@@ -94,19 +106,13 @@ public class AddFoodActivity extends AppCompatActivity {
         }
     }
 
-    ArrayList<String> foodList1;
-    ArrayList<String> xeString1;
-    ArrayList<String> grams1;
-
     public void setAutoCompleteTextViewListener() {
 
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
                 String selection = (String) parent.getItemAtPosition(position);
                // textView3.setText(foodList.get(position) + "-" + xeString.get(position));
-                foodList1 = new ArrayList<>();
-                xeString1 = new ArrayList<>();
-                grams1 = new ArrayList<>();
+
 
                 int id=foodList.indexOf(selection);
                 foodList1.add(selection);
@@ -123,6 +129,33 @@ public class AddFoodActivity extends AppCompatActivity {
         });
 
     }
+
+    public void addListenerOnButtonSaveFood(){
+        buttonSaveFood.setOnClickListener( new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+             //   Intent intent = new Intent(getApplicationContext(), AddFoodActivity.class);
+               // intent.putExtra("user-age", "Roman");
+                // startActivityForResult(intent, REQUEST_CODE_FUCNCTIONONE);
+               // startActivityForResult(intent, 1);
+                for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+                    View viewTelefone = listView.getChildAt(i);
+                    EditText gramsEdit = (EditText) viewTelefone.findViewById(R.id.gramsEdit);
+                    EditText calEdit = (EditText) viewTelefone.findViewById(R.id.foodEdit);
+                   String edd= gramsEdit.getText().toString();
+                    String eee=calEdit.getText().toString();
+                }
+                Intent intent = new Intent();
+                intent.putExtra("foodList", foodList1);
+               // intent.putExtra("")
+                setResult(RESULT_OK, intent);
+                finish();
+
+            }
+        });
+    }
+
 
 
 

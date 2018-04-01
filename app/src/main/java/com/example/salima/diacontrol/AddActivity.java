@@ -192,6 +192,7 @@ public class AddActivity extends AppCompatActivity {
                 intent.putExtra("user-age", "Roman");
                 // startActivityForResult(intent, REQUEST_CODE_FUCNCTIONONE);
                 startActivityForResult(intent, 1);
+
             }
         });
     }
