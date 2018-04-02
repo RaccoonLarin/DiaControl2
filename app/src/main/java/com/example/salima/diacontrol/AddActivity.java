@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -40,12 +42,17 @@ public class AddActivity extends AppCompatActivity {
     TimePickerDialog timePickerDialog;
     DatePickerDialog datePickerDialog;
 
+    ArrayList<String> foodList, gramsList, carbsList;
+    String flag="false";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         addListenerOnButton();
+
+
 
         dateTxt=(TextView) findViewById(R.id.date);
         timeTxt=(TextView) findViewById(R.id.time);
@@ -189,7 +196,13 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(getApplicationContext(), AddFoodActivity.class);
-                intent.putExtra("user-age", "Roman");
+                intent.putExtra("flag", flag);
+                if(flag.equals("true")){
+                    intent.putStringArrayListExtra("foodList", foodList);
+                    intent.putStringArrayListExtra("carbsList", carbsList);
+                    intent.putStringArrayListExtra("gramsList", gramsList);
+
+                }
                 // startActivityForResult(intent, REQUEST_CODE_FUCNCTIONONE);
                 startActivityForResult(intent, 1);
 
@@ -256,6 +269,21 @@ public class AddActivity extends AppCompatActivity {
         }
 
         return Integer.toString(time);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode==RESULT_OK) {
+            foodList = new ArrayList<>();
+            gramsList = new ArrayList<>();
+            carbsList = new ArrayList<>();
+            foodList = (ArrayList<String>) data.getStringArrayListExtra("foodList");
+            gramsList = (ArrayList<String>) data.getStringArrayListExtra("gramsList");
+            carbsList = (ArrayList<String>) data.getStringArrayListExtra("carbsList");
+            flag = "true";
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 

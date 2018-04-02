@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +44,8 @@ public class AddFoodActivity extends AppCompatActivity {
     CustomAdapter customListView;
     Button buttonSaveFood;
 
+    String flag;
+
 
     ArrayList<String> foodList1;
     ArrayList<String> xeString1;
@@ -57,8 +61,11 @@ public class AddFoodActivity extends AppCompatActivity {
         foodList1 = new ArrayList<>();
         xeString1 = new ArrayList<>();
         grams1 = new ArrayList<>();
+        listView = (ListView) findViewById(R.id.listviewFood);
         buttonSaveFood=(Button) findViewById(R.id.buttonSaveFood);
         gett_json();
+
+
 
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, foodList);
@@ -67,7 +74,10 @@ public class AddFoodActivity extends AppCompatActivity {
         setAutoCompleteTextViewListener();
         addListenerOnButtonSaveFood();
 
-
+        flag=getIntent().getStringExtra("flag");
+        if(flag.equals("true")){
+            fullList(getIntent());
+        }
 
 
     }
@@ -108,7 +118,13 @@ public class AddFoodActivity extends AppCompatActivity {
         }
     }
 
-
+    void fullList(Intent data){
+        foodList1 =(ArrayList<String>) data.getStringArrayListExtra("foodList");
+        grams1 =(ArrayList<String>) data.getStringArrayListExtra("gramsList");
+        xeString1 =(ArrayList<String>) data.getStringArrayListExtra("carbsList");
+        customListView = new AddFoodActivity.CustomAdapter();
+        listView.setAdapter(customListView);
+    }
 
 
     public void setAutoCompleteTextViewListener() {
@@ -123,7 +139,7 @@ public class AddFoodActivity extends AppCompatActivity {
                 foodList1.add(selection);
                 grams1.add("100");
                 xeString1.add( xeString.get(id));
-                listView = (ListView) findViewById(R.id.listviewFood);
+               // listView = (ListView) findViewById(R.id.listviewFood);
 
                 customListView = new AddFoodActivity.CustomAdapter();
                 listView.setAdapter(customListView);
@@ -136,31 +152,33 @@ public class AddFoodActivity extends AppCompatActivity {
         buttonSaveFood.setOnClickListener( new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                int k =listView.getCount();
 
-             //   Intent intent = new Intent(getApplicationContext(), AddFoodActivity.class);
-               // intent.putExtra("user-age", "Roman");
-                // startActivityForResult(intent, REQUEST_CODE_FUCNCTIONONE);
-               // startActivityForResult(intent, 1);
+                if(k==0){
+                    Toast.makeText(AddFoodActivity.this, "Добавьте продукты", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                ArrayList<String> tempGrams=new ArrayList<>();
+                ArrayList<String> tempcal=new ArrayList<>();
                 for (int i = 0; i < listView.getAdapter().getCount(); i++) {
                     View viewTelefone = listView.getChildAt(i);
                     EditText gramsEdit = (EditText) viewTelefone.findViewById(R.id.gramsEdit);
                     EditText calEdit = (EditText) viewTelefone.findViewById(R.id.foodEdit);
-                    String edd= gramsEdit.getText().toString();
-                    String eee=calEdit.getText().toString();
+                    tempGrams.add(gramsEdit.getText().toString());
+                    tempcal.add(calEdit.getText().toString());
                 }
 
-
-
                 Intent intent = new Intent();
-                intent.putExtra("foodList", foodList1);
-               // intent.putExtra("")
+                intent.putStringArrayListExtra("foodList", foodList1);
+                intent.putStringArrayListExtra("carbsList", tempcal);
+                intent.putStringArrayListExtra("gramsList", tempGrams);
                 setResult(RESULT_OK, intent);
                 finish();
 
             }
         });
     }
-
 
 
 
