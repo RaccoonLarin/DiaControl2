@@ -1,11 +1,13 @@
 package com.example.salima.diacontrol;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -20,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,7 +51,7 @@ public class AddFoodActivity extends AppCompatActivity {
     ArrayList<String> grams;
     ListView listView;
     CustomAdapter customListView;
-    Button buttonSaveFood;
+    Button buttonSaveFood, buttonAddFood;
 
     String flag;
 
@@ -71,6 +74,7 @@ public class AddFoodActivity extends AppCompatActivity {
         grams1 = new ArrayList<>();
         listView = (ListView) findViewById(R.id.listviewFood);
         buttonSaveFood=(Button) findViewById(R.id.buttonSaveFood);
+        buttonAddFood=(Button) findViewById(R.id.buttonAddFood);
         gett_json();
 
 
@@ -81,7 +85,7 @@ public class AddFoodActivity extends AppCompatActivity {
         autoCompleteTextView.setAdapter(adapter);
         setAutoCompleteTextViewListener();
         addListenerOnButtonSaveFood();
-
+        addListenerOnButtonAddFood();
         flag=getIntent().getStringExtra("flag");
         if(flag.equals("true")){
             fullList(getIntent());
@@ -198,6 +202,48 @@ public class AddFoodActivity extends AppCompatActivity {
                 intent.putStringArrayListExtra("gramsList", tempGrams);
                 setResult(RESULT_OK, intent);
                 finish();
+
+            }
+        });
+    }
+
+    //TODO view1 создать новый лейаут дизайн кастомный для мессаджбокса
+
+    public void addListenerOnButtonAddFood(){
+        buttonAddFood.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(v.getContext());
+                final EditText edittext = new EditText(v.getContext());
+                final CheckBox checkbox=new CheckBox(v.getContext());
+                LinearLayout linearLayout=new LinearLayout(v.getContext());
+
+                alert.setMessage("Enter Your Message");
+                alert.setTitle("Enter Your Title");
+
+                View view1=getLayoutInflater().inflate(R.layout.food_listview_design, null);
+                LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.layoutFood);
+
+                foodLayout.setVisibility(View.VISIBLE);
+               // alert.setView(edittext);
+                alert.setView(view1);
+
+                alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //What ever you want to do with the value
+                       // Editable YouEditTextValue = edittext.getText();
+                        //OR
+                        String YouEditTextValue = edittext.getText().toString();
+                    }
+                });
+
+                alert.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // what ever you want to do with No option.
+                    }
+                });
+
+                alert.show();
 
             }
         });
