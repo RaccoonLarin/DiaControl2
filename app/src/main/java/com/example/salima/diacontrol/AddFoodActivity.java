@@ -2,11 +2,15 @@ package com.example.salima.diacontrol;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +41,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
     private AutoCompleteTextView autoCompleteTextView;
     TextView textView3;
+    EditText gramsEdit, calEdit;
     ArrayList<String> foodList;
     ArrayList<String> xeString;
     ArrayList<String> grams;
@@ -57,6 +62,8 @@ public class AddFoodActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_food);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
         textView3 = (TextView) findViewById(R.id.textView3);
         foodList1 = new ArrayList<>();
         xeString1 = new ArrayList<>();
@@ -148,6 +155,9 @@ public class AddFoodActivity extends AppCompatActivity {
 
     }
 
+
+
+
     public void addListenerOnButtonSaveFood(){
         buttonSaveFood.setOnClickListener( new View.OnClickListener(){
             @Override
@@ -163,8 +173,15 @@ public class AddFoodActivity extends AppCompatActivity {
                 ArrayList<String> tempcal=new ArrayList<>();
                 for (int i = 0; i < listView.getAdapter().getCount(); i++) {
                     View viewTelefone = listView.getChildAt(i);
-                    EditText gramsEdit = (EditText) viewTelefone.findViewById(R.id.gramsEdit);
-                    EditText calEdit = (EditText) viewTelefone.findViewById(R.id.foodEdit);
+                    gramsEdit = (EditText) viewTelefone.findViewById(R.id.gramsEdit);
+                    calEdit = (EditText) viewTelefone.findViewById(R.id.foodEdit);
+                    if(TextUtils.isEmpty(gramsEdit.getText().toString()) || TextUtils.isEmpty(calEdit.getText().toString())) {
+                        Toast.makeText(getApplicationContext(), "Пожалуйста, заполните все поля", Toast.LENGTH_LONG).show();
+                        gramsEdit.setError("Your message");
+                       // gramsEdit.setBackgroundColor(getResources().getColor(R.color.cuteColor));
+                      //  gramsEdit.set
+                        return;
+                    }
                     tempGrams.add(gramsEdit.getText().toString());
                     tempcal.add(calEdit.getText().toString());
                 }
