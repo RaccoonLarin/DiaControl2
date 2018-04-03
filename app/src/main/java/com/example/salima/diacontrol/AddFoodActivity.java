@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -85,7 +86,8 @@ public class AddFoodActivity extends AppCompatActivity {
         if(flag.equals("true")){
             fullList(getIntent());
         }
-
+        customListView = new AddFoodActivity.CustomAdapter();
+        listView.setAdapter(customListView);
 
     }
 
@@ -129,8 +131,12 @@ public class AddFoodActivity extends AppCompatActivity {
         foodList1 =(ArrayList<String>) data.getStringArrayListExtra("foodList");
         grams1 =(ArrayList<String>) data.getStringArrayListExtra("gramsList");
         xeString1 =(ArrayList<String>) data.getStringArrayListExtra("carbsList");
-        customListView = new AddFoodActivity.CustomAdapter();
-        listView.setAdapter(customListView);
+
+    }
+
+    public void listenerFocusChange(){
+
+
     }
 
 
@@ -177,7 +183,7 @@ public class AddFoodActivity extends AppCompatActivity {
                     calEdit = (EditText) viewTelefone.findViewById(R.id.foodEdit);
                     if(TextUtils.isEmpty(gramsEdit.getText().toString()) || TextUtils.isEmpty(calEdit.getText().toString())) {
                         Toast.makeText(getApplicationContext(), "Пожалуйста, заполните все поля", Toast.LENGTH_LONG).show();
-                        gramsEdit.setError("Your message");
+                       // gramsEdit.setError("Your message");
                        // gramsEdit.setBackgroundColor(getResources().getColor(R.color.cuteColor));
                       //  gramsEdit.set
                         return;
@@ -208,49 +214,116 @@ public class AddFoodActivity extends AppCompatActivity {
 
         @Override
         public Object getItem(int i) {
-            return null;
+            return foodList1.get(i);
         }
 
         @Override
         public long getItemId(int i) {
-            return 0;
+            return i;
         }
 
-
+      //об
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            View view1=getLayoutInflater().inflate(R.layout.food_listview_design, null);
+           // View view1=getLayoutInflater().inflate(R.layout.food_listview_design, null);
 
-            TextView nameFoodTxt= (TextView) view1.findViewById(R.id.nameFoodTxt);
-            EditText gramsEdit=(EditText) view1.findViewById(R.id.gramsEdit);
-            EditText foodEdit=(EditText) view1.findViewById(R.id.foodEdit);
-            LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.layoutFood);
-            // TextView textinsulin= (TextView) view1.findViewById(R.id.insulinText);
-            //   TextView textfood= (TextView) view1.findViewById(R.id.foodText);
-            // TextView textDate = (TextView) view1.findViewById(R.id.dateDiary);
-            // TextView textcomment= (TextView) view1.findViewById(R.id.commentText);
-            // TextView textSeconds= (TextView) view1.findViewById(R.id.seconds);
-            // RelativeLayout relativeLayoutSugar = (RelativeLayout) view1.findViewById(R.id.sugarLayout);
-            //RelativeLayout relativeLayoutInsulin = (RelativeLayout) view1.findViewById(R.id.insulinLayou);
-            // RelativeLayout relativeLayoutFood = (RelativeLayout) view1.findViewById(R.id.foodLayout);
-            // RelativeLayout relativeLayoutComment = (RelativeLayout) view1.findViewById(R.id.commentLayout);
+            final ViewHolder holder;
+            if(view==null){
+                holder=new ViewHolder();
+                LayoutInflater inflater = AddFoodActivity.this.getLayoutInflater();
+                view = inflater.inflate(R.layout.food_listview_design, null);
+                holder.textView1 = (TextView) view.findViewById(R.id.nameFoodTxt);
+                holder.editText1 = (EditText) view.findViewById(R.id.foodEdit);
+                holder.editText2 = (EditText) view.findViewById(R.id.gramsEdit);
+                view.setTag(holder);
+
+        }  else {
+
+            holder = (ViewHolder) view.getTag();
+        }
+            TextView nameFoodTxt= (TextView) view.findViewById(R.id.nameFoodTxt);
+            EditText gramsEdit=(EditText) view.findViewById(R.id.gramsEdit);
+             EditText foodEdit=(EditText) view.findViewById(R.id.foodEdit);
+            LinearLayout foodLayout=(LinearLayout) view.findViewById(R.id.layoutFood);
+
 
                 foodLayout.setVisibility(View.VISIBLE);
                 nameFoodTxt.setText(foodList1.get(i));
-                gramsEdit.setText("100");
-                foodEdit.setText(xeString1.get(i));
+
+
+            holder.ref = i;
+
+            holder.textView1.setText(foodList1.get(i));
+            holder.editText1.setText(xeString1.get(i));
+            holder.editText2.setText(grams1.get(i));
+
+            holder.editText1.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                  int arg3) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable arg0) {
+                        // TODO Auto-generated method stub
+                        xeString1.set(holder.ref, arg0.toString());
+                    }
+                });
+
+
+
+            holder.editText2.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable arg0) {
+                    // TODO Auto-generated method stub
+                    grams1.set(holder.ref, arg0.toString());
+                }
+            });
+
+              gramsEdit.setText(grams1.get(i));
+              foodEdit.setText(xeString1.get(i));
 
 
 
 
-
-
-
-
-
-
-                return view1;
+                return view;
             }
+
+
+
+    private class ViewHolder {
+        TextView textView1;
+        EditText editText1;
+        EditText editText2;
+        int ref;
+        int ref2;
+    }
+
+
+
         }
 
 }
