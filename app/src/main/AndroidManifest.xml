@@ -41,10 +41,11 @@
         <activity
             android:name=".AddFoodActivity"
             android:label="@string/title_activity_add_food"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="com.example.salima.diacontrol.AddFoodActivity" />
-
+                <action android:name="com.example.salima.diacontrol.AddFoodActivity"  />
+                android:windowSoftInputMode="adjustPan"
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
