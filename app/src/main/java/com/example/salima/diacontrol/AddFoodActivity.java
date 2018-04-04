@@ -221,7 +221,11 @@ public class AddFoodActivity extends AppCompatActivity {
                 alert.setMessage("Введите данные");
                // alert.setTitle("Enter Your Title");
 
-                View view1=getLayoutInflater().inflate(R.layout.design_add_food_dialog, null);
+                final View view1=getLayoutInflater().inflate(R.layout.design_add_food_dialog, null);
+                final EditText editText1=(EditText)view1.findViewById(R.id.editText);
+                final EditText editText2=(EditText)view1.findViewById(R.id.editText2);
+                final EditText editText3=(EditText)view1.findViewById(R.id.editText3);
+                LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.addFoodLayout);
               //  LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.layoutFood);
 
              //   foodLayout.setVisibility(View.VISIBLE);
@@ -233,7 +237,15 @@ public class AddFoodActivity extends AppCompatActivity {
                         //What ever you want to do with the value
                        // Editable YouEditTextValue = edittext.getText();
                         //OR
-                        String YouEditTextValue = edittext.getText().toString();
+
+                        String YouEditTextValue = editText1.getText().toString();
+                        String YouEditTextValue2 = editText2.getText().toString();
+                        String YouEditTextValue3 = editText3.getText().toString();
+                        foodList1.add(YouEditTextValue);
+                        grams1.add(YouEditTextValue2);
+                        xeString1.add(YouEditTextValue3);
+                        customListView = new AddFoodActivity.CustomAdapter();
+                        listView.setAdapter(customListView);
                     }
                 });
 
