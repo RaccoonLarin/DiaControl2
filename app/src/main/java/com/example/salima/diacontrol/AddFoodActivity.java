@@ -1,9 +1,11 @@
 package com.example.salima.diacontrol;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,8 +17,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -315,6 +319,38 @@ public class AddFoodActivity extends AppCompatActivity {
             holder.editText1.setText(xeString1.get(i));
             holder.editText2.setText(grams1.get(i));
 
+
+        /*    holder.editText1.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(MotionEvent.ACTION_UP == event.getAction()) {
+                        mQuaternion_1.setText("" + mQ1);
+                    }
+
+                    return true; // return is important...
+                }
+
+
+            });*/
+/*
+            foodLayout.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        if (holder.editText1.isFocused()) {
+                            Rect outRect = new Rect();
+                            holder.editText1.getGlobalVisibleRect(outRect);
+                            if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                                holder.editText1.clearFocus();
+                                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                            }
+                        }
+                    }
+                    return false;
+                }
+            });*/
+
             holder.editText1.addTextChangedListener(new TextWatcher() {
 
                     @Override
@@ -336,6 +372,10 @@ public class AddFoodActivity extends AppCompatActivity {
                         xeString1.set(holder.ref, arg0.toString());
                     }
                 });
+
+
+            //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+           // imm.showSoftInput( holder.editText1, InputMethodManager.SHOW_IMPLICIT);
 
 
 
