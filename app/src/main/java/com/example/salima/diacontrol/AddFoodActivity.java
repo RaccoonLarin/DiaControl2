@@ -218,17 +218,17 @@ public class AddFoodActivity extends AppCompatActivity {
                 final CheckBox checkbox=new CheckBox(v.getContext());
                 LinearLayout linearLayout=new LinearLayout(v.getContext());
 
-                alert.setMessage("Enter Your Message");
-                alert.setTitle("Enter Your Title");
+                alert.setMessage("Введите данные");
+               // alert.setTitle("Enter Your Title");
 
-                View view1=getLayoutInflater().inflate(R.layout.food_listview_design, null);
-                LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.layoutFood);
+                View view1=getLayoutInflater().inflate(R.layout.design_add_food_dialog, null);
+              //  LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.layoutFood);
 
-                foodLayout.setVisibility(View.VISIBLE);
+             //   foodLayout.setVisibility(View.VISIBLE);
                // alert.setView(edittext);
                 alert.setView(view1);
 
-                alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("СОХРАНИТЬ", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         //What ever you want to do with the value
                        // Editable YouEditTextValue = edittext.getText();
@@ -237,7 +237,7 @@ public class AddFoodActivity extends AppCompatActivity {
                     }
                 });
 
-                alert.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
+                alert.setNegativeButton("ЗАКРЫТЬ", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         // what ever you want to do with No option.
                     }
