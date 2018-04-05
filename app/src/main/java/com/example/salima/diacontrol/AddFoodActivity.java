@@ -96,6 +96,7 @@ public class AddFoodActivity extends AppCompatActivity {
         }
         customListView = new AddFoodActivity.CustomAdapter();
         listView.setAdapter(customListView);
+        setOnLongClickListener();
 
     }
 
@@ -142,10 +143,47 @@ public class AddFoodActivity extends AppCompatActivity {
 
     }
 
-    public void listenerFocusChange(){
+
+    public void setOnLongClickListener(){
+
+        listView.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> arg0, final View view,
+                                                   final int position, long id) {
+                        //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
+                        final View view1=view;
+                        final  int position1=position;
+                        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(AddFoodActivity.this)
+                                .setTitle("Удалить запись?")
+                                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        foodList1.remove(position);
+                                        grams1.remove(position);
+                                        xeString1.remove(position);
+                                        // listView = (ListView) findViewById(R.id.listviewFood);
+
+                                        customListView = new AddFoodActivity.CustomAdapter();
+                                        listView.setAdapter(customListView);
 
 
+                                    }
+                                })
+                                .setNegativeButton("Нет", null).create();
+                        dialog.show();
+
+
+                        return  true;
+                    }
+                }
+
+                // }
+
+        );
     }
+
+
 
 
     public void setAutoCompleteTextViewListener() {
@@ -154,7 +192,6 @@ public class AddFoodActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
                 String selection = (String) parent.getItemAtPosition(position);
                // textView3.setText(foodList.get(position) + "-" + xeString.get(position));
-
 
                 int id=foodList.indexOf(selection);
                 foodList1.add(selection);
@@ -168,6 +205,42 @@ public class AddFoodActivity extends AppCompatActivity {
         });
 
     }
+
+
+    public void addListenerOnListView(){
+
+        listView.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> arg0, final View view,
+                                                   final int position, long id) {
+                        //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
+                        final View view1=view;
+                        final  int position1=position;
+                        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(getApplicationContext())
+                                .setTitle("Удалить запись?")
+                                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        foodList1.remove(position);
+                                        grams1.remove(position);
+                                        xeString1.remove(position);
+                                        customListView = new AddFoodActivity.CustomAdapter();
+                                        listView.setAdapter(customListView);
+
+                                    }
+                                })
+                                .setNegativeButton("Нет", null).create();
+                        dialog.show();
+
+                        return  true;
+                    }
+                }
+
+                // }
+
+        );
+    }
+
 
 
 
@@ -267,7 +340,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
 
 
-    class CustomAdapter extends BaseAdapter {
+    class CustomAdapter extends BaseAdapter  implements View.OnTouchListener {
 
         @Override
         public int getCount() {
@@ -282,6 +355,23 @@ public class AddFoodActivity extends AppCompatActivity {
         @Override
         public long getItemId(int i) {
             return i;
+        }
+
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (view instanceof EditText) {
+                EditText editText = (EditText) view;
+                editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
+            } else {
+                ViewHolder holder = (ViewHolder) view.getTag();
+                holder.editText1.setFocusable(false);
+                holder.editText1.setFocusableInTouchMode(false);
+                holder.editText2.setFocusable(false);
+                holder.editText2.setFocusableInTouchMode(false);
+            }
+            return false;
         }
 
       //об
@@ -320,36 +410,6 @@ public class AddFoodActivity extends AppCompatActivity {
             holder.editText2.setText(grams1.get(i));
 
 
-        /*    holder.editText1.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(MotionEvent.ACTION_UP == event.getAction()) {
-                        mQuaternion_1.setText("" + mQ1);
-                    }
-
-                    return true; // return is important...
-                }
-
-
-            });*/
-/*
-            foodLayout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        if (holder.editText1.isFocused()) {
-                            Rect outRect = new Rect();
-                            holder.editText1.getGlobalVisibleRect(outRect);
-                            if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
-                                holder.editText1.clearFocus();
-                                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            }
-                        }
-                    }
-                    return false;
-                }
-            });*/
 
             holder.editText1.addTextChangedListener(new TextWatcher() {
 
@@ -372,6 +432,11 @@ public class AddFoodActivity extends AppCompatActivity {
                         xeString1.set(holder.ref, arg0.toString());
                     }
                 });
+
+
+            holder.editText1.setOnTouchListener(this);
+            holder.editText2.setOnTouchListener(this);
+            view.setOnTouchListener(this);
 
 
             //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
