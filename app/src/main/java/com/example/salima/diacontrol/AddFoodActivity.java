@@ -1,26 +1,19 @@
 package com.example.salima.diacontrol;
 
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -50,6 +43,7 @@ public class AddFoodActivity extends AppCompatActivity {
     private AutoCompleteTextView autoCompleteTextView;
     TextView textView3;
     EditText gramsEdit, calEdit;
+    //данные из json
     ArrayList<String> foodList;
     ArrayList<String> xeString;
     ArrayList<String> grams;
@@ -59,7 +53,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
     String flag;
 
-
+   //пользовательские данные
     ArrayList<String> foodList1;
     ArrayList<String> xeString1;
     ArrayList<String> grams1;
@@ -122,7 +116,7 @@ public class AddFoodActivity extends AppCompatActivity {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 foodList.add(obj.getString("foodname"));
                 xeString.add(obj.getString("Carb"));
-                grams.add("100");
+                grams.add("100"); //TODO change
                 // String str = new String(obj.getString("foodname").getBytes("ISO-8859-1"), "UTF-8");
             }
 
@@ -195,7 +189,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
                 int id=foodList.indexOf(selection);
                 foodList1.add(selection);
-                grams1.add("100");
+                grams1.add(grams.get(id));
                 xeString1.add( xeString.get(id));
                // listView = (ListView) findViewById(R.id.listviewFood);
 
@@ -395,7 +389,7 @@ public class AddFoodActivity extends AppCompatActivity {
         }
             TextView nameFoodTxt= (TextView) view.findViewById(R.id.nameFoodTxt);
             EditText gramsEdit=(EditText) view.findViewById(R.id.gramsEdit);
-             EditText foodEdit=(EditText) view.findViewById(R.id.foodEdit);
+             final EditText foodEdit=(EditText) view.findViewById(R.id.foodEdit);
             LinearLayout foodLayout=(LinearLayout) view.findViewById(R.id.layoutFood);
 
 
@@ -429,6 +423,7 @@ public class AddFoodActivity extends AppCompatActivity {
                     @Override
                     public void afterTextChanged(Editable arg0) {
                         // TODO Auto-generated method stub
+                       // double temp=Integer.parseInt(xeString1.get(holder.ref))*Integer.parseInt(arg0.toString())/Integer.parseInt(grams1.get(holder.ref));
                         xeString1.set(holder.ref, arg0.toString());
                     }
                 });
@@ -462,6 +457,10 @@ public class AddFoodActivity extends AppCompatActivity {
                 @Override
                 public void afterTextChanged(Editable arg0) {
                     // TODO Auto-generated method stub
+                    //TODO на ноль делить нельзяяя
+
+                    double temp=Double.parseDouble(xeString1.get(holder.ref))*Integer.parseInt(arg0.toString())/Integer.parseInt(grams1.get(holder.ref));
+                    foodEdit.setText(Double.toString(temp));
                     grams1.set(holder.ref, arg0.toString());
                 }
             });
