@@ -388,7 +388,7 @@ public class AddFoodActivity extends AppCompatActivity {
             holder = (ViewHolder) view.getTag();
         }
             TextView nameFoodTxt= (TextView) view.findViewById(R.id.nameFoodTxt);
-            EditText gramsEdit=(EditText) view.findViewById(R.id.gramsEdit);
+            final EditText gramsEdit=(EditText) view.findViewById(R.id.gramsEdit);
              final EditText foodEdit=(EditText) view.findViewById(R.id.foodEdit);
             LinearLayout foodLayout=(LinearLayout) view.findViewById(R.id.layoutFood);
 
@@ -458,10 +458,16 @@ public class AddFoodActivity extends AppCompatActivity {
                 public void afterTextChanged(Editable arg0) {
                     // TODO Auto-generated method stub
                     //TODO на ноль делить нельзяяя
+                    String userArg=arg0.toString();
+                    if(userArg.equals("")|| (userArg.substring(userArg.length()-1)).equals(".")){
+                        foodEdit.setText(xeString1.get(holder.ref));
+                       return;
+                    }
 
-                    double temp=Double.parseDouble(xeString1.get(holder.ref))*Integer.parseInt(arg0.toString())/Integer.parseInt(grams1.get(holder.ref));
+
+                    double temp=Double.parseDouble(xeString1.get(holder.ref))*Double.parseDouble(userArg)/Double.parseDouble(grams1.get(holder.ref));
                     foodEdit.setText(Double.toString(temp));
-                    grams1.set(holder.ref, arg0.toString());
+                    grams1.set(holder.ref, userArg);
                 }
             });
 
