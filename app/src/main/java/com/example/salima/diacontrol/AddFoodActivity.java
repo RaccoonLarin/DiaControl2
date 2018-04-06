@@ -342,7 +342,7 @@ public class AddFoodActivity extends AppCompatActivity {
                     @Override
                     public void afterTextChanged(Editable s) {
                         // Check if edittext is empty
-                        if (TextUtils.isEmpty(s)) {
+                        if (TextUtils.isEmpty(s) || TextUtils.isEmpty(editText2.getText()) || TextUtils.isEmpty(editText3.getText())) {
                             // Disable ok button
                             ((AlertDialog) dialog).getButton(
                                     AlertDialog.BUTTON_POSITIVE).setEnabled(false);
@@ -351,6 +351,78 @@ public class AddFoodActivity extends AppCompatActivity {
                             ((AlertDialog) dialog).getButton(
                                     AlertDialog.BUTTON_POSITIVE).setEnabled(true);
                         }
+
+                    }
+                });
+
+                editText2.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before,
+                                              int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                                                  int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        // Check if edittext is empty
+                        String userArg=s.toString();
+
+                        if (TextUtils.isEmpty(s) || userArg.equals("") || TextUtils.isEmpty(editText1.getText()) || TextUtils.isEmpty(editText3.getText())) {
+                            // Disable ok button
+                            ((AlertDialog) dialog).getButton(
+                                    AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                            return;
+                        }
+
+                        if(userArg.equals("0")){
+                            userArg="1";
+
+                            editText2.setText(userArg);
+                            editText2.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    editText2.setSelection(1);
+                                }
+                            });
+                        }
+
+                        ((AlertDialog) dialog).getButton(
+                                AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+
+
+                    }
+                });
+
+                editText3.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before,
+                                              int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                                                  int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        // Check if edittext is empty
+                        String userArg=s.toString();
+
+                        if (TextUtils.isEmpty(s) || userArg.equals("") || TextUtils.isEmpty(editText1.getText()) || TextUtils.isEmpty(editText2.getText())) {
+                            // Disable ok button
+                            ((AlertDialog) dialog).getButton(
+                                    AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                            return;
+                        }
+
+                        ((AlertDialog) dialog).getButton(
+                                AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+
 
                     }
                 });
