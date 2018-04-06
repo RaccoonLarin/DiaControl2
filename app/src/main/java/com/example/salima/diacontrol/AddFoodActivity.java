@@ -290,17 +290,13 @@ public class AddFoodActivity extends AppCompatActivity {
                 LinearLayout linearLayout=new LinearLayout(v.getContext());
 
                 alert.setMessage("Введите данные");
-               // alert.setTitle("Enter Your Title");
 
                 final View view1=getLayoutInflater().inflate(R.layout.design_add_food_dialog, null);
                 final EditText editText1=(EditText)view1.findViewById(R.id.editText);
                 final EditText editText2=(EditText)view1.findViewById(R.id.editText2);
                 final EditText editText3=(EditText)view1.findViewById(R.id.editText3);
                 LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.addFoodLayout);
-              //  LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.layoutFood);
 
-             //   foodLayout.setVisibility(View.VISIBLE);
-               // alert.setView(edittext);
                 alert.setView(view1);
 
                 alert.setPositiveButton("СОХРАНИТЬ", new DialogInterface.OnClickListener() {
@@ -325,8 +321,39 @@ public class AddFoodActivity extends AppCompatActivity {
                         // what ever you want to do with No option.
                     }
                 });
+                final AlertDialog dialog = alert.create();
+                dialog.show();
 
-                alert.show();
+
+                ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setEnabled(false);
+
+                editText1.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before,
+                                              int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                                                  int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        // Check if edittext is empty
+                        if (TextUtils.isEmpty(s)) {
+                            // Disable ok button
+                            ((AlertDialog) dialog).getButton(
+                                    AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                        } else {
+                            // Something into edit text. Enable the button.
+                            ((AlertDialog) dialog).getButton(
+                                    AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                        }
+
+                    }
+                });
 
             }
         });
@@ -461,8 +488,26 @@ public class AddFoodActivity extends AppCompatActivity {
                     String userArg=arg0.toString();
                     if(userArg.equals("")|| (userArg.substring(userArg.length()-1)).equals(".")){
                         foodEdit.setText(xeString1.get(holder.ref));
-                       return;
+                        return;
                     }
+
+
+                    if(userArg.equals("0")){
+                        userArg="1";
+                        gramsEdit.setText(userArg);
+                        gramsEdit.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                gramsEdit.setSelection(1);
+                            }
+                        });
+                    }
+
+                  //  if(Double.parseDouble(userArg)<1){
+                        //grams1.set(holder.ref, "1");
+                    //    userArg="1";
+                      //  gramsEdit.setText("1");
+                    //}
 
 
                     double temp=Double.parseDouble(xeString1.get(holder.ref))*Double.parseDouble(userArg)/Double.parseDouble(grams1.get(holder.ref));
