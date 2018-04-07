@@ -39,9 +39,9 @@ import java.util.ArrayList;
 
 public class AddFoodActivity extends AppCompatActivity {
 
-
+    Double finalCarbs=0.0;
     private AutoCompleteTextView autoCompleteTextView;
-    TextView textView3;
+    TextView textView3, finalText;
     EditText gramsEdit, calEdit;
     //данные из json
     ArrayList<String> foodList;
@@ -67,6 +67,8 @@ public class AddFoodActivity extends AppCompatActivity {
 
 
         textView3 = (TextView) findViewById(R.id.textView3);
+        finalText = (TextView) findViewById(R.id.textView10);
+        finalText.setText("Итого: ");
         foodList1 = new ArrayList<>();
         xeString1 = new ArrayList<>();
         grams1 = new ArrayList<>();
@@ -102,7 +104,7 @@ public class AddFoodActivity extends AppCompatActivity {
         grams = new ArrayList<>();
         try {
 
-            InputStream is = getAssets().open("foodsamp.json");
+            InputStream is = getAssets().open("foodsamp1.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -116,7 +118,7 @@ public class AddFoodActivity extends AppCompatActivity {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 foodList.add(obj.getString("foodname"));
                 xeString.add(obj.getString("Carb"));
-                grams.add("100"); //TODO change
+                grams.add(obj.getString("grams")); //TODO change
                 // String str = new String(obj.getString("foodname").getBytes("ISO-8859-1"), "UTF-8");
             }
 
@@ -161,6 +163,16 @@ public class AddFoodActivity extends AppCompatActivity {
                                         customListView = new AddFoodActivity.CustomAdapter();
                                         listView.setAdapter(customListView);
 
+                                        try {
+
+                                            finalCarbs -= Double.parseDouble(xeString1.get(position));
+                                            Double itogo = finalCarbs / setUse.xe;
+
+                                            finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
+                                        }
+                                        catch (Exception e){
+                                            finalText.setText("Итого: ");
+                                        }
 
                                     }
                                 })
@@ -195,6 +207,9 @@ public class AddFoodActivity extends AppCompatActivity {
 
                 customListView = new AddFoodActivity.CustomAdapter();
                 listView.setAdapter(customListView);
+                 finalCarbs+= Double.parseDouble(xeString.get(id));
+                 Double itogo=finalCarbs/setUse.xe;
+                finalText.setText("Итого: "+itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
             }
         });
 

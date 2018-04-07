@@ -54,6 +54,8 @@ public class AddActivity extends AppCompatActivity {
 
 
 
+
+
         dateTxt=(TextView) findViewById(R.id.date);
         timeTxt=(TextView) findViewById(R.id.time);
 

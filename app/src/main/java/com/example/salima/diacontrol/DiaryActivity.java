@@ -91,7 +91,7 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
         int fragmentId = getIntent().getIntExtra("FRAGMENT_ID", 0);
 
 
-
+        setUse.xe=12; //TODO установка
 
 
 
