@@ -101,6 +101,7 @@ public class AddActivity extends AppCompatActivity {
     String str;
     String str1;
     String str2;
+    String str3;
 
     public void  addListenerOnText() {
         dateTxt.setOnClickListener(
@@ -170,9 +171,11 @@ public class AddActivity extends AppCompatActivity {
                         EditText editText = (EditText) findViewById(R.id.sugarEdit);
                         EditText editText1 = (EditText) findViewById(R.id.insulinEdit);
                         EditText editText2 = (EditText) findViewById(R.id.commentEdit);
+                        EditText editText3 = (EditText) findViewById(R.id.foodEdit);
                          str = editText.getText().toString();
                          str1 = editText1.getText().toString();
                          str2=editText2.getText().toString();
+                         str3=editText3.getText().toString();
                         int i=0;
                         i=getIntent().getIntExtra("item", -1);
                         Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
@@ -181,7 +184,11 @@ public class AddActivity extends AppCompatActivity {
                         intent.putExtra("year_x", year_x);
                         intent.putExtra("month_x", month_x);
                         intent.putExtra("day_x", day_x);
-                        addData();
+                        boolean fl=addData();
+                        if(!fl) {
+                            Toast.makeText(getApplicationContext(), "Введите данные", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                     //    setResult(RESULT_OK,  intent);
 
                         startActivity(intent);
@@ -216,28 +223,31 @@ public class AddActivity extends AppCompatActivity {
         });
     }
 
-    public void addData(){
+    public boolean addData(){
         boolean isInserted;
 
        db=new DatabaseHelper(this);
         String plswork = str;
         String insulin = str1;
+        String bredUnits=str3;
         String comment = str2;
         String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
 
-        if (plswork.equals("") ||insulin.equals("")  || comment.equals("")  ){
+        if (plswork.equals("") &&insulin.equals("") && comment.equals("") && bredUnits.equals("") ){
 
-            return;
+            return false;
         }
 
 
 
-            isInserted= db.insertData(plswork, insulin, comment, date1);
+            isInserted= db.insertData(plswork, insulin, bredUnits, comment, date1);
 
         if(isInserted)
-            Toast.makeText(this, "Data inserted", Toast.LENGTH_LONG);
+            return  true;
+            //Toast.makeText(this, "Data inserted", Toast.LENGTH_LONG);
         else
-            Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
+            return  false;
+          //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
         //adapter.notifyDataSetChanged();
 
         //  bottomNavigationViewEx.setSelectedItemId(R.id.navigation_diary);

@@ -145,7 +145,7 @@ public class DiaryFragment extends Fragment {
     LinearLayout linearLayout; //внутри нее остальные компоненты
     ArrayList<String> stringSugar; //записываем всее сзаписи сахара из бд
     ArrayList<String>stringInsulin; //записываем все записи инсулина из бд
-    String stringfood;
+    ArrayList<String> stringBredUnits;
     ArrayList<String> stringComment; //записываем все комменты из бд
     ArrayList<String> stringDate; //записываем дату из бд
     ArrayList<String> seconds; //записываем дату из бд
@@ -173,6 +173,7 @@ public class DiaryFragment extends Fragment {
         // CustomListView customListView=new CustomListView(this,)
         stringSugar=new ArrayList<>();
         stringInsulin=new ArrayList<>();
+        stringBredUnits=new ArrayList<>();
         stringComment=new ArrayList<>();
         stringDate=new ArrayList<>();
         seconds=new ArrayList<>();
@@ -181,9 +182,10 @@ public class DiaryFragment extends Fragment {
         while (data.moveToNext()){
             stringSugar.add(data.getString(1));
             stringInsulin.add(data.getString(2));
+            stringBredUnits.add(data.getString(3));
            // stringfood=data.getString(3);
-            stringComment.add(data.getString(3));
-            String  [] dateParts = ((data.getString(4)).split(" "));
+            stringComment.add(data.getString(4));
+            String  [] dateParts = ((data.getString(5)).split(" "));
             String [] time= dateParts[1].split(":");
             String newDate=dateParts[0]+" "+time[0]+":"+time[1];
             stringDate.add(newDate);
@@ -239,19 +241,6 @@ public class DiaryFragment extends Fragment {
                                                 .attach(newFragment)
                                                 .commit();
                                         listView.invalidateViews();
-                                        //Cursor dataa = db.delete(position1, text);
-                                        //while (data.moveToNext()) {
-                                        //  Toast.makeText(getActivity(), Integer.toString(data.getCount()), Toast.LENGTH_SHORT).show();
-                                      //  if (dataa.getCount() == 0) {
-                                       //     Toast.makeText(getActivity(), "ehh", Toast.LENGTH_SHORT).show();
-                                     //   } else {
-                                       //     while (dataa.moveToNext()) {
-                                          //      Toast.makeText(getActivity(), dataa.getString(1), Toast.LENGTH_SHORT).show();
-                                      //      }
-
-                                      //  }
-
-
 
 
                                     }
@@ -302,11 +291,11 @@ public class DiaryFragment extends Fragment {
              View view1=getLayoutInflater().inflate(R.layout.listview_design, null);
              ImageView imageViewSugar= (ImageView) view1.findViewById(R.id.imageSuagr);
              ImageView imageViewinsulin= (ImageView) view1.findViewById(R.id.insulinIamge);
-        //     ImageView imageViewfood= (ImageView) view1.findViewById(R.id.foodImage);
+              ImageView imageViewfood= (ImageView) view1.findViewById(R.id.foodImage);
              ImageView imageViewcomment= (ImageView) view1.findViewById(R.id.commentImage);
              TextView textSugar= (TextView) view1.findViewById(R.id.sugarText);
              TextView textinsulin= (TextView) view1.findViewById(R.id.insulinText);
-          //   TextView textfood= (TextView) view1.findViewById(R.id.foodText);
+             TextView textfood= (TextView) view1.findViewById(R.id.foodText);
              TextView textDate = (TextView) view1.findViewById(R.id.dateDiary);
              TextView textcomment= (TextView) view1.findViewById(R.id.commentText);
              TextView textSeconds= (TextView) view1.findViewById(R.id.seconds);
@@ -333,6 +322,15 @@ public class DiaryFragment extends Fragment {
              } else
              {
                  relativeLayoutInsulin.setVisibility(View.GONE);
+             }
+
+
+             if(!stringBredUnits.get(i).equals("")){
+                 relativeLayoutFood.setVisibility(View.VISIBLE);
+                 textfood.setText(stringBredUnits.get(i));
+                 imageViewfood.setImageResource(images[2]);
+             } else{
+                 relativeLayoutFood.setVisibility(View.GONE);
              }
 
 
