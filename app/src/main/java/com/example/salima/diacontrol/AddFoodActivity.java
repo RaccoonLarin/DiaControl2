@@ -35,18 +35,19 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 public class AddFoodActivity extends AppCompatActivity {
 
     Double finalCarbs=0.0;
+    Double itogo=0.0;
     private AutoCompleteTextView autoCompleteTextView;
     TextView textView3, finalText;
     EditText gramsEdit, calEdit;
     //данные из json
-    ArrayList<String> foodList;
-    ArrayList<String> xeString;
-    ArrayList<String> grams;
+    //rrayList<String> foodList, xeString, grams;
     ListView listView;
     CustomAdapter customListView;
     Button buttonSaveFood, buttonAddFood;
@@ -75,12 +76,12 @@ public class AddFoodActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listviewFood);
         buttonSaveFood=(Button) findViewById(R.id.buttonSaveFood);
         buttonAddFood=(Button) findViewById(R.id.buttonAddFood);
-        gett_json();
+       // gett_json();
 
 
 
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, foodList);
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, setUse.foodList);
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setAdapter(adapter);
         setAutoCompleteTextViewListener();
@@ -97,7 +98,7 @@ public class AddFoodActivity extends AppCompatActivity {
     }
 
 
-    public void gett_json() {
+    /*public void gett_json() {
         String json;
         foodList = new ArrayList<>();
         xeString = new ArrayList<>();
@@ -130,12 +131,23 @@ public class AddFoodActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     void fullList(Intent data){
         foodList1 =(ArrayList<String>) data.getStringArrayListExtra("foodList");
         grams1 =(ArrayList<String>) data.getStringArrayListExtra("gramsList");
         xeString1 =(ArrayList<String>) data.getStringArrayListExtra("carbsList");
+        itogo=data.getDoubleExtra("xe", 1);
+        finalCarbs=0.0;
+        for(int i=0; i<xeString1.size(); i++){
+            finalCarbs+= Double.parseDouble(xeString1.get(i));
+        }
+
+
+        itogo = finalCarbs / setUse.xe;
+        itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
 
     }
 
@@ -164,10 +176,15 @@ public class AddFoodActivity extends AppCompatActivity {
                                         listView.setAdapter(customListView);
 
                                         try {
+                                            finalCarbs=0.0;
+                                            for(int i=0; i<xeString1.size(); i++){
+                                                finalCarbs+= Double.parseDouble(xeString1.get(i));
+                                            }
 
-                                            finalCarbs -= Double.parseDouble(xeString1.get(position));
-                                            Double itogo = finalCarbs / setUse.xe;
 
+                                             itogo = finalCarbs / setUse.xe;
+                                            itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                                            finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
                                             finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
                                         }
                                         catch (Exception e){
@@ -199,17 +216,21 @@ public class AddFoodActivity extends AppCompatActivity {
                 String selection = (String) parent.getItemAtPosition(position);
                // textView3.setText(foodList.get(position) + "-" + xeString.get(position));
 
-                int id=foodList.indexOf(selection);
+                int id=setUse.foodList.indexOf(selection);
                 foodList1.add(selection);
-                grams1.add(grams.get(id));
-                xeString1.add( xeString.get(id));
+                grams1.add(setUse.grams.get(id));
+                xeString1.add( setUse.xeString.get(id));
                // listView = (ListView) findViewById(R.id.listviewFood);
 
                 customListView = new AddFoodActivity.CustomAdapter();
                 listView.setAdapter(customListView);
-                 finalCarbs+= Double.parseDouble(xeString.get(id));
-                 Double itogo=finalCarbs/setUse.xe;
+                 finalCarbs+= Double.parseDouble(setUse.xeString.get(id));
+                 itogo=finalCarbs/setUse.xe;
+                itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
                 finalText.setText("Итого: "+itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
+
             }
         });
 
@@ -286,6 +307,7 @@ public class AddFoodActivity extends AppCompatActivity {
                 intent.putStringArrayListExtra("foodList", foodList1);
                 intent.putStringArrayListExtra("carbsList", tempcal);
                 intent.putStringArrayListExtra("gramsList", tempGrams);
+                intent.putExtra("xe", itogo);
                 setResult(RESULT_OK, intent);
                 finish();
 

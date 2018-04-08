@@ -37,6 +37,9 @@ public class AddActivity extends AppCompatActivity {
     TextView timeTxt;
     int year_x, month_x, day_x;
 
+    EditText xeText;
+    Double xeDouble;
+
     int hour_x, minute_x, seconds_x; //seconds_x;
     SimpleDateFormat simpleDateFormat;
     TimePickerDialog timePickerDialog;
@@ -53,7 +56,7 @@ public class AddActivity extends AppCompatActivity {
         addListenerOnButton();
 
 
-
+        xeText=(EditText)findViewById(R.id.foodEdit);
 
 
         dateTxt=(TextView) findViewById(R.id.date);
@@ -203,6 +206,7 @@ public class AddActivity extends AppCompatActivity {
                     intent.putStringArrayListExtra("foodList", foodList);
                     intent.putStringArrayListExtra("carbsList", carbsList);
                     intent.putStringArrayListExtra("gramsList", gramsList);
+                    intent.putExtra("xe", xeDouble);
 
                 }
                 // startActivityForResult(intent, REQUEST_CODE_FUCNCTIONONE);
@@ -276,14 +280,22 @@ public class AddActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        foodList = new ArrayList<>();
+        gramsList = new ArrayList<>();
+        carbsList = new ArrayList<>();
+
         if(resultCode==RESULT_OK) {
-            foodList = new ArrayList<>();
-            gramsList = new ArrayList<>();
-            carbsList = new ArrayList<>();
             foodList = (ArrayList<String>) data.getStringArrayListExtra("foodList");
             gramsList = (ArrayList<String>) data.getStringArrayListExtra("gramsList");
             carbsList = (ArrayList<String>) data.getStringArrayListExtra("carbsList");
+            xeDouble = data.getDoubleExtra("xe", 1);
+            xeText.setText(xeDouble.toString());
             flag = "true";
+        } else {
+            foodList.clear();
+            gramsList.clear();
+            carbsList.clear();
+            xeDouble = 0.0;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

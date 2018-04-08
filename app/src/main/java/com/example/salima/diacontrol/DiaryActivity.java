@@ -92,6 +92,8 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
 
 
         setUse.xe=12; //TODO установка
+        setUse stUs=new setUse(getApplicationContext());
+        stUs.gett_json();
 
 
 
