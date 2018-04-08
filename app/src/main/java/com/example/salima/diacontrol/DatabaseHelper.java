@@ -77,7 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor select(int id){
         SQLiteDatabase db=this.getWritableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id +")", null);
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id, null);
         return data;
     }
 

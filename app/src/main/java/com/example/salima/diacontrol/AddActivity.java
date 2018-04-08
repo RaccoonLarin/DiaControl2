@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.app.FragmentTransaction;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -47,7 +49,7 @@ public class AddActivity extends AppCompatActivity {
 
     ArrayList<String> foodList, gramsList, carbsList;
     String flag="false";
-
+    EditText editText, editText1,editText2, editText3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,10 @@ public class AddActivity extends AppCompatActivity {
 
 
         xeText=(EditText)findViewById(R.id.foodEdit);
-
+         editText = (EditText) findViewById(R.id.sugarEdit);
+         editText1 = (EditText) findViewById(R.id.insulinEdit);
+         editText2 = (EditText) findViewById(R.id.commentEdit);
+         editText3 = (EditText) findViewById(R.id.foodEdit);
 
         dateTxt=(TextView) findViewById(R.id.date);
         timeTxt=(TextView) findViewById(R.id.time);
@@ -89,12 +94,46 @@ public class AddActivity extends AppCompatActivity {
 
 
 
-      //  String edit=getIntent().getStringExtra("edit");
-     //   if(edit.equals("true")){
+       try {
+           String edit = getIntent().getStringExtra("edit");
+           if (edit.equals("true")) {
+               int i = 0;
+               i = getIntent().getIntExtra("item", -1);
+               setEditText(i);
 
-      //  }
-      //  int i=0;
-     //   i=getIntent().getIntExtra("item", -1);
+
+           }
+
+       }
+
+       catch (Exception e){
+           e.printStackTrace();
+
+       }
+    }
+
+    public void setEditText(int i){
+
+        db=new DatabaseHelper(this);
+        Cursor data = db.select(i);
+
+        if(data.getCount()==0){
+
+        }
+
+
+
+
+        while (data.moveToNext()){
+            editText.setText(data.getString(1));
+            editText1.setText(data.getString(2));
+            editText3.setText(data.getString(3));
+            // stringfood=data.getString(3);
+            editText2.setText(data.getString(4));
+
+
+        }
+
     }
 
     DatabaseHelper db;
@@ -168,10 +207,7 @@ public class AddActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-                        EditText editText = (EditText) findViewById(R.id.sugarEdit);
-                        EditText editText1 = (EditText) findViewById(R.id.insulinEdit);
-                        EditText editText2 = (EditText) findViewById(R.id.commentEdit);
-                        EditText editText3 = (EditText) findViewById(R.id.foodEdit);
+
                          str = editText.getText().toString();
                          str1 = editText1.getText().toString();
                          str2=editText2.getText().toString();

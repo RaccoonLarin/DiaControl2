@@ -207,6 +207,8 @@ public class DiaryFragment extends Fragment {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
               Intent intent = new Intent(getActivity(), AddActivity.class);
+              TextView textView = (TextView) view.findViewById(R.id.dateDiary);
+              TextView textViewSeconds = (TextView) view.findViewById(R.id.seconds);
               intent.putExtra("edit", "true");
              intent.putExtra("item", position); //i - строка которую выбрали в listview
 
