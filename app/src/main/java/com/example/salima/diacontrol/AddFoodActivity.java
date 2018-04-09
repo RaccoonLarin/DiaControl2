@@ -1,6 +1,7 @@
 package com.example.salima.diacontrol;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,8 +34,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -345,6 +349,7 @@ public class AddFoodActivity extends AppCompatActivity {
                 final EditText editText1=(EditText)view1.findViewById(R.id.editText);
                 final EditText editText2=(EditText)view1.findViewById(R.id.editText2);
                 final EditText editText3=(EditText)view1.findViewById(R.id.editText3);
+                final CheckBox checkBox=(CheckBox) view1.findViewById(R.id.checkBox);
                 LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.addFoodLayout);
 
                 alert.setView(view1);
@@ -363,6 +368,13 @@ public class AddFoodActivity extends AppCompatActivity {
                         xeString1.add(YouEditTextValue3);
                         customListView = new AddFoodActivity.CustomAdapter();
                         listView.setAdapter(customListView);
+
+                        if(checkBox.isChecked()){
+                            //setUse setUse=new setUse(getApplicationContext());
+                            //setUse.user_json_add(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
+                               //addJson(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
+                            //TODO записывать еду пользователя в sqlite
+                        }
                     }
                 });
 
@@ -479,9 +491,51 @@ public class AddFoodActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
+   public  void addJson(String name, String grams, String carbs){
 
+       try {
+           String  json2;
+           FileOutputStream outputStream;
+
+               outputStream = openFileOutput("userProduct2.json", Context.MODE_PRIVATE);
+              // outputStream.write(isCorrect.getBytes());
+               outputStream.close();
+
+           InputStream is2 = getAssets().open("userProduct2.json");
+           int size2=is2.available();
+           byte[] buffer2 = new byte[size2];
+           is2.read(buffer2);
+           is2.close();
+           json2 = new String(buffer2, "UTF-8");
+           JSONArray jsonArray2 = new JSONArray(json2);
+           int l=jsonArray2.length();
+
+           JSONObject jO = new JSONObject(); //new Json Object
+
+           //Add data
+           jO.put("foodname", name);
+           jO.put("Carb", carbs);
+           jO.put("grams", grams);
+           jsonArray2.put(jO);
+           OutputStreamWriter outputStreamWriter = new OutputStreamWriter(getApplicationContext().openFileOutput("userProduct2.json", Context.MODE_PRIVATE));
+           //  outputStreamWriter.write(jO.toString() );
+
+
+           outputStreamWriter.write(jsonArray2.toString());
+
+           outputStreamWriter.close();
+
+       } catch (IOException e) {
+           e.printStackTrace();
+       } catch (JSONException e) {
+           e.printStackTrace();
+       }
+
+   }
 
     class CustomAdapter extends BaseAdapter  implements View.OnTouchListener {
 
