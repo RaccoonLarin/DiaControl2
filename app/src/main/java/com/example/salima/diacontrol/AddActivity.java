@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,7 +67,9 @@ public class AddActivity extends AppCompatActivity {
 
         dateTxt=(TextView) findViewById(R.id.date);
         timeTxt=(TextView) findViewById(R.id.time);
-
+        foodList = new ArrayList<>();
+        gramsList = new ArrayList<>();
+        carbsList = new ArrayList<>();
         dateTxt.setPaintFlags(dateTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
         timeTxt.setPaintFlags(timeTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
         Calendar calendar  = Calendar.getInstance();
@@ -107,7 +110,7 @@ public class AddActivity extends AppCompatActivity {
        }
 
        catch (Exception e){
-           e.printStackTrace();
+          // e.printStackTrace();
 
        }
     }
@@ -116,6 +119,8 @@ public class AddActivity extends AppCompatActivity {
 
         db=new DatabaseHelper(this);
         Cursor data = db.select(i);
+        int id=-1;
+
 
         if(data.getCount()==0){
 
@@ -123,6 +128,8 @@ public class AddActivity extends AppCompatActivity {
 
 
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
 
         while (data.moveToNext()){
             editText.setText(data.getString(1));
@@ -130,6 +137,39 @@ public class AddActivity extends AppCompatActivity {
             editText3.setText(data.getString(3));
             // stringfood=data.getString(3);
             editText2.setText(data.getString(4));
+            try {
+                calendar.setTime(simpleDateFormat.parse(data.getString(5)));
+                year_x=calendar.get(Calendar.YEAR);
+                month_x=calendar.get(Calendar.MONTH);
+                day_x=calendar.get(Calendar.DAY_OF_MONTH);
+                hour_x=calendar.get(Calendar.HOUR_OF_DAY);
+                minute_x=calendar.get(Calendar.MINUTE);
+                seconds_x=calendar.get(Calendar.SECOND);
+                dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+                timeTxt.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+
+            String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
+
+            Cursor dataGetId = db.getIdPls(date1);
+            while (dataGetId.moveToNext()){
+                id=dataGetId.getInt(0);
+            }
+            if(id==-1){
+                return;
+            }
+            Cursor dataProduct=db.selectProduct(id);
+            while (dataProduct.moveToNext()) {
+                foodList.add(dataProduct.getString(2));
+                gramsList.add(dataProduct.getString(3));
+                carbsList.add(dataProduct.getString(4));
+            }
+            // dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+
 
 
         }
@@ -267,6 +307,7 @@ public class AddActivity extends AppCompatActivity {
         String insulin = str1;
         String bredUnits=str3;
         String comment = str2;
+        int id=0;
         String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
 
         if (plswork.equals("") &&insulin.equals("") && comment.equals("") && bredUnits.equals("") ){
@@ -277,6 +318,15 @@ public class AddActivity extends AppCompatActivity {
 
 
             isInserted= db.insertData(plswork, insulin, bredUnits, comment, date1);
+        Cursor data = db.getIdPls(date1);
+        while (data.moveToNext()){
+            id=data.getInt(0);
+            //Toast.makeText(this, Integer.toString(id) , Toast.LENGTH_LONG).show();
+        }
+
+        if(!foodList.isEmpty()){
+            db.insertDataProduct(id,foodList, gramsList, carbsList);
+        }
 
         if(isInserted)
             return  true;
@@ -326,9 +376,7 @@ public class AddActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        foodList = new ArrayList<>();
-        gramsList = new ArrayList<>();
-        carbsList = new ArrayList<>();
+
 
         if(resultCode==RESULT_OK) {
             foodList = (ArrayList<String>) data.getStringArrayListExtra("foodList");
