@@ -280,9 +280,11 @@ public class AddFoodActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int k =listView.getCount();
-
+                Intent intent = new Intent();
                 if(k==0){
-                    Toast.makeText(AddFoodActivity.this, "Добавьте продукты", Toast.LENGTH_LONG).show();
+                   // Toast.makeText(AddFoodActivity.this, "Добавьте продукты", Toast.LENGTH_LONG).show();
+                    setResult(-2, intent);
+                    finish();
                     return;
                 }
 
@@ -303,7 +305,7 @@ public class AddFoodActivity extends AppCompatActivity {
                     tempcal.add(calEdit.getText().toString());
                 }
 
-                Intent intent = new Intent();
+
                 intent.putStringArrayListExtra("foodList", foodList1);
                 intent.putStringArrayListExtra("carbsList", tempcal);
                 intent.putStringArrayListExtra("gramsList", tempGrams);
@@ -315,6 +317,7 @@ public class AddFoodActivity extends AppCompatActivity {
         });
     }
 
+    /*
     @Override
     public void onBackPressed() {
         // your code.
@@ -323,7 +326,7 @@ public class AddFoodActivity extends AppCompatActivity {
             setResult(-2, intent);
         }
         finish();
-    }
+    }*/
 
     //TODO view1 создать новый лейаут дизайн кастомный для мессаджбокса
 

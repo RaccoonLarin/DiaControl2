@@ -52,6 +52,9 @@ public class AddActivity extends AppCompatActivity {
     String flag="false";
     EditText editText, editText1,editText2, editText3;
 
+    boolean isEdit=false;
+    int id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +106,7 @@ public class AddActivity extends AppCompatActivity {
                int i = 0;
                i = getIntent().getIntExtra("item", -1);
                setEditText(i);
+               isEdit=true;
 
 
            }
@@ -119,7 +123,7 @@ public class AddActivity extends AppCompatActivity {
 
         db=new DatabaseHelper(this);
         Cursor data = db.select(i);
-        int id=-1;
+         id=-1;
 
 
         if(data.getCount()==0){
@@ -248,7 +252,7 @@ public class AddActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-
+                        boolean fl;
                          str = editText.getText().toString();
                          str1 = editText1.getText().toString();
                          str2=editText2.getText().toString();
@@ -261,7 +265,14 @@ public class AddActivity extends AppCompatActivity {
                         intent.putExtra("year_x", year_x);
                         intent.putExtra("month_x", month_x);
                         intent.putExtra("day_x", day_x);
-                        boolean fl=addData();
+                        if(isEdit)  {
+                            String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
+                            db=new DatabaseHelper(getApplicationContext());
+                            fl=db.update(id, str,str1,str3,str2, date1);
+                            db.updateFood(id, foodList, gramsList, carbsList);
+                        } else {
+                            fl = addData();
+                        }
                         if(!fl) {
                             Toast.makeText(getApplicationContext(), "Введите данные", Toast.LENGTH_LONG).show();
                             return;
@@ -300,6 +311,7 @@ public class AddActivity extends AppCompatActivity {
         });
     }
 
+    //Добавить данные в бж
     public boolean addData(){
         boolean isInserted;
 

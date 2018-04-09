@@ -142,6 +142,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //  data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE DATE = date('" + date1 + "') ORDER BY DATE DESC LIMIT 1 OFFSET " + id , null);
 
+    public void deleteProduct(int idDairy){
+        SQLiteDatabase db=this.getWritableDatabase();
+       // Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD + " ORDER BY DATE DESC LIMIT 1 OFFSET " + numList, null);
+        db.execSQL("DELETE FROM " + TABLE_FOOD + " WHERE DIARY_ID="+idDairy);
+
+
+    }
+    public boolean update(Integer id, String sugar, String insulin, String bredUnits, String comment, String date1){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_1, id);
+        contentValues.put(COL_2, sugar);
+        contentValues.put(COL_3, insulin);
+        contentValues.put(COL_4, bredUnits);
+        contentValues.put(COL_5, comment);
+        contentValues.put(COL_6, date1);
+        db.update(TABLE_NAME, contentValues, "ID="+id, null);
+        return true;
+    }
+
+    public void updateFood(Integer id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
+        deleteProduct(id);
+        if(name.size()<=0){
+          return;
+        } else{
+            insertDataProduct(id, name, grams, carbs);
+        }
+    }
     public Cursor getListContentsTrial(String date1){
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE DATE >= datetime('"+date1+"23:59:59', '-1 day') AND DATE <= datetime('"+date1+"23:59:59')"+" ORDER BY DATE DESC", null);
