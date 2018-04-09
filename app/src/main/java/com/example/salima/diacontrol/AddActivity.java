@@ -162,6 +162,7 @@ public class AddActivity extends AppCompatActivity {
             if(id==-1){
                 return;
             }
+            flag="true";
             Cursor dataProduct=db.selectProduct(id);
             while (dataProduct.moveToNext()) {
                 foodList.add(dataProduct.getString(2));
@@ -385,11 +386,12 @@ public class AddActivity extends AppCompatActivity {
             xeDouble = data.getDoubleExtra("xe", 1);
             xeText.setText(xeDouble.toString());
             flag = "true";
-        } else {
+        } else if(resultCode==-2 ) {
             foodList.clear();
             gramsList.clear();
             carbsList.clear();
             xeDouble = 0.0;
+            editText3.setText("");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -315,6 +315,16 @@ public class AddFoodActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        // your code.
+        Intent intent = new Intent();
+        if(foodList1.size()<=0) {
+            setResult(-2, intent);
+        }
+        finish();
+    }
+
     //TODO view1 создать новый лейаут дизайн кастомный для мессаджбокса
 
     public void addListenerOnButtonAddFood(){
