@@ -374,6 +374,11 @@ public class AddFoodActivity extends AppCompatActivity {
                             //setUse.user_json_add(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
                                //addJson(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
                             //TODO записывать еду пользователя в sqlite
+                            DatabaseHelper db= new DatabaseHelper(getApplicationContext());
+                            db.insertDataProductUser(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
+                            setUse.foodList.add(YouEditTextValue);
+                            setUse.xeString.add(YouEditTextValue3);
+                            setUse.grams.add(YouEditTextValue2);
                         }
                     }
                 });

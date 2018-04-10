@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  static final String DATABASE_NAME = "diary.db";
     public  static final String TABLE_NAME = "diary_data";
     public static  final String TABLE_FOOD = "food_data";
+    public static  final String TABLE_FOOD_USER = "food_data_user";
     public  static final String COL_1 = "ID";
     public  static final String COL_2 = "BLOOD_SUGAR";
     public  static final String COL_3 = "INSULIN";
@@ -42,8 +43,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT,"+ COL_5 + " TEXT," + COL_6 + " TEXT" + ");";
         String SQL_food="CREATE TABLE " + TABLE_FOOD+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
+        String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         db.execSQL(SQL_String);
         db.execSQL(SQL_food);
+        db.execSQL(SQL_food_user);
 
 
     }
@@ -52,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_USER);
         onCreate(db);
 
     }
@@ -94,6 +98,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return true;
     }
+
+
+
 
     public Cursor getListContents(){
         SQLiteDatabase db=this.getWritableDatabase();
@@ -173,6 +180,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getListContentsTrial(String date1){
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE DATE >= datetime('"+date1+"23:59:59', '-1 day') AND DATE <= datetime('"+date1+"23:59:59')"+" ORDER BY DATE DESC", null);
+        return data;
+    }
+
+
+    public boolean insertDataProductUser( String name, String grams, String carbs){
+        long result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COL_food_2, name);
+        contentValues.put(COL_food_3, grams);
+        contentValues.put(COL_food_4, carbs);
+
+        result = db.insert(TABLE_FOOD, null, contentValues);
+
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public Cursor selectAllUserProduct(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD_USER, null);
         return data;
     }
 }
