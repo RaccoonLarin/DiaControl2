@@ -29,7 +29,7 @@ import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
-public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.OnFragmentInteractionListener, StatisticFragment.OnFragmentInteractionListener{
+public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.OnFragmentInteractionListener, StatisticFragment.OnFragmentInteractionListener, RimenderFragment.OnFragmentInteractionListener{
     public static final int REQUEST_CODE_FUCNCTIONONE = 100;
     private TextView mTextMessage;
     private String token;
@@ -69,7 +69,7 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
                     isInDiaryFragment=false;
                     return  true;
 
-                case R.id.reminderFrag:
+                case R.id.navigation_alaram:
                     toolbartext.setText("Напоминания");
                     ft.replace(R.id.content, new RimenderFragment()).commit();
                     isInDiaryFragment=false;

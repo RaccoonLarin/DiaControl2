@@ -283,15 +283,17 @@
             android:inputType="textMultiLine"
             android:selectAllOnFocus="false"
             android:singleLine="false" />
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/okButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20sp"
-        android:layout_weight="1"
-        android:text="Сохранить"
-        android:textAlignment="center" />
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80sp"
+            android:text="Сохранить"
+            android:textAlignment="center" />
+
 
 </LinearLayout>
