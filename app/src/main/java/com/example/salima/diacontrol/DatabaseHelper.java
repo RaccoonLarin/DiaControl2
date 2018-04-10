@@ -113,9 +113,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery("SELECT id FROM " + TABLE_NAME +" WHERE DATE="+ "\'"+ date1+"\'", null);
         return data;
     }
-    public Cursor getId(String date1){
+    public Cursor getTime(String date1){
         SQLiteDatabase db=this.getWritableDatabase();
-        Cursor data = db.rawQuery("SELECT id FROM " + TABLE_NAME +" WHERE DATE >= datetime('"+ date1.substring(0,10)+"23:59:59', '-1 day') AND DATE <= datetime('"+date1.substring(0,10)+"23:59:59')"+" ORDER BY DATE", null);
+        Cursor data = db.rawQuery("SELECT BLOOD_SUGAR, DATE FROM " + TABLE_NAME +" WHERE DATE >= datetime('"+ date1.substring(0,10)+"23:59:59', '-1 day') AND DATE <= datetime('"+date1.substring(0,10)+"23:59:59')"+" ORDER BY DATE", null);
         return data;
     }
 

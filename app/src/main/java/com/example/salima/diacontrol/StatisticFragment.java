@@ -14,6 +14,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +30,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 
 /**
@@ -125,83 +138,124 @@ public class StatisticFragment extends Fragment {
     }
 
     TextView txt;
+    ArrayList<Integer> hours;
+    ArrayList<Integer> blood_sugar;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        txt=(TextView) getView().findViewById(R.id.textStatistic);
+        hours=new ArrayList<>();
+        blood_sugar=new ArrayList<>();
+
+        ArrayList<Integer> data=new ArrayList<>();
+        data.add(2);
+        data.add(3);
+        data.add(4);
+
+        ArrayList<Integer> dataXE=new ArrayList<>();
+        dataXE.add(80);
+        dataXE.add(70);
+        dataXE.add(20);
         gett_json();
+        LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
+        chart.setScaleEnabled(false);
+        chart.setDragEnabled(true);
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-       /* TextView textt= (TextView) getView().findViewById(R.id.textStatistic);
-        db = new DbHelp(getActivity());
-        File databse= getContext().getDatabasePath(DbHelp.DB_NAME);
-        if(false==databse.exists()){
-            db.getReadableDatabase();
-            if(copyDataBase(getActivity())){
-                Toast.makeText(getActivity(), "Copy databse ok", Toast.LENGTH_SHORT).show();
-            } else{
-                Toast.makeText(getActivity(), "Copy databse error", Toast.LENGTH_SHORT).show();
-                return;
 
-            }
+        ArrayList<Entry> entries = new ArrayList<Entry>();
+
+        for (int i=0; i<hours.size(); i++) {
+
+            // turn your data into Entry objects
+            entries.add(new Entry(hours.get(i), blood_sugar.get(i)));
         }
 
-        textt.setText(db.getTxt());*/
-        /*DbHelp myDbHelper;
-        myDbHelper = new DbHelp(getActivity());
+        LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
+        LineData lineData = new LineData(dataSet);
+        dataSet.setFillAlpha(110);
+        ArrayList<ILineDataSet> dataSets=new ArrayList<>();
+        chart.setData(lineData);
+        chart.invalidate(); // refresh
+        //dataSet.setColor();
+        //dataSet.setValueTextColor(...); // styling, ...
 
-        try {
-
-            myDbHelper.createDataBase();
-
-        } catch (IOException ioe) {
-
-            throw new Error("Unable to create database");
-
-        }
-
-        try {
-
-            myDbHelper.openDataBase();
-
-        }catch(SQLException sqle){
-
-            throw sqle;
-
-        }
-
-        Cursor data = myDbHelper.select(1);
-
-        while (data.moveToNext()){
-            textt.setText(data.getString(1));
-        }*/
     }
 
     public void gett_json(){
-        String json;
-        try {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        int year_x=calendar.get(Calendar.YEAR);
+        int month_x=calendar.get(Calendar.MONTH);
+        int day_x=calendar.get(Calendar.DAY_OF_MONTH);
+        int hour_x=calendar.get(Calendar.HOUR_OF_DAY);
+        int minute_x=calendar.get(Calendar.MINUTE);
+        int seconds_x=calendar.get(Calendar.SECOND);
 
-            InputStream is = getActivity().getAssets().open("foodsamp.json");
-            int size= is.available();
-            byte [] buffer=new byte[size];
-            is.read(buffer);
-            is.close();
+        String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
 
-            json=new String(buffer, "UTF-8");
-            JSONArray jsonArray=new JSONArray(json);
+        DatabaseHelper db=new DatabaseHelper(getContext());
+        Cursor data = db.getTime(date1);
 
+        while (data.moveToNext()){
+            String ss=data.getString(0);
+            if(ss.equals("")){
+                continue;
+            }
+            blood_sugar.add(Integer.parseInt(data.getString(0)));
+            try {
+                calendar.setTime(simpleDateFormat.parse( data.getString(1)));
+                hour_x=calendar.get(Calendar.HOUR_OF_DAY);
+                hours.add(hour_x);
 
-                JSONObject obj=jsonArray.getJSONObject(0);
-                String str=new String(obj.getString("foodname").getBytes("ISO-8859-1"), "UTF-8");
-            txt.setText(obj.getString("foodname"));
-               // Toast.makeText(getActivity(), obj.getString("foodname"), Toast.LENGTH_LONG).show();
-
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
         }
-        catch (IOException e){
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+       /* while (data.moveToNext()){
+            editText.setText(data.getString(1));
+            editText1.setText(data.getString(2));
+            editText3.setText(data.getString(3));
+            // stringfood=data.getString(3);
+            editText2.setText(data.getString(4));
+            try {
+                calendar.setTime(simpleDateFormat.parse(data.getString(5)));*/
+
+    }
+
+    private String getStringDay(int day){
+
+
+        if(day < 10){
+
+            return  "0" + day;
         }
+
+        return Integer.toString(day);
+    }
+
+    private String getStringMonth(int month){
+
+
+        if(month < 10){
+
+            return  "0" + month;
+        }
+
+        return Integer.toString(month);
+    }
+
+
+    private String getStringTime(int time){
+
+
+        if(time < 10){
+
+            return  "0" + time;
+        }
+
+        return Integer.toString(time);
     }
 
 

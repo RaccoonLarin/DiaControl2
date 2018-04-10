@@ -69,6 +69,12 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
                     isInDiaryFragment=false;
                     return  true;
 
+                case R.id.reminderFrag:
+                    toolbartext.setText("Напоминания");
+                    ft.replace(R.id.content, new RimenderFragment()).commit();
+                    isInDiaryFragment=false;
+                    return  true;
+
 
             }
             return false;

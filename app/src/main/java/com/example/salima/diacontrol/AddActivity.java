@@ -132,6 +132,7 @@ public class AddActivity extends AppCompatActivity {
 
 
 
+        //Парсить дату
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();
 
