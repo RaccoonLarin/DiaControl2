@@ -19,7 +19,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle("DiaControl")
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                .setContentText("Принять таблетки");
+                .setContentText("Принять таблетки"); //TODO изменить текст через Intent передавать текс
         Random random=new Random();
         int m = random.nextInt(9999-1000)+1000;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

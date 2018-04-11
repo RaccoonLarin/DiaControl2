@@ -5,7 +5,7 @@ package com.example.salima.diacontrol;
  */
 
 public class ServerData {
-    private static String ipServ = "http://192.168.1.44:8080/";
+    private static String ipServ = "http://192.168.1.48:8080/";
     private static String tokentxt="mytoken.txt";
 
     public static String getIpServ() {

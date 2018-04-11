@@ -204,6 +204,7 @@ public class RimenderFragment extends Fragment {
                 addListenerOnText(txtReminder);
                 final RadioButton radioButton=(RadioButton) view2.findViewById(R.id.radioButton);
                 final RadioButton radioButtonWeek=(RadioButton) view2.findViewById(R.id.radioButtonWeek);
+                final RadioButton radioButtonNRepeat=(RadioButton) view2.findViewById(R.id.radioButtonDontReepat);
                 alert.setView(view2);
 
                 alert.setPositiveButton("СОХРАНИТЬ", new DialogInterface.OnClickListener() {
@@ -216,15 +217,30 @@ public class RimenderFragment extends Fragment {
                      calendar.set(Calendar.MINUTE, minute_x);
                      Toast.makeText(getContext(),Calendar.YEAR + " " +Calendar.MONTH + " " +Calendar.DAY_OF_MONTH + " " + hour_x + " "+ minute_x, Toast.LENGTH_LONG).show();
                         String YouEditTextValue = editTextComment.getText().toString();
-                       if(radioButton.isChecked()){
-                            startAlarm(calendar.getTimeInMillis(), true);
 
-                        } else startAlarm(calendar.getTimeInMillis(), false);
-
-                       setUse.textReminder.add(YouEditTextValue);
-                       setUse.timeTextReminder.add(getStringDay(day_x)+"-"+getStringMonth(month_x+1)+"-"+year_x +" "+ hour_x+":"+minute_x);
+                        setUse.textReminder.add(YouEditTextValue);
+                        setUse.timeTextReminder.add(getStringDay(day_x)+"-"+getStringMonth(month_x+1)+"-"+year_x +" "+ hour_x+":"+minute_x);
                         customListView = new CustomAdapter();
                         listView.setAdapter(customListView);
+
+                        boolean dayRepeat=radioButton.isChecked();
+                        boolean weekRepeat=radioButtonWeek.isChecked();
+                        boolean nonRepeat=radioButtonNRepeat.isChecked();
+                        if(!(dayRepeat||weekRepeat||nonRepeat)){
+                            startAlarm(calendar.getTimeInMillis(), false, false);
+                        }
+                       if(radioButton.isChecked()){
+                            startAlarm(calendar.getTimeInMillis(), true, false);
+
+                        }
+                        if(weekRepeat){
+                            startAlarm(calendar.getTimeInMillis(), false, true);
+                        }
+
+                        if(nonRepeat){
+                            startAlarm(calendar.getTimeInMillis(), false, false);
+                        }
+
                     }
                 });
 
@@ -276,7 +292,7 @@ public class RimenderFragment extends Fragment {
 
     int k=0;
 
-    public void startAlarm(long timeInMills, boolean repeating){
+    public void startAlarm(long timeInMills, boolean repeatingDay, boolean repeatingWeek){
 
         AlarmManager manager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent myIntent;
@@ -286,14 +302,21 @@ public class RimenderFragment extends Fragment {
         myIntent= new Intent(getContext(),AlarmNotificationReceiver.class);  //createIIntent("action " +k, "extra "+ k);
         myIntent.putExtra("id", k);
         Random random=new Random();
-        int m = random.nextInt(9999-1000)+1000;
+        int m =  random.nextInt(Integer.MAX_VALUE-1000)+1000;
         pendingIntent=PendingIntent.getBroadcast(getContext(),m,myIntent,PendingIntent.FLAG_ONE_SHOT);
 
-        if(!repeating) {
-            manager.set(AlarmManager.RTC_WAKEUP, timeInMills, pendingIntent);
+        if(repeatingDay){
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMills, AlarmManager.INTERVAL_DAY, pendingIntent);
         }
-        else {
-            manager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMills+30000, 3000, pendingIntent);
+
+        if(repeatingWeek){
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMills, 7*AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+
+        if(!(repeatingDay||repeatingWeek)) {
+            //TODO изменить на set
+            //manager.set(AlarmManager.RTC_WAKEUP, timeInMills, pendingIntent);
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMills, AlarmManager.INTERVAL_FIFTEEN_MINUTES%10, pendingIntent);
         }
 
         Toast.makeText(getContext(), "Напоминание установлено", Toast.LENGTH_SHORT).show();

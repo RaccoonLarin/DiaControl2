@@ -33,12 +33,18 @@ public class setUse {
      }
 
      public static ArrayList<String> textReminder, timeTextReminder;
+     public static ArrayList<Integer> idRerminder, repeatDay, repeatWeak;
      public static ArrayList<String>  foodList;
      public static ArrayList<String>  xeString;
      public static ArrayList<String>  grams;
+
+     //вызов метода в UserLogin
      public static void array(){
          textReminder=new ArrayList<>();
          timeTextReminder=new ArrayList<>();
+         idRerminder=new ArrayList<>();
+         repeatDay=new ArrayList<>();
+         repeatWeak=new ArrayList<>();
      }
      public void gett_json() {
           String json, json2;
@@ -92,6 +98,11 @@ public class setUse {
           }
      }
 
+     public static Integer convertFromBoolToInt(Boolean flag){
+         if(flag) return 1;
+         else return 0;
+
+     }
      private static String removeLastChar(String str) {
           return str.substring(0, str.length() - 2);
      }

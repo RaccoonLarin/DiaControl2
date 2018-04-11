@@ -33,6 +33,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static  final String COL_food_5="XE_PRODUCT";
     public static  final String COL_food_6="TOTAL_CARBS_PRODUCT";
 
+    public static  final String TABLE_REMINDER = "reminder_data";
+    public static final String COL_reminder_ID="REMINDER_ID";
+    public static final String COL_reminder_DATE="REMINDER_DATE";
+    public static final String COL_reminder_TEXT="REMINDER_TEXT";
+    public static final String COL_reminder_DAY="REPEAT_DAY";
+    public static final String COL_reminder_WEEK="REPEAT_WEEK";
+    public static final String COL_reminder_NOREPEAT="NO_REPEAT";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
 
@@ -44,9 +52,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT,"+ COL_5 + " TEXT," + COL_6 + " TEXT" + ");";
         String SQL_food="CREATE TABLE " + TABLE_FOOD+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
+        String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" + ");";
+
         db.execSQL(SQL_String);
         db.execSQL(SQL_food);
         db.execSQL(SQL_food_user);
+        db.execSQL(SQL_reminder);
 
 
     }
@@ -56,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDER);
         onCreate(db);
 
     }
@@ -84,6 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         for(int i=0; i<name.size(); i++) {
+
             contentValues.put(COL_food_1, id);
             contentValues.put(COL_food_2, name.get(i));
             contentValues.put(COL_food_3, grams.get(i));
@@ -99,6 +112,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
+
+    public boolean insertDataReminder(Integer id, String date, String text, Integer repeatDay, Integer repeatWeak, Integer noRepeat){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COL_reminder_ID, id);
+        contentValues.put(COL_reminder_DATE, date);
+        contentValues.put(COL_reminder_TEXT, text);
+        contentValues.put(COL_reminder_DAY, repeatDay);
+        contentValues.put(COL_reminder_WEEK, repeatWeak);
+        contentValues.put(COL_reminder_NOREPEAT, noRepeat);
+        long result =  db.insert(TABLE_NAME, null, contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
 
 
 
