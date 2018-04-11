@@ -36,5 +36,6 @@
     <!-- disign add food -->
 
     <string name="nameFoodtxt">Название продукта</string>
+    <string name="title_activity_notification">NotificationActivity</string>
 
 </resources>

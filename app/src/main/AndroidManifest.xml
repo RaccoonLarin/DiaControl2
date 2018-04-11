@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -37,18 +38,21 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddActivity" />
-        <!--   android:windowSoftInputMode="adjustPan" -->
+        <!-- android:windowSoftInputMode="adjustPan" -->
         <activity
             android:name=".AddFoodActivity"
             android:label="@string/title_activity_add_food"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="com.example.salima.diacontrol.AddFoodActivity"  />
+                <action android:name="com.example.salima.diacontrol.AddFoodActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".AlarmNotificationReceiver" />
+
     </application>
 
 </manifest>
