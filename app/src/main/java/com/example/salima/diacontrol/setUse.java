@@ -32,9 +32,14 @@ public class setUse {
         //  InputStream is = mngr.open("textdb.txt");
      }
 
+     public static ArrayList<String> textReminder, timeTextReminder;
      public static ArrayList<String>  foodList;
      public static ArrayList<String>  xeString;
      public static ArrayList<String>  grams;
+     public static void array(){
+         textReminder=new ArrayList<>();
+         timeTextReminder=new ArrayList<>();
+     }
      public void gett_json() {
           String json, json2;
           foodList = new ArrayList<>();

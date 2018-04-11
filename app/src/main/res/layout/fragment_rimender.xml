@@ -5,15 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".RimenderFragment">
+    tools:context=".RimenderFragment"
+   >
 
     <!-- TODO: Update blank fragment layout -->
 
     <ListView
         android:id="@+id/remindList"
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/reminderButton"
@@ -21,6 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40sp"
         android:layout_marginRight="40sp"
-
+        android:descendantFocusability="beforeDescendants"
+        android:focusable="false"
         android:text="Добавить" />
+
+
 </LinearLayout>

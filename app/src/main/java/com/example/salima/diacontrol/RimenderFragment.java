@@ -20,11 +20,16 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -57,15 +62,6 @@ public class RimenderFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RimenderFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static RimenderFragment newInstance(String param1, String param2) {
         RimenderFragment fragment = new RimenderFragment();
         Bundle args = new Bundle();
@@ -87,9 +83,12 @@ public class RimenderFragment extends Fragment {
     Button reminderButton;
     TimePickerDialog timePickerDialog;
     DatePickerDialog datePickerDialog;
-    TextView txtReminder;
+    TextView txtReminder, dateTxt;
     View view1;
     int hour_x, minute_x, seconds_x; //seconds_x;
+    int year_x, month_x, day_x;
+    ListView listView;
+    CustomAdapter customListView;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -97,25 +96,35 @@ public class RimenderFragment extends Fragment {
         reminderButton=(Button)  getView().findViewById(R.id.reminderButton);
          //view1=getLayoutInflater().inflate(R.layout.reminder_deign_layout, null);
 
+
         Calendar calendar  = Calendar.getInstance();
         hour_x=calendar.get(Calendar.HOUR_OF_DAY);
         minute_x=calendar.get(Calendar.MINUTE);
+        year_x=calendar.get(Calendar.YEAR);
+        month_x=calendar.get(Calendar.MONTH);
+        day_x=calendar.get(Calendar.DAY_OF_MONTH);
+
         addListenerOnButtonReminder();
+
+        reminderButton.setFocusable(false);
+
+
+
+
+        //setUse.textReminder.add("yo");
+     //   setUse.timeTextReminder.add("15"+":"+"30");
 
         //TODO этот год в диалог
 
+        listView=(ListView) getView().findViewById(R.id.remindList);
+        customListView = new CustomAdapter();
+        listView.setAdapter(customListView);
 
     }
-    private String getStringTime(int time){
 
 
-        if(time < 10){
 
-            return  "0" + time;
-        }
 
-        return Integer.toString(time);
-    }
 
 
 
@@ -133,7 +142,7 @@ public class RimenderFragment extends Fragment {
 
 
     public void  addListenerOnText(TextView txtReminder) {
-        /*dateTxt.setOnClickListener(
+        dateTxt.setOnClickListener(
                 new View.OnClickListener() {
 
                     @Override
@@ -141,7 +150,7 @@ public class RimenderFragment extends Fragment {
                         datePickerDialog.show();
 
                     }
-                });*/
+                });
 
         txtReminder.setOnClickListener(
                 new View.OnClickListener() {
@@ -155,6 +164,19 @@ public class RimenderFragment extends Fragment {
     }
 
 
+    private  DatePickerDialog.OnDateSetListener dpickerListner = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+            year_x=i;
+            month_x=i1;
+            day_x=i2;
+            dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+
+
+            //  Toast.makeText(AddActivity.this, day_x + "." + month_x + "." + year_x, Toast.LENGTH_LONG).show();
+        }
+    };
+
 
     public void addListenerOnButtonReminder(){
         reminderButton.setOnClickListener( new View.OnClickListener() {
@@ -164,28 +186,45 @@ public class RimenderFragment extends Fragment {
 
                 alert.setMessage("Введите данные");
 
-                final View view2= getLayoutInflater().inflate(R.layout.reminder_deign_layout, null);;
+                final View view2= getLayoutInflater().inflate(R.layout.reminder_deign_layout, null);
+
+                final EditText editTextComment =(EditText) view2.findViewById(R.id.textAddComment);
+
+
                 txtReminder=(TextView) view2.findViewById(R.id.timeReminder);
+                dateTxt = (TextView) view2.findViewById(R.id.dateReminder);
                 txtReminder.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x));
+                dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+
                 timePickerDialog=new TimePickerDialog(getContext(), timePickerListner,hour_x, minute_x,  true);
-                //  txtReminder.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x));
+                datePickerDialog=new DatePickerDialog(getContext(), dpickerListner, year_x, month_x, day_x);
+
                 txtReminder.setPaintFlags(txtReminder.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                dateTxt.setPaintFlags(dateTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 addListenerOnText(txtReminder);
                 final RadioButton radioButton=(RadioButton) view2.findViewById(R.id.radioButton);
-
+                final RadioButton radioButtonWeek=(RadioButton) view2.findViewById(R.id.radioButtonWeek);
                 alert.setView(view2);
 
                 alert.setPositiveButton("СОХРАНИТЬ", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(Calendar.YEAR, year_x);
+                        calendar.set(Calendar.MONTH, month_x);
+                        calendar.set(Calendar.DAY_OF_MONTH, day_x);
                      calendar.set(Calendar.HOUR_OF_DAY, hour_x);
                      calendar.set(Calendar.MINUTE, minute_x);
                      Toast.makeText(getContext(),Calendar.YEAR + " " +Calendar.MONTH + " " +Calendar.DAY_OF_MONTH + " " + hour_x + " "+ minute_x, Toast.LENGTH_LONG).show();
-
+                        String YouEditTextValue = editTextComment.getText().toString();
                        if(radioButton.isChecked()){
                             startAlarm(calendar.getTimeInMillis(), true);
 
                         } else startAlarm(calendar.getTimeInMillis(), false);
+
+                       setUse.textReminder.add(YouEditTextValue);
+                       setUse.timeTextReminder.add(getStringDay(day_x)+"-"+getStringMonth(month_x+1)+"-"+year_x +" "+ hour_x+":"+minute_x);
+                        customListView = new CustomAdapter();
+                        listView.setAdapter(customListView);
                     }
                 });
 
@@ -196,6 +235,38 @@ public class RimenderFragment extends Fragment {
                 });
                 final AlertDialog dialog = alert.create();
                 dialog.show();
+
+
+
+                ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setEnabled(false);
+
+                editTextComment.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before,
+                                              int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                                                  int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        // Check if edittext is empty
+                        if (TextUtils.isEmpty(s)) {
+                            // Disable ok button
+                            ((AlertDialog) dialog).getButton(
+                                    AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                        } else {
+                            // Something into edit text. Enable the button.
+                            ((AlertDialog) dialog).getButton(
+                                    AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                        }
+
+                    }
+                });
 
             }
         });
@@ -254,6 +325,95 @@ public class RimenderFragment extends Fragment {
         }
     }*/
 
+    private String getStringTime(int time){
+
+
+        if(time < 10){
+
+            return  "0" + time;
+        }
+
+        return Integer.toString(time);
+    }
+    private String getStringDay(int day){
+
+
+        if(day < 10){
+
+            return  "0" + day;
+        }
+
+        return Integer.toString(day);
+    }
+
+    private String getStringMonth(int month){
+
+
+        if(month < 10){
+
+            return  "0" + month;
+        }
+
+        return Integer.toString(month);
+    }
+
+
+    class CustomAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return setUse.timeTextReminder.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            View view1=getLayoutInflater().inflate(R.layout.reminder_listview_design, null);
+            ImageView imageViewSReminder= (ImageView) view1.findViewById(R.id.reminderImage);
+            TextView time= (TextView) view1.findViewById(R.id.textReminder);
+            TextView commentTime= (TextView) view1.findViewById(R.id.textTime);
+            LinearLayout relativeLayoutSugar = (LinearLayout) view1.findViewById(R.id.timeLayout);
+
+            if(!setUse.timeTextReminder.get(i).equals("")){
+               relativeLayoutSugar.setVisibility(View.VISIBLE);
+               String s= setUse.timeTextReminder.get(i);
+                time.setText(s);
+
+            } else{
+                //imageViewSReminder.setVisibility(View.GONE);
+                //time.setVisibility(View.GONE);
+                relativeLayoutSugar.setVisibility(View.GONE);
+            }
+
+            if(!setUse.textReminder.get(i).equals("")){
+                commentTime.setVisibility(View.VISIBLE);
+                commentTime.setText(setUse.textReminder.get(i));
+            } else{
+                commentTime.setVisibility(View.GONE);
+            }
+
+            //view1.setOnTouchListener(this);
+
+
+
+
+
+
+
+            return view1;
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -287,17 +447,6 @@ public class RimenderFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

@@ -5,6 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <EditText
+        android:id="@+id/textAddComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Введите название"
+        android:inputType="textPersonName" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,9 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-
             android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/date"
             android:layout_weight="1"
             android:text="TIME"
 
@@ -35,11 +41,55 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageCalendarReminder"
+            android:layout_width="68dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:alpha="0.8"
+            app:srcCompat="@drawable/calendarsmall" />
+
+        <TextView
+            android:id="@+id/dateReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="DATE"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <RadioButton
         android:id="@+id/radioButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Повторять каждый час" />
+        android:layout_marginHorizontal="15dp"
+        android:text="Повторять каждый день" />
+    <RadioButton
+        android:id="@+id/radioButtonWeek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:text="Повторять каждую неделю" />
+        <RadioButton
+            android:id="@+id/radioButtonDontReepat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:text="Не повторять" />
+    </RadioGroup>
 
 
 </LinearLayout>
