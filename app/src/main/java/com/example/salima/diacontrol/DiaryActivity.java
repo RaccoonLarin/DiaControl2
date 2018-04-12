@@ -29,7 +29,7 @@ import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
-public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.OnFragmentInteractionListener, StatisticFragment.OnFragmentInteractionListener, RimenderFragment.OnFragmentInteractionListener{
+public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.OnFragmentInteractionListener, StatisticFragment.OnFragmentInteractionListener, RimenderFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener{
     public static final int REQUEST_CODE_FUCNCTIONONE = 100;
     private TextView mTextMessage;
     private String token;
@@ -74,6 +74,12 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
                     ft.replace(R.id.content, new RimenderFragment()).commit();
                     isInDiaryFragment=false;
                     return  true;
+                case R.id.navigation_more:
+                    toolbartext.setText("Настройки");
+                    ft.replace(R.id.content, new SettingsFragment()).commit();
+                    //isInDiaryFragment=false;
+                    return  true;
+
 
 
             }
