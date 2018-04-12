@@ -339,7 +339,7 @@ public class RimenderFragment extends Fragment {
 
 
                         DatabaseHelper db=new DatabaseHelper(getContext());
-                        db.insertDataReminder(IdReminder, +year_x+"-"+getStringMonth(month_x+1)+"-" +getStringDay(day_x)+" "+ hour_x+":"+minute_x, YouEditTextValue,
+                        db.insertDataReminder(IdReminder, +year_x+"-"+getStringMonth(month_x+1)+"-" +getStringDay(day_x)+" "+ getStringTime(hour_x)+":"+getStringTime(minute_x), YouEditTextValue,
                                 setUse.convertFromBoolToInt(dayRepeat),
                                 setUse.convertFromBoolToInt(weekRepeat),
                                 setUse.convertFromBoolToInt(nonRepeat));
