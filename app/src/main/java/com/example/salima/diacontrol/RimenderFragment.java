@@ -162,18 +162,7 @@ public class RimenderFragment extends Fragment {
                                 AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
 
                                 alarmManager.cancel(sender);
-                                // Here's two way to fire a one-time (non-repeating) alarm in one hour
-                                // One way: alarmManager.set(AlarmManager.RTC,  System.currentTimeMillis() + 60 * 60 * 1000, pendingIntent);
-                                // Another way:
-                                //alarmManager.set(AlarmManager.ELAPSED_REALTIME,
-                                       // SystemClock.elapsedRealtime() + 60 * 60 * 1000, pendingIntent);
-                              //  AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-                              //  Intent intent=new Intent( getContext(),NotificationCancelReceiver.class);
-                             //   intent.putExtra("notification_id",  id);
-                             //   PendingIntent pendingIntent = PendingIntent.getBroadcast( getContext(),  id, intent, 0);
-                           //   alarmManager.set(AlarmManager.RTC_WAKEUP,
-                               //  System.currentTimeMillis(), pendingIntent);
-                             //   alarmManager.cancel(pendingIntent);
+
 
                                 DatabaseHelper db=new DatabaseHelper(getContext());
                                 db.deleteReminder(setUse.idRerminder.get(position1));

@@ -54,8 +54,6 @@
         </activity>
 
         <receiver android:name=".AlarmNotificationReceiver" />
-        <receiver android:name=".NotificationCancelReceiver">
-        </receiver>
     </application>
 
 </manifest>
