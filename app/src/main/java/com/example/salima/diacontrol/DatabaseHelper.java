@@ -123,11 +123,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_reminder_DAY, repeatDay);
         contentValues.put(COL_reminder_WEEK, repeatWeak);
         contentValues.put(COL_reminder_NOREPEAT, noRepeat);
-        long result =  db.insert(TABLE_NAME, null, contentValues);
+        long result =  db.insert(TABLE_REMINDER, null, contentValues);
         if(result == -1)
             return false;
         else
             return true;
+    }
+
+
+    public Cursor getListReminder(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_REMINDER + " ORDER BY ID", null);
+        return data;
     }
 
 
@@ -183,6 +190,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
        // Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD + " ORDER BY DATE DESC LIMIT 1 OFFSET " + numList, null);
         db.execSQL("DELETE FROM " + TABLE_FOOD + " WHERE DIARY_ID="+idDairy);
+
+
+    }
+
+
+    public void deleteReminder(int idReminder){
+        SQLiteDatabase db=this.getWritableDatabase();
+        // Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD + " ORDER BY DATE DESC LIMIT 1 OFFSET " + numList, null);
+        db.execSQL("DELETE FROM " + TABLE_REMINDER + " WHERE REMINDER_ID="+idReminder);
 
 
     }

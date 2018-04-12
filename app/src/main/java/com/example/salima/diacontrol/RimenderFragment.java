@@ -20,6 +20,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -36,6 +37,8 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Random;
+
+import static android.content.Context.ALARM_SERVICE;
 
 
 /**
@@ -85,9 +88,11 @@ public class RimenderFragment extends Fragment {
     DatePickerDialog datePickerDialog;
     TextView txtReminder, dateTxt;
     View view1;
+    int IdReminder;
     int hour_x, minute_x, seconds_x; //seconds_x;
     int year_x, month_x, day_x;
     ListView listView;
+    Fragment newFragmen;
     CustomAdapter customListView;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -96,7 +101,7 @@ public class RimenderFragment extends Fragment {
         reminderButton=(Button)  getView().findViewById(R.id.reminderButton);
          //view1=getLayoutInflater().inflate(R.layout.reminder_deign_layout, null);
 
-
+        newFragmen=this;
         Calendar calendar  = Calendar.getInstance();
         hour_x=calendar.get(Calendar.HOUR_OF_DAY);
         minute_x=calendar.get(Calendar.MINUTE);
@@ -120,8 +125,85 @@ public class RimenderFragment extends Fragment {
         customListView = new CustomAdapter();
         listView.setAdapter(customListView);
 
+        listViewListener();
+
     }
 
+    public void getList(){
+
+    }
+
+    public void listViewListener(){
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           final int pos, long id) {
+                // TODO Auto-generated method stub
+
+
+                //Toast.makeText(getContext(), Integer.toString(pos), Toast.LENGTH_LONG).show();
+
+                //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
+                final View view1=arg1;
+                final  int position1=pos;
+                android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(getActivity())
+                        .setTitle("Удалить запись?")
+                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                int id=setUse.idRerminder.get(position1);
+
+
+                                Intent intent = new Intent(getContext(), AlarmNotificationReceiver.class);
+                                intent.putExtra("notification_id", id);
+                                intent.putExtra("text", setUse.textReminder.get(position1));
+                                PendingIntent sender = PendingIntent.getBroadcast(getContext(), id, intent, PendingIntent.FLAG_ONE_SHOT);
+                                AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+
+                                alarmManager.cancel(sender);
+                                // Here's two way to fire a one-time (non-repeating) alarm in one hour
+                                // One way: alarmManager.set(AlarmManager.RTC,  System.currentTimeMillis() + 60 * 60 * 1000, pendingIntent);
+                                // Another way:
+                                //alarmManager.set(AlarmManager.ELAPSED_REALTIME,
+                                       // SystemClock.elapsedRealtime() + 60 * 60 * 1000, pendingIntent);
+                              //  AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+                              //  Intent intent=new Intent( getContext(),NotificationCancelReceiver.class);
+                             //   intent.putExtra("notification_id",  id);
+                             //   PendingIntent pendingIntent = PendingIntent.getBroadcast( getContext(),  id, intent, 0);
+                           //   alarmManager.set(AlarmManager.RTC_WAKEUP,
+                               //  System.currentTimeMillis(), pendingIntent);
+                             //   alarmManager.cancel(pendingIntent);
+
+                                DatabaseHelper db=new DatabaseHelper(getContext());
+                                db.deleteReminder(setUse.idRerminder.get(position1));
+                                setUse.idRerminder.remove(position1);
+                                setUse.noRepeat.remove(position1);
+                                setUse.repeatWeak.remove(position1);
+                                setUse.repeatDay.remove(position1);
+                                setUse.timeTextReminder.remove(position1);
+                                setUse.textReminder.remove(position1);
+
+                                getFragmentManager()
+                                        .beginTransaction()
+                                        .detach(newFragmen)
+                                        .attach(newFragmen)
+                                        .commit();
+                                listView.invalidateViews();
+
+
+                            }
+                        })
+                        .setNegativeButton("Нет", null).create();
+                dialog.show();
+
+
+
+                return true;
+            }
+        });
+
+    }
 
 
 
@@ -194,7 +276,7 @@ public class RimenderFragment extends Fragment {
                 txtReminder=(TextView) view2.findViewById(R.id.timeReminder);
                 dateTxt = (TextView) view2.findViewById(R.id.dateReminder);
                 txtReminder.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x));
-                dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+                dateTxt.setText(year_x+"-"+getStringMonth(month_x+1)+ "-"+getStringDay(day_x)  );
 
                 timePickerDialog=new TimePickerDialog(getContext(), timePickerListner,hour_x, minute_x,  true);
                 datePickerDialog=new DatePickerDialog(getContext(), dpickerListner, year_x, month_x, day_x);
@@ -215,31 +297,52 @@ public class RimenderFragment extends Fragment {
                         calendar.set(Calendar.DAY_OF_MONTH, day_x);
                      calendar.set(Calendar.HOUR_OF_DAY, hour_x);
                      calendar.set(Calendar.MINUTE, minute_x);
-                     Toast.makeText(getContext(),Calendar.YEAR + " " +Calendar.MONTH + " " +Calendar.DAY_OF_MONTH + " " + hour_x + " "+ minute_x, Toast.LENGTH_LONG).show();
+                    // Toast.makeText(getContext(),Calendar.YEAR + " " +Calendar.MONTH + " " +Calendar.DAY_OF_MONTH + " " + hour_x + " "+ minute_x, Toast.LENGTH_LONG).show();
                         String YouEditTextValue = editTextComment.getText().toString();
 
                         setUse.textReminder.add(YouEditTextValue);
-                        setUse.timeTextReminder.add(getStringDay(day_x)+"-"+getStringMonth(month_x+1)+"-"+year_x +" "+ hour_x+":"+minute_x);
+                        setUse.timeTextReminder.add(year_x+"-"+getStringMonth(month_x+1)+ "-" +getStringDay(day_x) +" "+ getStringTime(hour_x)+":"+getStringTime(minute_x));
                         customListView = new CustomAdapter();
                         listView.setAdapter(customListView);
 
                         boolean dayRepeat=radioButton.isChecked();
                         boolean weekRepeat=radioButtonWeek.isChecked();
                         boolean nonRepeat=radioButtonNRepeat.isChecked();
-                        if(!(dayRepeat||weekRepeat||nonRepeat)){
-                            startAlarm(calendar.getTimeInMillis(), false, false);
-                        }
-                       if(radioButton.isChecked()){
-                            startAlarm(calendar.getTimeInMillis(), true, false);
+
+                        if(radioButton.isChecked()){
+                            startAlarm(calendar.getTimeInMillis(), true, false, YouEditTextValue);
+                            setUse.repeatDay.add(1);
+                            setUse.repeatWeak.add(0);
+                            setUse.noRepeat.add(0);
 
                         }
                         if(weekRepeat){
-                            startAlarm(calendar.getTimeInMillis(), false, true);
+                            startAlarm(calendar.getTimeInMillis(), false, true, YouEditTextValue);
+                            setUse.repeatDay.add(0);
+                            setUse.repeatWeak.add(1);
+                            setUse.noRepeat.add(0);
+                        }
+                        if(nonRepeat){
+                            startAlarm(calendar.getTimeInMillis(), false, false, YouEditTextValue);
+                            setUse.repeatDay.add(0);
+                            setUse.repeatWeak.add(0);
+                            setUse.noRepeat.add(1);
+                        }
+                        if(!(dayRepeat||weekRepeat||nonRepeat)){
+                            startAlarm(calendar.getTimeInMillis(), false, false, YouEditTextValue);
+                            setUse.repeatDay.add(0);
+                            setUse.repeatWeak.add(0);
+                            setUse.noRepeat.add(1);
+                            nonRepeat=true;
                         }
 
-                        if(nonRepeat){
-                            startAlarm(calendar.getTimeInMillis(), false, false);
-                        }
+
+
+                        DatabaseHelper db=new DatabaseHelper(getContext());
+                        db.insertDataReminder(IdReminder, +year_x+"-"+getStringMonth(month_x+1)+"-" +getStringDay(day_x)+" "+ hour_x+":"+minute_x, YouEditTextValue,
+                                setUse.convertFromBoolToInt(dayRepeat),
+                                setUse.convertFromBoolToInt(weekRepeat),
+                                setUse.convertFromBoolToInt(nonRepeat));
 
                     }
                 });
@@ -292,18 +395,22 @@ public class RimenderFragment extends Fragment {
 
     int k=0;
 
-    public void startAlarm(long timeInMills, boolean repeatingDay, boolean repeatingWeek){
+    public void startAlarm(long timeInMills, boolean repeatingDay, boolean repeatingWeek, String text){
 
-        AlarmManager manager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager manager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
         Intent myIntent;
         PendingIntent pendingIntent;
 
         k++;
         myIntent= new Intent(getContext(),AlarmNotificationReceiver.class);  //createIIntent("action " +k, "extra "+ k);
+
         myIntent.putExtra("id", k);
         Random random=new Random();
-        int m =  random.nextInt(Integer.MAX_VALUE-1000)+1000;
-        pendingIntent=PendingIntent.getBroadcast(getContext(),m,myIntent,PendingIntent.FLAG_ONE_SHOT);
+         IdReminder=  random.nextInt(Integer.MAX_VALUE-1000)+1000;
+        setUse.idRerminder.add(IdReminder);
+        myIntent.putExtra("id", IdReminder);
+        myIntent.putExtra("text", text);
+        pendingIntent=PendingIntent.getBroadcast(getContext(),IdReminder,myIntent,PendingIntent.FLAG_ONE_SHOT);
 
         if(repeatingDay){
             manager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMills, AlarmManager.INTERVAL_DAY, pendingIntent);
@@ -315,8 +422,8 @@ public class RimenderFragment extends Fragment {
 
         if(!(repeatingDay||repeatingWeek)) {
             //TODO изменить на set
-            //manager.set(AlarmManager.RTC_WAKEUP, timeInMills, pendingIntent);
-            manager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMills, AlarmManager.INTERVAL_FIFTEEN_MINUTES%10, pendingIntent);
+            manager.set(AlarmManager.RTC_WAKEUP, timeInMills, pendingIntent);
+            //manager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMills, AlarmManager.INTERVAL_FIFTEEN_MINUTES%10, pendingIntent);
         }
 
         Toast.makeText(getContext(), "Напоминание установлено", Toast.LENGTH_SHORT).show();

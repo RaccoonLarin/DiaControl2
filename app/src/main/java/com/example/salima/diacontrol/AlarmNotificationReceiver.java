@@ -15,15 +15,19 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "MychanelIDD");
+        Intent repeating_intent=new Intent(context, RimenderFragment.class);
+        int i=0;
+        i=intent.getIntExtra("id", -1);
+        String text=intent.getStringExtra("text");
         builder.setAutoCancel(true).setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle("DiaControl")
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                .setContentText("Принять таблетки"); //TODO изменить текст через Intent передавать текс
+                .setContentText(text); //TODO изменить текст через Intent передавать текс
         Random random=new Random();
         int m = random.nextInt(9999-1000)+1000;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(m, builder.build());
+        notificationManager.notify(i, builder.build());
 
 
        /* NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

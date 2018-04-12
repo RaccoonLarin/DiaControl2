@@ -50,7 +50,10 @@ public class UserLogin extends AppCompatActivity {
         spinner=(ProgressBar)findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
 
-        setUse.array(); //SET REMINDER LIST
+        setUse ss=new setUse(getApplicationContext());
+        ss.array(); //SET REMINDER LIST
+        ss.getArrayFromDataBase();
+
         String[] files = fileList();
         int k=0;
         for (String file : files) {
