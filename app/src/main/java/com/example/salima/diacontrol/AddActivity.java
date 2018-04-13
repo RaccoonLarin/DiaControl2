@@ -241,9 +241,7 @@ public class AddActivity extends AppCompatActivity {
         }
     };
 
-    public void addListenerOnButton(
-
-    ) {
+    public void addListenerOnButton() {
 
         button = (Button) findViewById(R.id.okButton);
 
