@@ -24,10 +24,13 @@ import android.widget.Toast;
 
 import com.amitshekhar.DebugDB;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import org.w3c.dom.Text;
 
 import java.util.Calendar;
+
+import static android.content.ContentValues.TAG;
 
 public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.OnFragmentInteractionListener, StatisticFragment.OnFragmentInteractionListener, RimenderFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener{
     public static final int REQUEST_CODE_FUCNCTIONONE = 100;
@@ -185,7 +188,10 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
 
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
 
 

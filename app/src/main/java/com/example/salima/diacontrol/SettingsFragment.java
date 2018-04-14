@@ -1,18 +1,23 @@
 package com.example.salima.diacontrol;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nbsp.materialfilepicker.MaterialFilePicker;
@@ -27,6 +32,8 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
+import static com.example.salima.diacontrol.DiaryActivity.REQUEST_CODE_FUCNCTIONONE;
 
 
 public class SettingsFragment extends Fragment {
@@ -72,6 +79,36 @@ public class SettingsFragment extends Fragment {
 
                     @Override
                     public void onClick(View v) {
+
+                        File dbFile= new File("diary.db");
+                        DatabaseHelper dbhelper = new DatabaseHelper(getContext());
+                        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+                        if (!exportDir.exists())
+                        {
+                            exportDir.mkdirs();
+                        }
+
+                        File file = new File(exportDir, "csvname.csv");
+                        try
+                        {
+                            file.createNewFile();
+                            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+                            SQLiteDatabase db = dbhelper.getReadableDatabase();
+                            Cursor curCSV = db.rawQuery("SELECT * FROM diary_data",null);
+                            csvWrite.writeNext(curCSV.getColumnNames());
+                            while(curCSV.moveToNext())
+                            {
+                                //Which column you want to exprort
+                                String arrStr[] ={curCSV.getString(0),curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
+                                csvWrite.writeNext(arrStr);
+                            }
+                            csvWrite.close();
+                            curCSV.close();
+                        }
+                        catch(Exception sqlEx)
+                        {
+                            Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
+                        }
                        /* CSVWriter writer = null;
                         try
                         {
@@ -85,17 +122,75 @@ public class SettingsFragment extends Fragment {
                         {
                             //error
                         }*/
-                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                        startActivityForResult(intent, RESULT_OK);
+                       // Intent createIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                     //   createIntent.setType("text/*").addCategory(Intent.CATEGORY_OPENABLE);
+                     //   String filename="dfsd.pdf";
+                   //     createIntent.putExtra(Intent.EXTRA_TITLE, filename);
+                     // startActivityForResult(createIntent, RESULT_OK);
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+
+                    startActivityForResult(intent, RESULT_OK);
+
                     }
                 });
     }
 
+    /*rivate void selectExportFile() {
+		Intent createIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+		createIntent.setType("text/*").addCategory(Intent.CATEGORY_OPENABLE);
+		String bookName = BooksDbAdapter.getInstance().getActiveBookDisplayName();
+
+		if (mExportFormat == ExportFormat.XML || mExportFormat == ExportFormat.QIF) {
+			createIntent.setType("application/zip");
+		}
+
+		String filename = Exporter.buildExportFilename(mExportFormat, bookName);
+		if (mExportTarget == ExportParams.ExportTarget.URI && mExportFormat == ExportFormat.QIF){
+			filename += ".zip";
+		}
+
+		createIntent.putExtra(Intent.EXTRA_TITLE, filename);
+		startActivityForResult(createIntent, REQUEST_EXPORT_FILE);*/
+
+
+    /*
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+ Callback for when the activity chooser dialog is completed
+        switch (requestCode){
+            case BackupPreferenceFragment.REQUEST_RESOLVE_CONNECTION:
+                if (resultCode == Activity.RESULT_OK) {
+                    BackupPreferenceFragment.mGoogleApiClient.connect();
+                }
+                break;
 
+            case REQUEST_EXPORT_FILE:
+                if (resultCode == Activity.RESULT_OK){
+                    if (data != null){
+                        mExportUri = data.getData();
+                    }
+
+                    final int takeFlags = data.getFlags()
+                            & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    getActivity().getContentResolver().takePersistableUriPermission(mExportUri, takeFlags);
+
+                    mTargetUriTextView.setText(mExportUri.toString());
+                    if (mExportStarted)
+                        startExport();
+
+                }
+                break;
+        }
+    }
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+     //   super.onActivityResult(requestCode, resultCode, data);
+       Uri mExportUri = data.getData();
+        Log.i(TAG, mExportUri.toString());
             String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+        Log.i(TAG, filePath);
             Toast.makeText(getContext(), filePath, Toast.LENGTH_LONG).show();
             // Do anything with file
 

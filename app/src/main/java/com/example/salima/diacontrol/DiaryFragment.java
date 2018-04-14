@@ -264,6 +264,11 @@ public class DiaryFragment extends Fragment {
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
 
     public void setTextView(String sugar, String insulin, String comment){
