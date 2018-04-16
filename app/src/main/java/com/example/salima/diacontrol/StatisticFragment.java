@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,10 +18,14 @@ import android.widget.Toast;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.json.JSONArray;
@@ -177,17 +182,30 @@ public class StatisticFragment extends Fragment {
         dataXE.add(70);
         dataXE.add(40);
         gett_json();
+        LineData ld = new LineData();
 
+
+       // ld.addLimitLine(ll);
         LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
         chart.setScaleEnabled(false);
         chart.setDragEnabled(true);
+        chart.setTouchEnabled(true);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
        //xAxis.setLabelCount(12, true);
        // xAxis.setGranularity(1.0f);
         xAxis.setAxisMinimum(0);
         xAxis.setAxisMaximum(24); //
-//...
+
+        LimitLine ll = new LimitLine(70); // set where the line should be drawn
+        ll.setLineColor(Color.RED);
+        ll.setLineWidth(1f);
+// .. and more styling options
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+        leftAxis.addLimitLine(ll);
+
+
       //  axisX.setValues(axisValues)
         ArrayList<Entry> entries = new ArrayList<Entry>();
 
@@ -205,6 +223,9 @@ public class StatisticFragment extends Fragment {
         dataSets.add(dataSet);
 
         LineData lineData = new LineData(dataSets);
+        dataSet.setDrawValues(false);
+        lineData.setDrawValues(false);
+
         chart.setData(lineData);
         chart.invalidate(); // refresh
         //dataSet.setColor();
