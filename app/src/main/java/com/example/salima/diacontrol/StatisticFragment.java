@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -145,40 +147,70 @@ public class StatisticFragment extends Fragment {
 
         hours=new ArrayList<>();
         blood_sugar=new ArrayList<>();
-
+        ArrayList<Integer> data2=new ArrayList<>();
+        data2.add(0);
+        data2.add(1);
+        data2.add(2);
+        data2.add(3);
+        data2.add(4);
+        data2.add(5);
+        data2.add(6);
+        data2.add(7);
+        data2.add(8);
+        data2.add(9);
+        data2.add(10);
+        data2.add(11);
         ArrayList<Integer> data=new ArrayList<>();
+        data.add(0);
+        data.add(1);
         data.add(2);
         data.add(3);
         data.add(4);
+        data.add(5);
+
 
         ArrayList<Integer> dataXE=new ArrayList<>();
         dataXE.add(80);
         dataXE.add(70);
         dataXE.add(20);
+        dataXE.add(50);
+        dataXE.add(70);
+        dataXE.add(40);
         gett_json();
+
         LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
         chart.setScaleEnabled(false);
         chart.setDragEnabled(true);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-
+       //xAxis.setLabelCount(12, true);
+       // xAxis.setGranularity(1.0f);
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(24); //
+//...
+      //  axisX.setValues(axisValues)
         ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        for (int i=0; i<hours.size(); i++) {
+        for (int i=0; i<data.size(); i++) {
 
             // turn your data into Entry objects
-            entries.add(new Entry(hours.get(i), blood_sugar.get(i)));
+            entries.add(new Entry(data.get(i), dataXE.get(i)));
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
-        LineData lineData = new LineData(dataSet);
-        dataSet.setFillAlpha(110);
+        LineDataSet dataSet = new LineDataSet(entries, "Dataset 1"); // add entries to dataset
+     //  ;
+       dataSet.setFillAlpha(110);
+
         ArrayList<ILineDataSet> dataSets=new ArrayList<>();
+        dataSets.add(dataSet);
+
+        LineData lineData = new LineData(dataSets);
         chart.setData(lineData);
         chart.invalidate(); // refresh
         //dataSet.setColor();
         //dataSet.setValueTextColor(...); // styling, ...
+
+
 
     }
 

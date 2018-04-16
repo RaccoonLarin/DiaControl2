@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -87,8 +88,8 @@ public class SettingsFragment extends Fragment {
                         {
                             exportDir.mkdirs();
                         }
-
-                        File file = new File(exportDir, "csvname.csv");
+                        String str = Calendar.getInstance().toString();
+                        File file = new File(exportDir, "DiaControl_"+str+".csv");
                         try
                         {
                             file.createNewFile();
