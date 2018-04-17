@@ -1,21 +1,30 @@
 package com.example.salima.diacontrol;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.LimitLine;
@@ -25,6 +34,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
@@ -42,7 +52,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -146,93 +159,372 @@ public class StatisticFragment extends Fragment {
 
     TextView txt;
     ArrayList<Integer> hours;
+    ArrayList<String> weekList;
     ArrayList<Integer> blood_sugar;
+    ArrayList<String> nameWeek;
+    HashMap<String, Integer> weekBlood;
+    DatePickerDialog datePickerDialog;
+    Button buttonDay, buttonWeek, buttonMonth;
+    Boolean flagDay=false, flagWeek=false, flagMonth=false;
+    TextView dateTxt;
+    int year_x, month_x, day_x;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
         hours=new ArrayList<>();
         blood_sugar=new ArrayList<>();
-        ArrayList<Integer> data2=new ArrayList<>();
-        data2.add(0);
-        data2.add(1);
-        data2.add(2);
-        data2.add(3);
-        data2.add(4);
-        data2.add(5);
-        data2.add(6);
-        data2.add(7);
-        data2.add(8);
-        data2.add(9);
-        data2.add(10);
-        data2.add(11);
-        ArrayList<Integer> data=new ArrayList<>();
-        data.add(0);
-        data.add(1);
-        data.add(2);
-        data.add(3);
-        data.add(4);
-        data.add(5);
+        weekList=new ArrayList<>();
+        weekBlood=new HashMap<>();
+        dateTxt=(TextView) getActivity().findViewById(R.id.dateStatistic);
+        dateTxt.setPaintFlags(dateTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
 
 
-        ArrayList<Integer> dataXE=new ArrayList<>();
-        dataXE.add(80);
-        dataXE.add(70);
-        dataXE.add(20);
-        dataXE.add(50);
-        dataXE.add(70);
-        dataXE.add(40);
-        gett_json();
+        Calendar calendar  = Calendar.getInstance();
+        year_x=calendar.get(Calendar.YEAR);
+        month_x=calendar.get(Calendar.MONTH);
+        day_x=calendar.get(Calendar.DAY_OF_MONTH);
+
+        buttonDay=(Button) getActivity().findViewById(R.id.buttonDay);
+        buttonWeek=(Button) getActivity().findViewById(R.id.buttonWeek);
+        buttonMonth=(Button) getActivity().findViewById(R.id.buttonMonth);
+        datePickerDialog=new DatePickerDialog(getContext(), dpickerListner, year_x, month_x, day_x);
+        dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+        addListenerOnText();
+        addListenerOnButton();
+
+        getDate();
+        flagDay=true;
+        caseButton();
+
         LineData ld = new LineData();
 
 
        // ld.addLimitLine(ll);
-        LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
-        chart.setScaleEnabled(false);
-        chart.setDragEnabled(true);
-        chart.setTouchEnabled(true);
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-       //xAxis.setLabelCount(12, true);
-       // xAxis.setGranularity(1.0f);
-        xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(24); //
-
-        LimitLine ll = new LimitLine(70); // set where the line should be drawn
-        ll.setLineColor(Color.RED);
-        ll.setLineWidth(1f);
-// .. and more styling options
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        leftAxis.addLimitLine(ll);
 
 
-      //  axisX.setValues(axisValues)
-        ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        for (int i=0; i<data.size(); i++) {
 
-            // turn your data into Entry objects
-            entries.add(new Entry(data.get(i), dataXE.get(i)));
+    }
+
+    private  DatePickerDialog.OnDateSetListener dpickerListner = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+            year_x=i;
+            month_x=i1;
+            day_x=i2;
+            dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+            caseButton();
+
+
+            //  Toast.makeText(AddActivity.this, day_x + "." + month_x + "." + year_x, Toast.LENGTH_LONG).show();
         }
+    };
+    public void  addListenerOnText() {
+        dateTxt.setOnClickListener(
+                new View.OnClickListener() {
 
-        LineDataSet dataSet = new LineDataSet(entries, "Dataset 1"); // add entries to dataset
-     //  ;
-       dataSet.setFillAlpha(110);
+                    @Override
+                    public void onClick(View v) {
+                        datePickerDialog.show();
 
-        ArrayList<ILineDataSet> dataSets=new ArrayList<>();
-        dataSets.add(dataSet);
-
-        LineData lineData = new LineData(dataSets);
-        dataSet.setDrawValues(false);
-        lineData.setDrawValues(false);
-
-        chart.setData(lineData);
-        chart.invalidate(); // refresh
-        //dataSet.setColor();
-        //dataSet.setValueTextColor(...); // styling, ...
+                    }
+                });
 
 
 
+    }
+
+    public void addListenerOnButton() {
+
+
+        buttonDay.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        getDate();
+                        flagDay=true;
+                        flagMonth=false;
+                        flagWeek=false;
+                        LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
+                        chart.setScaleEnabled(false);
+                        chart.setDragEnabled(true);
+                        chart.setTouchEnabled(true);
+
+                        if(hours.size()==0){
+                            chart.setNoDataText("Нет данных");
+                            chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                            return;
+                        }
+
+                        if(blood_sugar.size()==0){
+                            chart.setNoDataText("Нет данных");
+                            chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                            return;
+                        }
+                        XAxis xAxis = chart.getXAxis();
+                        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+                        xAxis.setLabelCount(12, true);
+                       // xAxis.setGranularity(2.0f);
+                        xAxis.setAxisMinimum(1);
+                        xAxis.setAxisMaximum(24); //
+
+                        //лимит прямая, добавить если пользователь ввел свои параметры максимум и минимум глкозы
+                        /*
+                        LimitLine ll = new LimitLine(70);
+                        ll.setLineColor(Color.RED);
+                        ll.setLineWidth(1f);
+
+                        YAxis leftAxis = chart.getAxisLeft();
+                        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+                        leftAxis.addLimitLine(ll);*/
+
+
+                        //  axisX.setValues(axisValues)
+                        ArrayList<Entry> entries = new ArrayList<Entry>();
+
+                        for (int i=0; i<blood_sugar.size(); i++) {
+
+                            // turn your data into Entry objects
+                            entries.add(new Entry(hours.get(i), blood_sugar.get(i)));
+                        }
+
+                        LineDataSet dataSet = new LineDataSet(entries, "Dataset 1"); // add entries to dataset
+                        //  ;
+                        dataSet.setFillAlpha(110);
+                        dataSet.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                        dataSet.setLineWidth(2f);
+
+
+                        ArrayList<ILineDataSet> dataSets=new ArrayList<>();
+                        dataSets.add(dataSet);
+
+                        LineData lineData = new LineData(dataSets);
+                        dataSet.setDrawValues(false);
+                        lineData.setDrawValues(false);
+
+                        chart.setData(lineData);
+                        chart.invalidate(); // refresh
+                        //dataSet.setColor();
+                        //dataSet.setValueTextColor(...); // styling, ...
+
+
+                    }
+                });
+
+        buttonWeek.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        flagDay=false;
+                        flagMonth=false;
+                        flagWeek=true;
+                        getWeekDate();
+
+                        LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
+                        chart.setScaleEnabled(true);
+                        chart.setDragEnabled(true);
+                        chart.setTouchEnabled(true);
+
+                        if(weekList.size()==0){
+                            chart.setNoDataText("Нет данных");
+                            chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                            return;
+                        }
+
+                        if(blood_sugar.size()==0){
+                            chart.setNoDataText("Нет данных");
+                            chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                            return;
+                        }
+
+                        ArrayList<Entry> entries = new ArrayList<Entry>();
+                        int temp=hours.get(0);
+                        int hour;
+
+
+                        for (int i=0; i<blood_sugar.size(); i++) {
+
+                            // turn your data into Entry objects
+                            hour=hours.get(i)-temp;
+                            if(hours.get(i)<temp){
+                                hour=hours.get(i)+temp;
+                            }
+                            entries.add(new Entry(hour, blood_sugar.get(i)));
+
+                        }
+                   //   entries.add(new Entry(0, 3));
+                    //   entries.add(new Entry(1, 3));
+                        //entries.add(new Entry(2, 3));
+                       // entries.add(new Entry(3, 3));
+                       // entries.add(new Entry(4, 3));
+                       // entries.add(new Entry(5, 3));
+                        //entries.add(new Entry(6, 3));
+                      // entries.add(new Entry(1, 1));
+
+
+
+
+
+                        //лимит прямая, добавить если пользователь ввел свои параметры максимум и минимум глкозы
+                        /*
+                        LimitLine ll = new LimitLine(70);
+                        ll.setLineColor(Color.RED);
+                        ll.setLineWidth(1f);
+
+                        YAxis leftAxis = chart.getAxisLeft();
+                        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+                        leftAxis.addLimitLine(ll);*/
+
+
+                        //  axisX.setValues(axisValues)
+
+                        LineDataSet dataSet = new LineDataSet(entries, "Dataset 1"); // add entries to dataset
+                        //  ;
+                        dataSet.setFillAlpha(110);
+
+                        ArrayList<ILineDataSet> dataSets=new ArrayList<>();
+                        dataSets.add(dataSet);
+
+                        dataSet.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                        dataSet.setLineWidth(2f);
+
+                        LineData lineData = new LineData(dataSets);
+                        dataSet.setDrawValues(false);
+                        lineData.setDrawValues(false);
+
+                        chart.setData(lineData);
+                        chart.invalidate(); // refresh
+                        //dataSet.setColor();
+                        //dataSet.setValueTextColor(...); // styling, ...
+
+                        XAxis xAxis = chart.getXAxis();
+                       // xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                       // String [] val=new String[] {"Sr", "Ch", "Pt", "SUb", "Vos", "Pn", "Vt"};
+                        xAxis.setValueFormatter(new MyAxisValueFormatter(nameWeek));
+                        xAxis.setLabelCount(7, true);
+                        xAxis.setGranularity(1f);
+                         xAxis.setAxisMinimum(0);
+                        xAxis.setAxisMaximum(7); //
+
+                    }
+                });
+        buttonMonth.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        flagDay=false;
+                        flagMonth=true;
+                        flagWeek=false;
+
+                    }
+                });
+    }
+
+
+    public void getWeekDate() {
+
+        nameWeek=new ArrayList<>();
+        blood_sugar.clear();
+        hours.clear();
+        weekList.clear();
+        String date1 = year_x + "-" + getStringMonth(month_x + 1) + "-" + getStringDay(day_x);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+        Date myDate = null;
+        try {
+            myDate = simpleDateFormat.parse(date1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(myDate);
+        calendar.add(Calendar.DAY_OF_YEAR, -6);
+        Date newDate = calendar.getTime();
+        String dateStart = simpleDateFormat.format(newDate);
+
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        Cursor data = db.getTimeWeek(dateStart, date1);
+
+        Calendar sCalendar = Calendar.getInstance();
+
+
+        String temp="";
+        int k=0;
+        boolean flag=true;
+        while (data.moveToNext()) {
+            String ss = data.getString(0);
+            if (ss.equals("")) {
+                continue;
+            }
+            blood_sugar.add(Integer.parseInt(data.getString(0)));
+            try {
+                String dates=data.getString(1);
+                calendar.setTime(simpleDateFormat2.parse(data.getString(1)));
+                if(flag) {
+                    fillWeek(simpleDateFormat2.parse(data.getString(1)));
+                    flag=false;
+
+                }
+                String dayLongName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+
+                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                weekList.add(dayLongName);
+                hours.add(dayOfWeek);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void fillWeek(Date date) {
+        nameWeek.clear();
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_WEEK, 0);
+        String dayLongNam4e = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        nameWeek.add(cutWeekRusName(dayLongNam4e));
+        for (int i = 0; i < 6; i++) {
+            calendar.add(Calendar.DAY_OF_WEEK, +1);
+            String dayLongNam = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+            nameWeek.add(cutWeekRusName(dayLongNam));
+            //Date newDate2 = calendar.getTime();
+            // String dateStarrt = simpleDateFormat.format(newDate2);
+        }
+    }
+
+    public void getDate() {
+        blood_sugar.clear();
+        hours.clear();
+        String date1 = year_x + "-" + getStringMonth(month_x + 1) + "-" + getStringDay(day_x);
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        Cursor data = db.getTime(date1);
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        while (data.moveToNext()) {
+            String ss = data.getString(0);
+            if (ss.equals("")) {
+                continue;
+            }
+            blood_sugar.add(Integer.parseInt(data.getString(0)));
+            try {
+                calendar.setTime(simpleDateFormat.parse(data.getString(1)));
+                int hour_x = calendar.get(Calendar.HOUR_OF_DAY);
+                hours.add(hour_x);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+        }
     }
 
     public void gett_json(){
@@ -277,6 +569,37 @@ public class StatisticFragment extends Fragment {
 
     }
 
+    public String cutWeekRusName(String weekName){
+        switch (weekName){
+            case "понедельник": return "пн";
+            case "вторник": return "вт";
+            case "среда": return "ср";
+            case "четверг": return "чт";
+            case "пятница": return "пт";
+            case "суббота": return "сб";
+            case "воскресенье": return "вс";
+
+        }
+        return "";
+
+    }
+
+    public void caseButton(){
+        if(flagDay){
+            buttonDay.callOnClick();
+            return;
+        }
+
+        if(flagWeek){
+            buttonWeek.callOnClick();
+        }
+
+
+        if(flagMonth){
+            buttonMonth.callOnClick();
+        }
+    }
+
     private String getStringDay(int day){
 
 
@@ -311,6 +634,20 @@ public class StatisticFragment extends Fragment {
         return Integer.toString(time);
     }
 
+    public  class MyAxisValueFormatter implements IAxisValueFormatter{
+        private  ArrayList<String> mValues;
+      //  private String [] mVlues;
+
+        public MyAxisValueFormatter(ArrayList<String> values){
+            this.mValues=values;
+        }
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            return  mValues.get((int)value%mValues.size());
+        }
+
+
+    }
 
 
 }
