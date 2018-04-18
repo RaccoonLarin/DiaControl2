@@ -165,6 +165,7 @@ public class StatisticFragment extends Fragment {
     HashMap<String, Integer> weekBlood;
     DatePickerDialog datePickerDialog;
     Button buttonDay, buttonWeek, buttonMonth;
+    HashMap<Integer, Integer> hashMapWweek;
     Boolean flagDay=false, flagWeek=false, flagMonth=false;
     TextView dateTxt;
     int year_x, month_x, day_x;
@@ -233,7 +234,7 @@ public class StatisticFragment extends Fragment {
 
 
     }
-
+  int tempWeek;
     public void addListenerOnButton() {
 
 
@@ -248,6 +249,7 @@ public class StatisticFragment extends Fragment {
                         flagMonth=false;
                         flagWeek=false;
                         LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
+                        chart.clear();
                         chart.setScaleEnabled(false);
                         chart.setDragEnabled(true);
                         chart.setTouchEnabled(true);
@@ -265,9 +267,13 @@ public class StatisticFragment extends Fragment {
                         }
                         XAxis xAxis = chart.getXAxis();
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
+                          ArrayList<String> clock=new ArrayList<>();
+                          for(int i=0; i<12; i++){
+                              clock.add( Integer.toString(i+1));
+                          }
                         xAxis.setLabelCount(12, true);
                        // xAxis.setGranularity(2.0f);
+                        xAxis.setValueFormatter(new MyAxisValueFormatter(clock));
                         xAxis.setAxisMinimum(1);
                         xAxis.setAxisMaximum(24); //
 
@@ -325,6 +331,7 @@ public class StatisticFragment extends Fragment {
                         getWeekDate();
 
                         LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
+                        chart.clear();
                         chart.setScaleEnabled(true);
                         chart.setDragEnabled(true);
                         chart.setTouchEnabled(true);
@@ -344,15 +351,19 @@ public class StatisticFragment extends Fragment {
                         ArrayList<Entry> entries = new ArrayList<Entry>();
                         int temp=hours.get(0);
                         int hour;
+                      //  ArrayList<Integer> shiift=new ArrayList<>();
+                       // int shiftt=hours.indexOf(0);
+                        //shiift=multiplyShiftLeft(hours, shiftt);
 
 
                         for (int i=0; i<blood_sugar.size(); i++) {
 
                             // turn your data into Entry objects
-                            hour=hours.get(i)-temp;
-                            if(hours.get(i)<temp){
-                                hour=hours.get(i)+temp;
-                            }
+
+                            hour= hashMapWweek.get(hours.get(i));
+                          //  if(hours.get(i)<tempWeek){
+                              //  hour=hours.get(i)+tempWeek;
+                           // }
                             entries.add(new Entry(hour, blood_sugar.get(i)));
 
                         }
@@ -402,13 +413,13 @@ public class StatisticFragment extends Fragment {
                         //dataSet.setValueTextColor(...); // styling, ...
 
                         XAxis xAxis = chart.getXAxis();
-                       // xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                        // String [] val=new String[] {"Sr", "Ch", "Pt", "SUb", "Vos", "Pn", "Vt"};
                         xAxis.setValueFormatter(new MyAxisValueFormatter(nameWeek));
                         xAxis.setLabelCount(7, true);
                         xAxis.setGranularity(1f);
                          xAxis.setAxisMinimum(0);
-                        xAxis.setAxisMaximum(7); //
+                        xAxis.setAxisMaximum(6); //
 
                     }
                 });
@@ -444,9 +455,14 @@ public class StatisticFragment extends Fragment {
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(myDate);
+
         calendar.add(Calendar.DAY_OF_YEAR, -6);
+        String meow = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+
+        tempWeek = calendar.get(Calendar.DAY_OF_WEEK);
         Date newDate = calendar.getTime();
         String dateStart = simpleDateFormat.format(newDate);
+        fillWeek(newDate);
 
         DatabaseHelper db = new DatabaseHelper(getContext());
         Cursor data = db.getTimeWeek(dateStart, date1);
@@ -467,7 +483,7 @@ public class StatisticFragment extends Fragment {
                 String dates=data.getString(1);
                 calendar.setTime(simpleDateFormat2.parse(data.getString(1)));
                 if(flag) {
-                    fillWeek(simpleDateFormat2.parse(data.getString(1)));
+                   // fillWeek(simpleDateFormat2.parse(data.getString(1)));
                     flag=false;
 
                 }
@@ -483,18 +499,59 @@ public class StatisticFragment extends Fragment {
         }
     }
 
+    public   ArrayList<Integer>  multiplyShiftLeft(ArrayList<Integer>  nums, int shift){
+        for(int i=0; i<shift; i++){
+            shiftLeft(nums);
+        }
+        return nums;
+    }
+
+    public ArrayList<Integer>  shiftLeft(ArrayList<Integer>  nums) {
+        if (nums == null || nums.size() <= 1) {
+            return nums;
+        }
+        int start = nums.get(0);
+        System.arraycopy(nums, 1, nums, 0, nums.size() - 1);
+        nums.set(nums.size() - 1, start);
+        return nums;
+    }
+
+    public static ArrayList<Integer> shiftArr(ArrayList <Integer> inArr,int shift)
+    {
+        if ((inArr == null)|| (inArr.size() == 0 ) || (shift<=0)) { throw new java.lang.IllegalArgumentException(); }
+        while(shift>0)
+        {
+            int lastVar = inArr.get(inArr.size()-1);
+            for(int counter = 0;counter<inArr.size();counter++)
+            {
+                int curVal = inArr.get(counter);
+                inArr.set(counter, lastVar);
+                lastVar = curVal;
+            }
+            shift--;
+        }
+        return inArr;
+    }
+
     public void fillWeek(Date date) {
         nameWeek.clear();
         Calendar calendar = Calendar.getInstance();
+        ArrayList<Integer> numOfWeekNAme=new ArrayList<>();
+        hashMapWweek=new HashMap<>();
 
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_WEEK, 0);
         String dayLongNam4e = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         nameWeek.add(cutWeekRusName(dayLongNam4e));
+       // numOfWeekNAme.add(0);
+        hashMapWweek.put(dayOfWeek, 0);
         for (int i = 0; i < 6; i++) {
             calendar.add(Calendar.DAY_OF_WEEK, +1);
             String dayLongNam = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
             nameWeek.add(cutWeekRusName(dayLongNam));
+            dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            hashMapWweek.put(dayOfWeek, i+1);
             //Date newDate2 = calendar.getTime();
             // String dateStarrt = simpleDateFormat.format(newDate2);
         }
