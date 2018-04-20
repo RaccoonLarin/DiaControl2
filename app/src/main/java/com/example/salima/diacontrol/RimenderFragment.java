@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -23,14 +22,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -116,8 +113,8 @@ public class RimenderFragment extends Fragment {
 
 
 
-        //setUse.textReminder.add("yo");
-     //   setUse.timeTextReminder.add("15"+":"+"30");
+        //SettingUser.textReminder.add("yo");
+     //   SettingUser.timeTextReminder.add("15"+":"+"30");
 
         //TODO этот год в диалог
 
@@ -152,12 +149,12 @@ public class RimenderFragment extends Fragment {
                         .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
-                                int id=setUse.idRerminder.get(position1);
+                                int id= SettingUser.idRerminder.get(position1);
 
 
                                 Intent intent = new Intent(getContext(), AlarmNotificationReceiver.class);
                                 intent.putExtra("notification_id", id);
-                                intent.putExtra("text", setUse.textReminder.get(position1));
+                                intent.putExtra("text", SettingUser.textReminder.get(position1));
                                 PendingIntent sender = PendingIntent.getBroadcast(getContext(), id, intent, PendingIntent.FLAG_ONE_SHOT);
                                 AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
 
@@ -165,13 +162,13 @@ public class RimenderFragment extends Fragment {
 
 
                                 DatabaseHelper db=new DatabaseHelper(getContext());
-                                db.deleteReminder(setUse.idRerminder.get(position1));
-                                setUse.idRerminder.remove(position1);
-                                setUse.noRepeat.remove(position1);
-                                setUse.repeatWeak.remove(position1);
-                                setUse.repeatDay.remove(position1);
-                                setUse.timeTextReminder.remove(position1);
-                                setUse.textReminder.remove(position1);
+                                db.deleteReminder(SettingUser.idRerminder.get(position1));
+                                SettingUser.idRerminder.remove(position1);
+                                SettingUser.noRepeat.remove(position1);
+                                SettingUser.repeatWeak.remove(position1);
+                                SettingUser.repeatDay.remove(position1);
+                                SettingUser.timeTextReminder.remove(position1);
+                                SettingUser.textReminder.remove(position1);
 
                                 getFragmentManager()
                                         .beginTransaction()
@@ -289,10 +286,15 @@ public class RimenderFragment extends Fragment {
                     // Toast.makeText(getContext(),Calendar.YEAR + " " +Calendar.MONTH + " " +Calendar.DAY_OF_MONTH + " " + hour_x + " "+ minute_x, Toast.LENGTH_LONG).show();
                         String YouEditTextValue = editTextComment.getText().toString();
 
-                        setUse.textReminder.add(YouEditTextValue);
-                        setUse.timeTextReminder.add(year_x+"-"+getStringMonth(month_x+1)+ "-" +getStringDay(day_x) +" "+ getStringTime(hour_x)+":"+getStringTime(minute_x));
+                        SettingUser.textReminder.add(YouEditTextValue);
+                        SettingUser.timeTextReminder.add(year_x+"-"+getStringMonth(month_x+1)+ "-" +getStringDay(day_x) +" "+ getStringTime(hour_x)+":"+getStringTime(minute_x));
                         customListView = new CustomAdapter();
                         listView.setAdapter(customListView);
+
+                        long time= System.currentTimeMillis();
+                        if(calendar.getTimeInMillis()<time){
+                            return;
+                        }
 
                         boolean dayRepeat=radioButton.isChecked();
                         boolean weekRepeat=radioButtonWeek.isChecked();
@@ -300,28 +302,28 @@ public class RimenderFragment extends Fragment {
 
                         if(radioButton.isChecked()){
                             startAlarm(calendar.getTimeInMillis(), true, false, YouEditTextValue);
-                            setUse.repeatDay.add(1);
-                            setUse.repeatWeak.add(0);
-                            setUse.noRepeat.add(0);
+                            SettingUser.repeatDay.add(1);
+                            SettingUser.repeatWeak.add(0);
+                            SettingUser.noRepeat.add(0);
 
                         }
                         if(weekRepeat){
                             startAlarm(calendar.getTimeInMillis(), false, true, YouEditTextValue);
-                            setUse.repeatDay.add(0);
-                            setUse.repeatWeak.add(1);
-                            setUse.noRepeat.add(0);
+                            SettingUser.repeatDay.add(0);
+                            SettingUser.repeatWeak.add(1);
+                            SettingUser.noRepeat.add(0);
                         }
                         if(nonRepeat){
                             startAlarm(calendar.getTimeInMillis(), false, false, YouEditTextValue);
-                            setUse.repeatDay.add(0);
-                            setUse.repeatWeak.add(0);
-                            setUse.noRepeat.add(1);
+                            SettingUser.repeatDay.add(0);
+                            SettingUser.repeatWeak.add(0);
+                            SettingUser.noRepeat.add(1);
                         }
                         if(!(dayRepeat||weekRepeat||nonRepeat)){
                             startAlarm(calendar.getTimeInMillis(), false, false, YouEditTextValue);
-                            setUse.repeatDay.add(0);
-                            setUse.repeatWeak.add(0);
-                            setUse.noRepeat.add(1);
+                            SettingUser.repeatDay.add(0);
+                            SettingUser.repeatWeak.add(0);
+                            SettingUser.noRepeat.add(1);
                             nonRepeat=true;
                         }
 
@@ -329,9 +331,9 @@ public class RimenderFragment extends Fragment {
 
                         DatabaseHelper db=new DatabaseHelper(getContext());
                         db.insertDataReminder(IdReminder, +year_x+"-"+getStringMonth(month_x+1)+"-" +getStringDay(day_x)+" "+ getStringTime(hour_x)+":"+getStringTime(minute_x), YouEditTextValue,
-                                setUse.convertFromBoolToInt(dayRepeat),
-                                setUse.convertFromBoolToInt(weekRepeat),
-                                setUse.convertFromBoolToInt(nonRepeat));
+                                SettingUser.convertFromBoolToInt(dayRepeat),
+                                SettingUser.convertFromBoolToInt(weekRepeat),
+                                SettingUser.convertFromBoolToInt(nonRepeat));
 
                     }
                 });
@@ -396,7 +398,7 @@ public class RimenderFragment extends Fragment {
         myIntent.putExtra("id", k);
         Random random=new Random();
          IdReminder=  random.nextInt(Integer.MAX_VALUE-1000)+1000;
-        setUse.idRerminder.add(IdReminder);
+        SettingUser.idRerminder.add(IdReminder);
         myIntent.putExtra("id", IdReminder);
         myIntent.putExtra("text", text);
         pendingIntent=PendingIntent.getBroadcast(getContext(),IdReminder,myIntent,PendingIntent.FLAG_ONE_SHOT);
@@ -481,7 +483,7 @@ public class RimenderFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return setUse.timeTextReminder.size();
+            return SettingUser.timeTextReminder.size();
         }
 
         @Override
@@ -503,9 +505,9 @@ public class RimenderFragment extends Fragment {
             TextView commentTime= (TextView) view1.findViewById(R.id.textTime);
             LinearLayout relativeLayoutSugar = (LinearLayout) view1.findViewById(R.id.timeLayout);
 
-            if(!setUse.timeTextReminder.get(i).equals("")){
+            if(!SettingUser.timeTextReminder.get(i).equals("")){
                relativeLayoutSugar.setVisibility(View.VISIBLE);
-               String s= setUse.timeTextReminder.get(i);
+               String s= SettingUser.timeTextReminder.get(i);
                 time.setText(s);
 
             } else{
@@ -514,9 +516,9 @@ public class RimenderFragment extends Fragment {
                 relativeLayoutSugar.setVisibility(View.GONE);
             }
 
-            if(!setUse.textReminder.get(i).equals("")){
+            if(!SettingUser.textReminder.get(i).equals("")){
                 commentTime.setVisibility(View.VISIBLE);
-                commentTime.setText(setUse.textReminder.get(i));
+                commentTime.setText(SettingUser.textReminder.get(i));
             } else{
                 commentTime.setVisibility(View.GONE);
             }
@@ -569,5 +571,10 @@ public class RimenderFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

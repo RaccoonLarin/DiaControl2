@@ -81,4 +81,8 @@
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/piechart"
+        android:layout_width="match_parent"
+        android:layout_height="198dp" />
 </LinearLayout>

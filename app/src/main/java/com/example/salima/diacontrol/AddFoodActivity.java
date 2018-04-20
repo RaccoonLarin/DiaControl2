@@ -22,19 +22,15 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,7 +81,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
 
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, setUse.foodList);
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, SettingUser.foodList);
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setAdapter(adapter);
         setAutoCompleteTextViewListener();
@@ -113,7 +109,7 @@ public class AddFoodActivity extends AppCompatActivity {
         }
 
 
-        itogo = finalCarbs / setUse.xe;
+        itogo = finalCarbs / SettingUser.xe;
         itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
         finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
         finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
@@ -151,7 +147,7 @@ public class AddFoodActivity extends AppCompatActivity {
                                             }
 
 
-                                             itogo = finalCarbs / setUse.xe;
+                                             itogo = finalCarbs / SettingUser.xe;
                                             itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
                                             finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
                                             finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
@@ -185,16 +181,16 @@ public class AddFoodActivity extends AppCompatActivity {
                 String selection = (String) parent.getItemAtPosition(position);
                // textView3.setText(foodList.get(position) + "-" + xeString.get(position));
 
-                int id=setUse.foodList.indexOf(selection);
+                int id= SettingUser.foodList.indexOf(selection);
                 foodList1.add(selection);
-                grams1.add(setUse.grams.get(id));
-                xeString1.add( setUse.xeString.get(id));
+                grams1.add(SettingUser.grams.get(id));
+                xeString1.add( SettingUser.xeString.get(id));
                // listView = (ListView) findViewById(R.id.listviewFood);
 
                 customListView = new AddFoodActivity.CustomAdapter();
                 listView.setAdapter(customListView);
-                 finalCarbs+= Double.parseDouble(setUse.xeString.get(id));
-                 itogo=finalCarbs/setUse.xe;
+                 finalCarbs+= Double.parseDouble(SettingUser.xeString.get(id));
+                 itogo=finalCarbs/ SettingUser.xe;
                 itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
@@ -334,16 +330,26 @@ public class AddFoodActivity extends AppCompatActivity {
                         customListView = new AddFoodActivity.CustomAdapter();
                         listView.setAdapter(customListView);
 
+                        finalCarbs=0.0;
+                        for(int i=0; i<xeString1.size(); i++){
+                            finalCarbs+= Double.parseDouble(xeString1.get(i));
+                        }
+
+                        itogo = finalCarbs / SettingUser.xe;
+                        itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                        finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                        finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
+
                         if(checkBox.isChecked()){
-                            //setUse setUse=new setUse(getApplicationContext());
-                            //setUse.user_json_add(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
+                            //SettingUser SettingUser=new SettingUser(getApplicationContext());
+                            //SettingUser.user_json_add(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
                                //addJson(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
                             //TODO записывать еду пользователя в sqlite
                             DatabaseHelper db= new DatabaseHelper(getApplicationContext());
                             db.insertDataProductUser(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
-                            setUse.foodList.add(YouEditTextValue);
-                            setUse.xeString.add(YouEditTextValue3);
-                            setUse.grams.add(YouEditTextValue2);
+                            SettingUser.foodList.add(YouEditTextValue);
+                            SettingUser.xeString.add(YouEditTextValue3);
+                            SettingUser.grams.add(YouEditTextValue2);
                         }
                     }
                 });

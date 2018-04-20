@@ -41,6 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_reminder_WEEK="REPEAT_WEEK";
     public static final String COL_reminder_NOREPEAT="NO_REPEAT";
 
+    public static  final String TABLE_SETTINGS = "settings_data";
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
 

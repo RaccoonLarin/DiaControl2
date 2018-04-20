@@ -2,7 +2,6 @@ package com.example.salima.diacontrol;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -24,8 +21,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class UserLogin extends AppCompatActivity {
 
@@ -50,7 +45,7 @@ public class UserLogin extends AppCompatActivity {
         spinner=(ProgressBar)findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
 
-        setUse ss=new setUse(getApplicationContext());
+        SettingUser ss=new SettingUser(getApplicationContext());
         ss.array(); //SET REMINDER LIST
         ss.getArrayFromDataBase();
 

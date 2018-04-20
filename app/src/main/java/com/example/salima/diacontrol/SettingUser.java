@@ -30,11 +30,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
-public class setUse {
+public class SettingUser {
      public static Integer xe;
      AssetManager mngr;
      Context myContext;
-     public setUse(Context myContext) {
+     public SettingUser(Context myContext) {
            mngr = myContext.getAssets();
            this.myContext=myContext;
         //  InputStream is = mngr.open("textdb.txt");

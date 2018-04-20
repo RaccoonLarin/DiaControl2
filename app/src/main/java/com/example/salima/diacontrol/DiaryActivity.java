@@ -5,32 +5,19 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.amitshekhar.DebugDB;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.nbsp.materialfilepicker.ui.FilePickerActivity;
-
-import org.w3c.dom.Text;
-
-import java.util.Calendar;
-
-import static android.content.ContentValues.TAG;
 
 public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.OnFragmentInteractionListener, StatisticFragment.OnFragmentInteractionListener, RimenderFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener{
     public static final int REQUEST_CODE_FUCNCTIONONE = 100;
@@ -106,8 +93,8 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
         int fragmentId = getIntent().getIntExtra("FRAGMENT_ID", 0);
 
         //Устанавлиаем XE пользователя
-        setUse.xe=12; //TODO установка
-        setUse stUs=new setUse(getApplicationContext());
+        SettingUser.xe=12; //TODO установка
+        SettingUser stUs=new SettingUser(getApplicationContext());
         stUs.gett_json(); //парсим джейсон файл с продуктам
 
 

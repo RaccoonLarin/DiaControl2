@@ -22,9 +22,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.LimitLine;
@@ -34,9 +37,13 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -169,6 +176,7 @@ public class StatisticFragment extends Fragment {
     Boolean flagDay=false, flagWeek=false, flagMonth=false;
     TextView dateTxt;
     int year_x, month_x, day_x;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
@@ -254,6 +262,8 @@ public class StatisticFragment extends Fragment {
                         chart.setDragEnabled(true);
                         chart.setTouchEnabled(true);
 
+                        //chart.animateX(1000, Easing.EasingOption. EaseInQuad);
+
                         if(hours.size()==0){
                             chart.setNoDataText("Нет данных");
                             chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
@@ -267,10 +277,12 @@ public class StatisticFragment extends Fragment {
                         }
                         XAxis xAxis = chart.getXAxis();
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
                           ArrayList<String> clock=new ArrayList<>();
-                          for(int i=0; i<12; i++){
+                          for(int i=0; i<24; i++){
                               clock.add( Integer.toString(i+1));
                           }
+
                         xAxis.setLabelCount(12, true);
                        // xAxis.setGranularity(2.0f);
                         xAxis.setValueFormatter(new MyAxisValueFormatter(clock));
@@ -298,11 +310,15 @@ public class StatisticFragment extends Fragment {
                         }
 
                         LineDataSet dataSet = new LineDataSet(entries, "Dataset 1"); // add entries to dataset
-                        //  ;
+                        chart.getLegend().setEnabled(false);
+                        chart.setDescription(null);
                         dataSet.setFillAlpha(110);
                         dataSet.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                         dataSet.setLineWidth(2f);
-
+                        dataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.blackStar));
+                        dataSet.setCircleColorHole(ContextCompat.getColor(getContext(), R.color.blackStar));
+                       // IMarker marker = new YourMarkerView();
+                       //fchart.setMarker(marker);
 
                         ArrayList<ILineDataSet> dataSets=new ArrayList<>();
                         dataSets.add(dataSet);
@@ -315,6 +331,51 @@ public class StatisticFragment extends Fragment {
                         chart.invalidate(); // refresh
                         //dataSet.setColor();
                         //dataSet.setValueTextColor(...); // styling, ...
+
+                      PieChart  pieChart=(PieChart) getActivity().findViewById(R.id.piechart);
+                      pieChart.setUsePercentValues(true);
+                     // pieChart.setDescription(null);
+
+                     pieChart.getDescription().setEnabled(false);
+                     pieChart.getLegend().setEnabled(false);
+                      pieChart.setExtraOffsets(5,10,5,5);
+                       pieChart.setDragDecelerationFrictionCoef(0.95f);
+                       pieChart.setDrawHoleEnabled(true);
+                        pieChart.setHoleColor(Color.WHITE);
+                     pieChart.setTransparentCircleRadius(61f);
+                    pieChart.setDrawEntryLabels(false);
+                    // pieChart.setEntryLabelTextSize(0f);
+                    // pieChart.setEntryLabelColor(Color.BLUE);
+                    // pieChart.setDrawSliceText(false);
+                    // pieChart.setDrawSlicesUnderHole(false);
+
+
+
+                      pieChart.setHoleRadius(60f);
+                       // pieChart.setTouchEnabled(false);
+
+                        ArrayList<PieEntry> yValue=new ArrayList<>();
+
+                        yValue.add(new PieEntry(50f, "ыыыы"));
+                        yValue.add(new PieEntry(50f));
+                       // yValue.add(new PieEntry(20f));
+
+                        PieDataSet dataSetPie = new PieDataSet(yValue, "Статистика");
+
+                        //dataSetPie.x
+
+                       // dataSetPie.setSliceSpace(2f);
+                        //dataSetPie.setSelectionShift(1f);
+                       //  dataSetPie.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                        final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.cuteColor), ContextCompat.getColor(getContext(), R.color.myBlue)};
+                        ArrayList<Integer> colors = new ArrayList<Integer>();
+                        for(int c: MY_COLORS) colors.add(c);
+
+                        dataSetPie.setColors(colors);
+
+                        PieData pieData=new PieData(dataSetPie);
+                        pieChart.setData(pieData);
+                        pieChart.invalidate();
 
 
                     }
@@ -332,10 +393,11 @@ public class StatisticFragment extends Fragment {
 
                         LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
                         chart.clear();
+
                         chart.setScaleEnabled(true);
                         chart.setDragEnabled(true);
                         chart.setTouchEnabled(true);
-
+                      //  chart.animateX(1000, Easing.EasingOption.EaseOutBack);
                         if(weekList.size()==0){
                             chart.setNoDataText("Нет данных");
                             chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
@@ -402,7 +464,8 @@ public class StatisticFragment extends Fragment {
 
                         dataSet.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                         dataSet.setLineWidth(2f);
-
+                        dataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.blackStar));
+                        dataSet.setCircleColorHole(ContextCompat.getColor(getContext(), R.color.blackStar));
                         LineData lineData = new LineData(dataSets);
                         dataSet.setDrawValues(false);
                         lineData.setDrawValues(false);
