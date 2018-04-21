@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -67,6 +68,7 @@ public class SettingsFragment extends Fragment {
 
    Button buttonexport, buttonSave;
    EditText targetXe, minXe, maxXe;
+   TextView txtExit;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -75,6 +77,8 @@ public class SettingsFragment extends Fragment {
         targetXe  = (EditText) getActivity().findViewById(R.id.targetXEEdit);
         minXe = (EditText) getActivity().findViewById(R.id.minXEEdit);
         maxXe = (EditText) getActivity().findViewById(R.id.maxXEEdit);
+        txtExit=(TextView) getActivity().findViewById(R.id.exit);
+        txtExit.setPaintFlags(txtExit.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
 
         if(SettingUser.xeTarget!=null) {
             targetXe.setText(SettingUser.xeTarget.toString());
@@ -90,6 +94,7 @@ public class SettingsFragment extends Fragment {
 
         addListenerOnButton();
         addListenerSaveSettings();
+        addListenerOnText();
     }
 
 
@@ -284,6 +289,24 @@ public class SettingsFragment extends Fragment {
 
                         DatabaseHelper db=new DatabaseHelper(getContext());
                         db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget);
+
+                    }
+                }
+        );
+    }
+
+    //Выход из системы
+    public void addListenerOnText(){
+        txtExit.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        File file = new File(ServerData.getTokentxt());
+                        boolean deleted = file.delete();
+                        getContext().deleteFile(ServerData.getTokentxt());
+                        Intent intent = new Intent(getContext(), UserLogin.class);
+                        startActivity(intent);
+                        //File dir = getFilesDir();
 
                     }
                 }
