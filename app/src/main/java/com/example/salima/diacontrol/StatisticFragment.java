@@ -266,6 +266,23 @@ public class StatisticFragment extends Fragment {
                         chart.setDragEnabled(true);
                         chart.setTouchEnabled(true);
 
+                        if(hours.size()==0){
+                            chart.setNoDataText("Нет данных");
+                            pieChart.setNoDataText("");
+                            chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                           // chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                            return;
+                        }
+
+                        if(blood_sugar.size()==0){
+                            chart.setNoDataText("Нет данных");
+                            pieChart.setNoDataText("");
+                            chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                            return;
+                        }
+
+
+
 
                         int precMin=0, precMax=0, precTarget=0;
                         for(int i=0; i<blood_sugar.size(); i++){
@@ -301,20 +318,6 @@ public class StatisticFragment extends Fragment {
 
                         //chart.animateX(1000, Easing.EasingOption. EaseInQuad);
 
-                        if(hours.size()==0){
-                            chart.setNoDataText("Нет данных");
-                            pieChart.setNoDataText("");
-                            chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
-                           // chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
-                            return;
-                        }
-
-                        if(blood_sugar.size()==0){
-                            chart.setNoDataText("Нет данных");
-                            pieChart.setNoDataText("");
-                            chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
-                            return;
-                        }
                         XAxis xAxis = chart.getXAxis();
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
@@ -455,6 +458,9 @@ public class StatisticFragment extends Fragment {
                         getWeekDate();
 
                         LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
+                        PieChart  pieChart=(PieChart) getActivity().findViewById(R.id.piechart);
+                        pieChart.clear();
+                       // pieChart.clearValues();
                         chart.clear();
 
                         chart.setScaleEnabled(true);
@@ -463,15 +469,52 @@ public class StatisticFragment extends Fragment {
                       //  chart.animateX(1000, Easing.EasingOption.EaseOutBack);
                         if(weekList.size()==0){
                             chart.setNoDataText("Нет данных");
+                            pieChart.setNoDataText("");
                             chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                             return;
                         }
 
                         if(blood_sugar.size()==0){
                             chart.setNoDataText("Нет данных");
+                            pieChart.setNoDataText("");
                             chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                             return;
                         }
+
+
+
+                        int precMin=0, precMax=0, precTarget=0;
+                        for(int i=0; i<blood_sugar.size(); i++){
+                            if(SettingUser.xeMin!=null) {
+
+                                if (blood_sugar.get(i) <= SettingUser.xeMin) {
+                                    precMin++;
+                                    continue;
+                                }
+                            }
+                            if(SettingUser.xeMax!=null) {
+                                if (blood_sugar.get(i) >= SettingUser.xeMax) {
+                                    precMax++;
+                                    continue;
+                                }
+                            }
+                            precTarget++;
+
+                        }
+
+                        if(SettingUser.xeMin==null){
+                            precMin=0;
+
+                        }
+
+                        if(SettingUser.xeMax==null){
+                            precMax=0;
+                        }
+
+                        if(SettingUser.xeTarget==null){
+                            precTarget=0;
+                        }
+
 
                         ArrayList<Entry> entries = new ArrayList<Entry>();
                         int temp=hours.get(0);
@@ -492,29 +535,27 @@ public class StatisticFragment extends Fragment {
                             entries.add(new Entry(hour, blood_sugar.get(i)));
 
                         }
-                   //   entries.add(new Entry(0, 3));
-                    //   entries.add(new Entry(1, 3));
-                        //entries.add(new Entry(2, 3));
-                       // entries.add(new Entry(3, 3));
-                       // entries.add(new Entry(4, 3));
-                       // entries.add(new Entry(5, 3));
-                        //entries.add(new Entry(6, 3));
-                      // entries.add(new Entry(1, 1));
-
-
-
-
-
-                        //лимит прямая, добавить если пользователь ввел свои параметры максимум и минимум глкозы
-                        /*
-                        LimitLine ll = new LimitLine(70);
-                        ll.setLineColor(Color.RED);
-                        ll.setLineWidth(1f);
 
                         YAxis leftAxis = chart.getAxisLeft();
-                        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-                        leftAxis.addLimitLine(ll);*/
+                        leftAxis.removeAllLimitLines();
+                        if(SettingUser.xeMin!=null) {
+                            LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMin.toString()));
+                            ll.setLineColor(Color.DKGRAY);
+                            ll.setLineWidth(2f);
 
+                            //  YAxis leftAxis = chart.getAxisLeft();
+                            //leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+                            leftAxis.addLimitLine(ll);
+                        }
+
+                        if(SettingUser.xeMax!=null) {
+                            LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMax.toString()));
+                            ll.setLineColor(Color.RED);
+                            ll.setLineWidth(2f);
+
+
+                            leftAxis.addLimitLine(ll);
+                        }
 
                         //  axisX.setValues(axisValues)
 
@@ -546,6 +587,42 @@ public class StatisticFragment extends Fragment {
                         xAxis.setGranularity(1f);
                          xAxis.setAxisMinimum(0);
                         xAxis.setAxisMaximum(6); //
+
+
+
+                        pieChart.setUsePercentValues(true);
+                        // pieChart.setDescription(null);
+
+                        pieChart.getDescription().setEnabled(false);
+                        //  pieChart.getLegend().setEnabled(false);
+                        pieChart.setExtraOffsets(5,10,5,5);
+                        pieChart.setDragDecelerationFrictionCoef(0.95f);
+                        pieChart.setDrawHoleEnabled(true);
+                        pieChart.setHoleColor(Color.WHITE);
+                        pieChart.setTransparentCircleRadius(61f);
+                        pieChart.setDrawEntryLabels(false);
+
+
+                        pieChart.setHoleRadius(60f);
+
+                        ArrayList<PieEntry> yValue=new ArrayList<>();
+
+                        yValue.add(new PieEntry(precMax, "Повышенный сахар"));
+                        yValue.add(new PieEntry(precMin, "Пониженный сахар"));
+                        yValue.add(new PieEntry(precTarget, "Сахар в норме"));
+
+                        PieDataSet dataSetPie = new PieDataSet(yValue, "");
+
+                        final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.redColor), ContextCompat.getColor(getContext(), R.color.yellowColor), ContextCompat.getColor(getContext(), R.color.greenColor)};
+
+                        //   final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.cuteColor), ContextCompat.getColor(getContext(), R.color.myBlue)};
+                        ArrayList<Integer> colors = new ArrayList<Integer>();
+                        for(int c: MY_COLORS) colors.add(c);
+                        dataSetPie.setColors(colors);
+
+                        PieData pieData=new PieData(dataSetPie);
+                        pieChart.setData(pieData);
+                        pieChart.invalidate();
 
                     }
                 });
