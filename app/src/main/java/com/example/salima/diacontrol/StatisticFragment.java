@@ -298,6 +298,27 @@ public class StatisticFragment extends Fragment {
                         YAxis leftAxis = chart.getAxisLeft();
                         leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
                         leftAxis.addLimitLine(ll);*/
+                        YAxis leftAxis = chart.getAxisLeft();
+                        leftAxis.removeAllLimitLines();
+                        if(SettingUser.xeMin!=null) {
+                            LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMin.toString()));
+                            ll.setLineColor(Color.DKGRAY);
+                            ll.setLineWidth(2f);
+
+                          //  YAxis leftAxis = chart.getAxisLeft();
+                           //leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+                            leftAxis.addLimitLine(ll);
+                        }
+
+                        if(SettingUser.xeMax!=null) {
+                            LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMax.toString()));
+                            ll.setLineColor(Color.RED);
+                            ll.setLineWidth(2f);
+
+
+                            leftAxis.addLimitLine(ll);
+                        }
+
 
 
                         //  axisX.setValues(axisValues)

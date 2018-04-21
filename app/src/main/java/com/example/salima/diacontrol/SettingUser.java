@@ -45,6 +45,7 @@ public class SettingUser {
      public static ArrayList<String>  foodList;
      public static ArrayList<String>  xeString;
      public static ArrayList<String>  grams;
+     public static Double xeTarget=null, xeMin, xeMax;
 
      //вызов метода в UserLogin
      public static void array(){
@@ -59,7 +60,7 @@ public class SettingUser {
      public  void getArrayFromDataBase(){
          DatabaseHelper db =new DatabaseHelper(myContext);
          Cursor data = db.getListReminder();
-         RimenderFragment rt=new RimenderFragment();
+       //  RimenderFragment rt=new RimenderFragment();
          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
          Calendar calendar = Calendar.getInstance();
 
@@ -207,5 +208,26 @@ public class SettingUser {
          }
 
      }
+
+     public void getXEUserFromDatabse(){
+         DatabaseHelper db =new DatabaseHelper(myContext);
+         Cursor data = db.selectSettings();
+         //  RimenderFragment rt=new RimenderFragment();
+
+
+         long millisecondsDateNow=0, mill=0;
+         if(data.getCount()==0){
+
+         }
+         while (data.moveToNext()){
+             xeMax=data.getDouble(1);
+             xeMin=data.getDouble(2);
+             xeTarget=data.getDouble(3);
+
+         }
+
+
+     }
+
 
 }

@@ -48,6 +48,8 @@ public class UserLogin extends AppCompatActivity {
         SettingUser ss=new SettingUser(getApplicationContext());
         ss.array(); //SET REMINDER LIST
         ss.getArrayFromDataBase();
+        ss.getXEUserFromDatabse();
+
 
         String[] files = fileList();
         int k=0;
@@ -93,6 +95,10 @@ public class UserLogin extends AppCompatActivity {
     public void onClick(View v) {
 
         try {
+            //создаем 1 row  в бд settingsXE
+            DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+            db.insertDataSettings(null, null,null);
+
             new HttpPost().execute(ServerData.getIpServ()+"signinpost").get();
             //hread.sleep(3000);
             if(isCorrect.equals("false")){

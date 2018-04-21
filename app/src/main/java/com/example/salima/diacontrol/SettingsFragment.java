@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,12 +64,31 @@ public class SettingsFragment extends Fragment {
         return fragment;
     }*/
 
-   Button buttonexport;
+   Button buttonexport, buttonSave;
+   EditText targetXe, minXe, maxXe;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         buttonexport=(Button) getActivity().findViewById(R.id.exportButton);
+        buttonSave=(Button) getActivity().findViewById(R.id.saveSettingsButton);
+        targetXe  = (EditText) getActivity().findViewById(R.id.targetXEEdit);
+        minXe = (EditText) getActivity().findViewById(R.id.minXEEdit);
+        maxXe = (EditText) getActivity().findViewById(R.id.maxXEEdit);
+
+        if(SettingUser.xeTarget!=null) {
+            targetXe.setText(SettingUser.xeTarget.toString());
+        }
+
+        if(SettingUser.xeMin!=null) {
+            minXe.setText(SettingUser.xeMin.toString());
+        }
+
+        if(SettingUser.xeMax!=null) {
+            maxXe.setText(SettingUser.xeMax.toString());
+        }
+
         addListenerOnButton();
+        addListenerSaveSettings();
     }
 
 
@@ -128,13 +148,79 @@ public class SettingsFragment extends Fragment {
                      //   String filename="dfsd.pdf";
                    //     createIntent.putExtra(Intent.EXTRA_TITLE, filename);
                      // startActivityForResult(createIntent, RESULT_OK);
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                  //  Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 
-                    startActivityForResult(intent, RESULT_OK);
+                   // startActivityForResult(intent, RESULT_OK);
 
                     }
                 });
     }
+
+    public void addListenerSaveSettings() {
+
+        buttonSave.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        String targXe=targetXe.getText().toString();
+                        String mXe=minXe.getText().toString();
+                        String mxXe=maxXe.getText().toString();
+
+                         if(targXe.matches("") && mXe.matches("") && mxXe.matches("")){
+                             Toast.makeText(getContext(), "Сохранено", Toast.LENGTH_SHORT).show();
+                             return;
+                         }
+                        if (!targXe.matches("")){
+                           SettingUser.xeTarget = Double.parseDouble(targXe);
+                        }
+
+                        if (!mXe.matches("")){
+                            SettingUser.xeMin = Double.parseDouble(mXe);
+                        }
+
+                        if (!mxXe.matches("")){
+                            SettingUser.xeMax = Double.parseDouble(mxXe);
+                        }
+
+
+                        try {
+                            if (SettingUser.xeMin >= SettingUser.xeMax) {
+                                Toast.makeText(getContext(), "Низкий сахар должен быть меньше высокого", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        } catch (Exception e){
+
+                        }
+                        try {
+                            if (SettingUser.xeTarget >= SettingUser.xeMax) {
+                                Toast.makeText(getContext(), "Целевой сахар должен быть между низким и высоким сахаром", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        } catch (Exception e){
+
+                        }
+
+                        try {
+                            if (SettingUser.xeTarget <= SettingUser.xeMin) {
+                                Toast.makeText(getContext(), "Целевой сахар должен быть между низким и высоким сахаром", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        } catch (Exception e){
+
+                        }
+
+
+                        Toast.makeText(getContext(), "сохранено", Toast.LENGTH_SHORT).show();
+
+                        DatabaseHelper db=new DatabaseHelper(getContext());
+                        db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget);
+
+                    }
+                }
+        );
+    }
+
 
     /*rivate void selectExportFile() {
 		Intent createIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);

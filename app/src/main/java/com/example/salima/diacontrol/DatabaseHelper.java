@@ -2,6 +2,7 @@ package com.example.salima.diacontrol;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -42,6 +43,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_reminder_NOREPEAT="NO_REPEAT";
 
     public static  final String TABLE_SETTINGS = "settings_data";
+    public static final String COL_XE_MAX="XE_MAX";
+    public static final String COL_XE_MIN="XE_MIN";
+    public static final String COL_XE_TARGET="XE_TARGET";
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
 
@@ -54,11 +58,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String SQL_food="CREATE TABLE " + TABLE_FOOD+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" + ");";
+        String SQL_settings="CREATE TABLE " + TABLE_SETTINGS+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_XE_MAX + " TEXT," + COL_XE_MIN + " TEXT,"+ COL_XE_TARGET + " TEXT" + ");";
 
         db.execSQL(SQL_String);
         db.execSQL(SQL_food);
         db.execSQL(SQL_food_user);
         db.execSQL(SQL_reminder);
+        db.execSQL(SQL_settings);
+
 
 
     }
@@ -69,6 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTINGS);
         onCreate(db);
 
     }
@@ -129,6 +137,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         else
             return true;
+    }
+
+    public boolean insertDataSettings(Double xeMax, Double xeMin, Double xeTarget){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COL_XE_MAX, xeMax);
+        contentValues.put(COL_XE_MIN, xeMin);
+        contentValues.put(COL_XE_TARGET, xeTarget);
+        long result =  db.insert(TABLE_SETTINGS, null, contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean updateSettings(Double xeMax, Double xeMin, Double xeTarget){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_XE_MAX, xeMax);
+        contentValues.put(COL_XE_MIN, xeMin);
+        contentValues.put(COL_XE_TARGET, xeTarget);
+        db.update(TABLE_SETTINGS, contentValues, "ID="+1, null);
+        return true;
+    }
+
+    public Cursor selectSettings(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_SETTINGS, null);
+        return data;
     }
 
 
