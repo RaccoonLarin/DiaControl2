@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
@@ -100,18 +101,67 @@ public class SettingsFragment extends Fragment {
 
                     @Override
                     public void onClick(View v) {
+                        FileWriter mfileWrite;
+                        String baseDir=Environment.getExternalStorageDirectory().getAbsolutePath();
+                        Random random=new Random();
+                        Integer s=random.nextInt();
+                        String str = "DiaControl_"+s.toString()+".csv";
+                        String filePath=baseDir+File.separator+str;
+                        CSVWriter csvWrite=null;
+                        File f=new File(filePath);
+                        if(f.exists()&&!f.isDirectory()){
+                            try {
+                                 mfileWrite=new FileWriter(filePath, true);
+                                 csvWrite=new CSVWriter(mfileWrite);
 
-                        File dbFile= new File("diary.db");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }  else{
+                            try {
+                                csvWrite=new CSVWriter(new FileWriter(filePath));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        DatabaseHelper dbhelper=new DatabaseHelper(getContext());
+                        SQLiteDatabase db = dbhelper.getReadableDatabase();
+                        Cursor curCSV = db.rawQuery("SELECT * FROM diary_data",null);
+                        csvWrite.writeNext(curCSV.getColumnNames());
+                        while(curCSV.moveToNext())
+                        {
+                            //Which column you want to exprort
+                            String arrStr[] ={curCSV.getString(0),curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
+                            csvWrite.writeNext(arrStr);
+                        }
+                        try {
+                            csvWrite.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        curCSV.close();
+
+                       /* File dbFile= new File("diary.db");
                         DatabaseHelper dbhelper = new DatabaseHelper(getContext());
                         File exportDir = new File(Environment.getExternalStorageDirectory(), "");
                         if (!exportDir.exists())
                         {
                             exportDir.mkdirs();
                         }
-                        String str = Calendar.getInstance().toString();
+
+                        Random random=new Random();
+                        Integer s=random.nextInt();
+                        String str = s.toString();
                         File file = new File(exportDir, "DiaControl_"+str+".csv");
                         try
                         {
+                            if(!file.exists())
+                                file.mkdirs();
+                            else if(!file.isDirectory()&&file.canWrite()){
+                                file.delete();
+                                file.mkdirs();
+                            }
                             file.createNewFile();
                             CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
                             SQLiteDatabase db = dbhelper.getReadableDatabase();
@@ -129,7 +179,7 @@ public class SettingsFragment extends Fragment {
                         catch(Exception sqlEx)
                         {
                             Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
-                        }
+                        }*/
                        /* CSVWriter writer = null;
                         try
                         {
@@ -166,26 +216,32 @@ public class SettingsFragment extends Fragment {
                         String targXe=targetXe.getText().toString();
                         String mXe=minXe.getText().toString();
                         String mxXe=maxXe.getText().toString();
-
+                      //  SettingUser.xeTarget=null;
+                      //  SettingUser.xeMin=null;
+                       // SettingUser.xeMax=null;
+                        Double tempTarget=SettingUser.xeTarget, tempMin=SettingUser.xeMin, tempMax=SettingUser.xeMax;
                          if(targXe.matches("") && mXe.matches("") && mxXe.matches("")){
+                             SettingUser.xeTarget=null;
+                             SettingUser.xeMin=null;
+                             SettingUser.xeMax=null;
                              Toast.makeText(getContext(), "Сохранено", Toast.LENGTH_SHORT).show();
                              return;
                          }
                         if (!targXe.matches("")){
-                           SettingUser.xeTarget = Double.parseDouble(targXe);
+                            tempTarget = Double.parseDouble(targXe);
                         }
 
                         if (!mXe.matches("")){
-                            SettingUser.xeMin = Double.parseDouble(mXe);
+                            tempMin= Double.parseDouble(mXe);
                         }
 
                         if (!mxXe.matches("")){
-                            SettingUser.xeMax = Double.parseDouble(mxXe);
+                            tempMax = Double.parseDouble(mxXe);
                         }
 
 
                         try {
-                            if (SettingUser.xeMin >= SettingUser.xeMax) {
+                            if (tempMin>= tempMax) {
                                 Toast.makeText(getContext(), "Низкий сахар должен быть меньше высокого", Toast.LENGTH_SHORT).show();
                                 return;
                             }
@@ -193,7 +249,7 @@ public class SettingsFragment extends Fragment {
 
                         }
                         try {
-                            if (SettingUser.xeTarget >= SettingUser.xeMax) {
+                            if (tempTarget>= tempMax) {
                                 Toast.makeText(getContext(), "Целевой сахар должен быть между низким и высоким сахаром", Toast.LENGTH_SHORT).show();
                                 return;
                             }
@@ -202,7 +258,7 @@ public class SettingsFragment extends Fragment {
                         }
 
                         try {
-                            if (SettingUser.xeTarget <= SettingUser.xeMin) {
+                            if (tempTarget <= tempMin) {
                                 Toast.makeText(getContext(), "Целевой сахар должен быть между низким и высоким сахаром", Toast.LENGTH_SHORT).show();
                                 return;
                             }
@@ -210,7 +266,20 @@ public class SettingsFragment extends Fragment {
 
                         }
 
+                        SettingUser.xeTarget=tempTarget;
+                        SettingUser.xeMin=tempMin;
+                        SettingUser.xeMax=tempMax;
+                        if(SettingUser.xeTarget!=null) {
+                            targetXe.setText(SettingUser.xeTarget.toString());
+                        }
 
+                        if(SettingUser.xeMin!=null) {
+                            minXe.setText(SettingUser.xeMin.toString());
+                        }
+
+                        if(SettingUser.xeMax!=null) {
+                            maxXe.setText(SettingUser.xeMax.toString());
+                        }
                         Toast.makeText(getContext(), "сохранено", Toast.LENGTH_SHORT).show();
 
                         DatabaseHelper db=new DatabaseHelper(getContext());

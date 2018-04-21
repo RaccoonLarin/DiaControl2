@@ -7,4 +7,7 @@
     <color name="white">#FFFFFF</color>
     <color name="blackStar">#000000</color>
     <color name="cuteColor">#edefff</color>
+    <color name="redColor">#bc6d6d</color>
+    <color name="yellowColor">#ffee02</color>
+    <color name="greenColor">#74c46f</color>
 </resources>

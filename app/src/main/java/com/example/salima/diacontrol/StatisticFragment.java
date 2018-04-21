@@ -63,6 +63,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 
 /**
@@ -252,26 +253,65 @@ public class StatisticFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
 
+
                         getDate();
                         flagDay=true;
                         flagMonth=false;
                         flagWeek=false;
                         LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
+                        PieChart  pieChart=(PieChart) getActivity().findViewById(R.id.piechart);
                         chart.clear();
+                        pieChart.clear();
                         chart.setScaleEnabled(false);
                         chart.setDragEnabled(true);
                         chart.setTouchEnabled(true);
+
+
+                        int precMin=0, precMax=0, precTarget=0;
+                        for(int i=0; i<blood_sugar.size(); i++){
+                            if(SettingUser.xeMin!=null) {
+
+                                if (blood_sugar.get(i) <= SettingUser.xeMin) {
+                                    precMin++;
+                                    continue;
+                                }
+                            }
+                            if(SettingUser.xeMax!=null) {
+                                if (blood_sugar.get(i) >= SettingUser.xeMax) {
+                                    precMax++;
+                                    continue;
+                                }
+                            }
+                            precTarget++;
+
+                        }
+
+                        if(SettingUser.xeMin==null){
+                            precMin=0;
+
+                        }
+
+                        if(SettingUser.xeMax==null){
+                            precMax=0;
+                        }
+
+                        if(SettingUser.xeTarget==null){
+                            precTarget=0;
+                        }
 
                         //chart.animateX(1000, Easing.EasingOption. EaseInQuad);
 
                         if(hours.size()==0){
                             chart.setNoDataText("Нет данных");
+                            pieChart.setNoDataText("");
                             chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
+                           // chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                             return;
                         }
 
                         if(blood_sugar.size()==0){
                             chart.setNoDataText("Нет данных");
+                            pieChart.setNoDataText("");
                             chart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                             return;
                         }
@@ -353,12 +393,12 @@ public class StatisticFragment extends Fragment {
                         //dataSet.setColor();
                         //dataSet.setValueTextColor(...); // styling, ...
 
-                      PieChart  pieChart=(PieChart) getActivity().findViewById(R.id.piechart);
+
                       pieChart.setUsePercentValues(true);
                      // pieChart.setDescription(null);
 
-                     pieChart.getDescription().setEnabled(false);
-                     pieChart.getLegend().setEnabled(false);
+                    pieChart.getDescription().setEnabled(false);
+                   //  pieChart.getLegend().setEnabled(false);
                       pieChart.setExtraOffsets(5,10,5,5);
                        pieChart.setDragDecelerationFrictionCoef(0.95f);
                        pieChart.setDrawHoleEnabled(true);
@@ -377,21 +417,23 @@ public class StatisticFragment extends Fragment {
 
                         ArrayList<PieEntry> yValue=new ArrayList<>();
 
-                        yValue.add(new PieEntry(50f, "ыыыы"));
-                        yValue.add(new PieEntry(50f));
+                        yValue.add(new PieEntry(precMax, "Повышенный сахар"));
+                        yValue.add(new PieEntry(precMin, "Пониженный сахар"));
+                        yValue.add(new PieEntry(precTarget, "Сахар в норме"));
                        // yValue.add(new PieEntry(20f));
 
-                        PieDataSet dataSetPie = new PieDataSet(yValue, "Статистика");
+                        PieDataSet dataSetPie = new PieDataSet(yValue, "");
 
                         //dataSetPie.x
 
                        // dataSetPie.setSliceSpace(2f);
                         //dataSetPie.setSelectionShift(1f);
                        //  dataSetPie.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
-                        final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.cuteColor), ContextCompat.getColor(getContext(), R.color.myBlue)};
+                        final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.redColor), ContextCompat.getColor(getContext(), R.color.yellowColor), ContextCompat.getColor(getContext(), R.color.greenColor)};
+
+                     //   final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.cuteColor), ContextCompat.getColor(getContext(), R.color.myBlue)};
                         ArrayList<Integer> colors = new ArrayList<Integer>();
                         for(int c: MY_COLORS) colors.add(c);
-
                         dataSetPie.setColors(colors);
 
                         PieData pieData=new PieData(dataSetPie);
