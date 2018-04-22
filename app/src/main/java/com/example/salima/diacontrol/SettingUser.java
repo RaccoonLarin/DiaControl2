@@ -220,9 +220,22 @@ public class SettingUser {
 
          }
          while (data.moveToNext()){
-             xeMax=data.getDouble(1);
-             xeMin=data.getDouble(2);
-             xeTarget=data.getDouble(3);
+             if(data.getDouble(1)==0.0)
+                 xeMax=null;
+             else
+                xeMax=data.getDouble(1);
+
+             if(data.getDouble(2)==0.0)
+                 xeMin=null;
+             else
+                 xeMin=data.getDouble(2);
+
+             if(data.getDouble(3)==0.0)
+                 xeTarget=null;
+             else
+                 xeTarget=data.getDouble(3);
+
+
 
          }
 
