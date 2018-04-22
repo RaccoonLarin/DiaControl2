@@ -312,9 +312,9 @@ public class StatisticFragment extends Fragment {
                             precMax=0;
                         }
 
-                        if(SettingUser.xeTarget==null){
-                            precTarget=0;
-                        }
+                       // if(SettingUser.xeTarget==null){
+                          //  precTarget=0;
+                      //  }
 
                         //chart.animateX(1000, Easing.EasingOption. EaseInQuad);
 

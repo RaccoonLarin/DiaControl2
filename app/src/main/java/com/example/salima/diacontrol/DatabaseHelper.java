@@ -213,12 +213,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    //удалить запись дневника
     public void delete(int id, String date1){
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data;
       //  try {
         // data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE DATE >= datetime('"+date1.substring(0,10)+"23:59:59', '-1 day') AND DATE <= datetime('"+date1.substring(0,10)+"23:59:59')"+" ORDER BY DATE DESC LIMIT 1 OFFSET " + id , null);
-      db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE COMMENT IN (SELECT COMMENT FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id +")");
+      db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE ID IN (SELECT ID FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id +")");
        // data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id, null);
 
       /*  }

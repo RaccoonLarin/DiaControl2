@@ -221,7 +221,10 @@ public class SettingsFragment extends Fragment {
                         String targXe=targetXe.getText().toString();
                         String mXe=minXe.getText().toString();
                         String mxXe=maxXe.getText().toString();
-                      //  SettingUser.xeTarget=null;
+                        DatabaseHelper db=new DatabaseHelper(getContext());
+
+
+                        //  SettingUser.xeTarget=null;
                       //  SettingUser.xeMin=null;
                        // SettingUser.xeMax=null;
                         Double tempTarget=SettingUser.xeTarget, tempMin=SettingUser.xeMin, tempMax=SettingUser.xeMax;
@@ -229,20 +232,24 @@ public class SettingsFragment extends Fragment {
                              SettingUser.xeTarget=null;
                              SettingUser.xeMin=null;
                              SettingUser.xeMax=null;
+                             db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget);
                              Toast.makeText(getContext(), "Сохранено", Toast.LENGTH_SHORT).show();
                              return;
                          }
-                        if (!targXe.matches("")){
+                        if (!targXe.matches(""))
                             tempTarget = Double.parseDouble(targXe);
-                        }
+                         else
+                            tempTarget=null;
 
-                        if (!mXe.matches("")){
+                        if (!mXe.matches(""))
                             tempMin= Double.parseDouble(mXe);
-                        }
+                         else
+                             tempMin=null;
 
-                        if (!mxXe.matches("")){
+                        if (!mxXe.matches(""))
                             tempMax = Double.parseDouble(mxXe);
-                        }
+                        else
+                            tempMax=null;
 
 
                         try {
@@ -287,7 +294,7 @@ public class SettingsFragment extends Fragment {
                         }
                         Toast.makeText(getContext(), "сохранено", Toast.LENGTH_SHORT).show();
 
-                        DatabaseHelper db=new DatabaseHelper(getContext());
+
                         db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget);
 
                     }

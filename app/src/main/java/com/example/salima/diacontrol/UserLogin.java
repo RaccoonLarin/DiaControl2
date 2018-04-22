@@ -2,6 +2,7 @@ package com.example.salima.diacontrol;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -97,8 +98,11 @@ public class UserLogin extends AppCompatActivity {
         try {
             //создаем 1 row  в бд settingsXE
             DatabaseHelper db=new DatabaseHelper(getApplicationContext());
-            db.insertDataSettings(null, null,null);
 
+            Cursor data = db.selectSettings();
+            if(data.getCount()<=0) {
+                db.insertDataSettings(null, null, null);
+            }
             new HttpPost().execute(ServerData.getIpServ()+"signinpost").get();
             //hread.sleep(3000);
             if(isCorrect.equals("false")){
