@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -28,7 +30,7 @@ public class UserLogin extends AppCompatActivity {
     private EditText mail;
     private EditText pass;
     private Button sigin;
-    private TextView txtCreateAcc;
+    private TextView txtCreateAcc, signInguest;
     private String isCorrect; //false or token
     private ProgressBar spinner;
 
@@ -40,6 +42,8 @@ public class UserLogin extends AppCompatActivity {
         mail = (EditText) findViewById(R.id.email);
         pass = (EditText) findViewById(R.id.password);
         txtCreateAcc = (TextView) findViewById(R.id.signup);
+        signInguest = (TextView) findViewById(R.id.signinguest);
+        signInguest.setPaintFlags(signInguest.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
         txtCreateAcc.setPaintFlags(txtCreateAcc.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
 
         sigin = (Button) findViewById(R.id.signin);
@@ -112,8 +116,8 @@ public class UserLogin extends AppCompatActivity {
 
             }
             else {
-                Toast toast = Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT);
-                toast.show();
+              //  Toast toast = Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT);
+              //  toast.show();
 
                 createFile();
 
@@ -132,6 +136,15 @@ public class UserLogin extends AppCompatActivity {
     //Создать аккаунт
     public void onClickText(View v){
         Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+        startActivity(intent);
+    }
+
+    //Создать аккаунт
+    public void onClickGuestTExt(View v){
+        isCorrect="AbShHjskaHjaskjsA";
+        createFile();
+        Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
+        intent.putExtra("token", isCorrect);
         startActivity(intent);
     }
 
