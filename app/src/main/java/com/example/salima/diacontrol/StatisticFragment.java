@@ -345,7 +345,7 @@ public class StatisticFragment extends Fragment {
                         leftAxis.removeAllLimitLines();
                         if(SettingUser.xeMin!=null) {
                             LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMin.toString()));
-                            ll.setLineColor(Color.DKGRAY);
+                            ll.setLineColor(ContextCompat.getColor(getContext(), R.color.yellowColor));
                             ll.setLineWidth(2f);
 
                           //  YAxis leftAxis = chart.getAxisLeft();
@@ -540,7 +540,7 @@ public class StatisticFragment extends Fragment {
                         leftAxis.removeAllLimitLines();
                         if(SettingUser.xeMin!=null) {
                             LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMin.toString()));
-                            ll.setLineColor(Color.DKGRAY);
+                            ll.setLineColor(ContextCompat.getColor(getContext(), R.color.yellowColor));
                             ll.setLineWidth(2f);
 
                             //  YAxis leftAxis = chart.getAxisLeft();
