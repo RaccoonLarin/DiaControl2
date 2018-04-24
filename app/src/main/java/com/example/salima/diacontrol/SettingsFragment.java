@@ -146,6 +146,7 @@ public class SettingsFragment extends Fragment {
                             e.printStackTrace();
                         }
                         curCSV.close();
+                        Toast.makeText(getContext(), "Сохранено", Toast.LENGTH_SHORT).show();
 
                        /* File dbFile= new File("diary.db");
                         DatabaseHelper dbhelper = new DatabaseHelper(getContext());
