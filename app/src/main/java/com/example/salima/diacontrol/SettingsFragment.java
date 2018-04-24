@@ -137,7 +137,8 @@ public class SettingsFragment extends Fragment {
                         while(curCSV.moveToNext())
                         {
                             //Which column you want to exprort
-                            String arrStr[] ={curCSV.getString(0),curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
+                            String arrStr[] ={curCSV.getString(0),curCSV.getString(1), curCSV.getString(2), curCSV.getString(3),
+                                    curCSV.getString(4), curCSV.getString(5)};
                             csvWrite.writeNext(arrStr);
                         }
                         try {
