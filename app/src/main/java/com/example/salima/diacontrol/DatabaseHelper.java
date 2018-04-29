@@ -201,6 +201,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public Cursor getTimeMonth(String dateStart, String dateEnd){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT BLOOD_SUGAR, DATE FROM " + TABLE_NAME +" WHERE DATE >= datetime('"+ dateStart.substring(0,10)+"23:59:59', '-1 day') AND DATE <= datetime('"+dateEnd.substring(0,10)+"23:59:59')"+" ORDER BY DATE", null);
+        return data;
+    }
+
     public Cursor select(int id){
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id, null);

@@ -38,7 +38,20 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="198dp" />
+        android:layout_height="198dp"
+        android:visibility="gone"/>
+
+    <com.github.mikephil.charting.charts.ScatterChart
+        android:id="@+id/chartScatterMonth"
+        android:layout_width="match_parent"
+        android:layout_height="198dp"
+        android:visibility="gone"/>
+
+    <com.github.mikephil.charting.charts.ScatterChart
+        android:id="@+id/chartScatter"
+        android:layout_width="match_parent"
+        android:layout_height="198dp"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
