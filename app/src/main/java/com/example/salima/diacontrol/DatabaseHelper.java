@@ -2,12 +2,10 @@ package com.example.salima.diacontrol;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,8 +23,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  static final String COL_2 = "BLOOD_SUGAR";
     public  static final String COL_3 = "INSULIN";
     public  static final String COL_4 = "BREADUNITS";
-    public  static final String COL_5 = "COMMENT";
-    public static final String COL_6="DATE";
+    public  static final String COL_5 = "WEIGHT";
+    public  static final String COL_6 = "COMMENT";
+    public static final String COL_7 ="DATE";
     public static  final String COL_food_1="DIARY_ID";
     public static  final String COL_food_2="NAME_PRODUCT";
     public static  final String COL_food_3="GRAMS_PRODUCT";
@@ -54,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT,"+ COL_5 + " TEXT," + COL_6 + " TEXT" + ");";
+        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT" + ");";
         String SQL_food="CREATE TABLE " + TABLE_FOOD+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" + ");";
@@ -83,15 +82,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //TODO добавить параметры и изменить базу данных
 
-    public boolean insertData(String sugar, String insulin, String bredUnits, String comment, String date1){
-        Date date = new Date();
+    public boolean insertData(String sugar, String insulin, String bredUnits, String weight, String comment, String date1){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2, sugar);
         contentValues.put(COL_3, insulin);
         contentValues.put(COL_4, bredUnits);
-        contentValues.put(COL_5, comment);
-        contentValues.put(COL_6, date1);
+        contentValues.put(COL_5, weight);
+        contentValues.put(COL_6, comment);
+        contentValues.put(COL_7, date1);
        long result =  db.insert(TABLE_NAME, null, contentValues);
        if(result == -1)
            return false;
@@ -254,15 +253,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     }
-    public boolean update(Integer id, String sugar, String insulin, String bredUnits, String comment, String date1){
+    public boolean update(Integer id, String sugar, String insulin, String bredUnits, String weight, String comment, String date1){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1, id);
         contentValues.put(COL_2, sugar);
         contentValues.put(COL_3, insulin);
         contentValues.put(COL_4, bredUnits);
-        contentValues.put(COL_5, comment);
-        contentValues.put(COL_6, date1);
+        contentValues.put(COL_5, weight);
+        contentValues.put(COL_6, comment);
+        contentValues.put(COL_7, date1);
         db.update(TABLE_NAME, contentValues, "ID="+id, null);
         return true;
     }

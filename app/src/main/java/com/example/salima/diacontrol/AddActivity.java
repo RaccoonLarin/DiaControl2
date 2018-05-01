@@ -50,7 +50,7 @@ public class AddActivity extends AppCompatActivity {
 
     ArrayList<String> foodList, gramsList, carbsList;
     String flag="false";
-    EditText editText, editText1,editText2, editText3;
+    EditText editText, editText1,editText2, editText3, editTextWeight;
 
     boolean isEdit=false;
     int id;
@@ -67,6 +67,7 @@ public class AddActivity extends AppCompatActivity {
          editText1 = (EditText) findViewById(R.id.insulinEdit);
          editText2 = (EditText) findViewById(R.id.commentEdit);
          editText3 = (EditText) findViewById(R.id.foodEdit);
+         editTextWeight=(EditText) findViewById(R.id.weightEdit);
 
         dateTxt=(TextView) findViewById(R.id.date);
         timeTxt=(TextView) findViewById(R.id.time);
@@ -141,7 +142,8 @@ public class AddActivity extends AppCompatActivity {
             editText1.setText(data.getString(2));
             editText3.setText(data.getString(3));
             // stringfood=data.getString(3);
-            editText2.setText(data.getString(4));
+            editTextWeight.setText(data.getString(4));
+            editText2.setText(data.getString(5));
             try {
                 calendar.setTime(simpleDateFormat.parse(data.getString(5)));
                 year_x=calendar.get(Calendar.YEAR);
@@ -183,7 +185,7 @@ public class AddActivity extends AppCompatActivity {
     }
 
     DatabaseHelper db;
-    String str;
+    String str, strWeight;
     String str1;
     String str2;
     String str3;
@@ -256,6 +258,7 @@ public class AddActivity extends AppCompatActivity {
                          str1 = editText1.getText().toString();
                          str2=editText2.getText().toString();
                          str3=editText3.getText().toString();
+                         strWeight=editTextWeight.getText().toString();
                         int i=0;
                         i=getIntent().getIntExtra("item", -1);
                         Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
@@ -267,7 +270,7 @@ public class AddActivity extends AppCompatActivity {
                         if(isEdit)  {
                             String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
                             db=new DatabaseHelper(getApplicationContext());
-                            fl=db.update(id, str,str1,str3,str2, date1);
+                            fl=db.update(id, str,str1,str3, strWeight, str2, date1);
                             db.updateFood(id, foodList, gramsList, carbsList);
                         } else {
                             fl = addData();
@@ -319,17 +322,18 @@ public class AddActivity extends AppCompatActivity {
         String insulin = str1;
         String bredUnits=str3;
         String comment = str2;
+        String weight=strWeight;
         int id=0;
         String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
 
-        if (plswork.equals("") &&insulin.equals("") && comment.equals("") && bredUnits.equals("") ){
+        if (plswork.equals("") &&insulin.equals("") && weight.equals("")  && comment.equals("") && bredUnits.equals("") ){
 
             return false;
         }
 
 
 
-            isInserted= db.insertData(plswork, insulin, bredUnits, comment, date1);
+            isInserted= db.insertData(plswork, insulin, bredUnits, weight, comment, date1);
         Cursor data = db.getIdPls(date1);
         while (data.moveToNext()){
             id=data.getInt(0);

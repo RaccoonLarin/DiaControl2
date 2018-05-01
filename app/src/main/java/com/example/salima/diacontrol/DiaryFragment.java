@@ -56,8 +56,6 @@ public class DiaryFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
 
-    Toolbar toolbar;
-    Integer [] images = {R.drawable.bloodsugar, R.drawable.insulin, R.drawable.bread, R.drawable.comment};
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -135,6 +133,10 @@ public class DiaryFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    Toolbar toolbar;
+    Integer [] images = {R.drawable.bloodsugar, R.drawable.insulin, R.drawable.bread, R.drawable.weight, R.drawable.comment};
+
+
     //DatabaseHelper db;
     //СЮДА ПИШИ
     TextView txt;
@@ -146,6 +148,7 @@ public class DiaryFragment extends Fragment {
     ArrayList<String> stringSugar; //записываем всее сзаписи сахара из бд
     ArrayList<String>stringInsulin; //записываем все записи инсулина из бд
     ArrayList<String> stringBredUnits;
+    ArrayList<String> stringWeight;
     ArrayList<String> stringComment; //записываем все комменты из бд
     ArrayList<String> stringDate; //записываем дату из бд
     ArrayList<String> seconds; //записываем дату из бд
@@ -175,6 +178,7 @@ public class DiaryFragment extends Fragment {
         stringInsulin=new ArrayList<>();
         stringBredUnits=new ArrayList<>();
         stringComment=new ArrayList<>();
+        stringWeight=new ArrayList<>();
         stringDate=new ArrayList<>();
         seconds=new ArrayList<>();
 
@@ -184,8 +188,9 @@ public class DiaryFragment extends Fragment {
             stringInsulin.add(data.getString(2));
             stringBredUnits.add(data.getString(3));
            // stringfood=data.getString(3);
-            stringComment.add(data.getString(4));
-            String  [] dateParts = ((data.getString(5)).split(" "));
+            stringWeight.add(data.getString(4));
+            stringComment.add(data.getString(5));
+            String  [] dateParts = ((data.getString(6)).split(" "));
             String [] time= dateParts[1].split(":");
             String newDate=dateParts[0]+" "+time[0]+":"+time[1];
             stringDate.add(newDate);
@@ -299,17 +304,20 @@ public class DiaryFragment extends Fragment {
              ImageView imageViewSugar= (ImageView) view1.findViewById(R.id.imageSuagr);
              ImageView imageViewinsulin= (ImageView) view1.findViewById(R.id.insulinIamge);
               ImageView imageViewfood= (ImageView) view1.findViewById(R.id.foodImage);
+             ImageView imageWeight= (ImageView) view1.findViewById(R.id.weightImage);
              ImageView imageViewcomment= (ImageView) view1.findViewById(R.id.commentImage);
              TextView textSugar= (TextView) view1.findViewById(R.id.sugarText);
              TextView textinsulin= (TextView) view1.findViewById(R.id.insulinText);
              TextView textfood= (TextView) view1.findViewById(R.id.foodText);
              TextView textDate = (TextView) view1.findViewById(R.id.dateDiary);
+             TextView textWeight = (TextView) view1.findViewById(R.id.weighText);
              TextView textcomment= (TextView) view1.findViewById(R.id.commentText);
              TextView textSeconds= (TextView) view1.findViewById(R.id.seconds);
              RelativeLayout  relativeLayoutSugar = (RelativeLayout) view1.findViewById(R.id.sugarLayout);
              RelativeLayout relativeLayoutInsulin = (RelativeLayout) view1.findViewById(R.id.insulinLayou);
              RelativeLayout relativeLayoutFood = (RelativeLayout) view1.findViewById(R.id.foodLayout);
              RelativeLayout relativeLayoutComment = (RelativeLayout) view1.findViewById(R.id.commentLayout);
+             RelativeLayout relativeLayoutWeight = (RelativeLayout) view1.findViewById(R.id.weightLayout);
 
 
 
@@ -341,10 +349,19 @@ public class DiaryFragment extends Fragment {
              }
 
 
+             if(!stringWeight.get(i).equals("")){
+                 relativeLayoutWeight.setVisibility(View.VISIBLE);
+                 textWeight.setText(stringWeight.get(i));
+                 imageWeight.setImageResource(images[3]);
+             } else{
+                 relativeLayoutFood.setVisibility(View.GONE);
+             }
+
+
              if(!stringComment.get(i).equals("")){
                  relativeLayoutComment.setVisibility(View.VISIBLE);
                  textcomment.setText(stringComment.get(i));
-                 imageViewcomment.setImageResource(images[3]);
+                 imageViewcomment.setImageResource(images[4]);
              } else{
                  relativeLayoutComment.setVisibility(View.GONE);
              }

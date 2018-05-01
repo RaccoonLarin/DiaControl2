@@ -105,6 +105,34 @@
 
     </RelativeLayout>
 
+
+    <RelativeLayout
+        android:id="@+id/weightLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/weighText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/weightImage"
+            android:text="TextView" />
+
+        <ImageView
+            android:id="@+id/weightImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/weighText"
+            android:alpha="0.4"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/commentLayout"
         android:layout_width="wrap_content"
