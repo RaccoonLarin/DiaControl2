@@ -131,14 +131,15 @@ public class SettingsFragment extends Fragment {
                         }
 
                         DatabaseHelper dbhelper=new DatabaseHelper(getContext());
-                        SQLiteDatabase db = dbhelper.getReadableDatabase();
-                        Cursor curCSV = db.rawQuery("SELECT * FROM diary_data",null);
-                        csvWrite.writeNext(curCSV.getColumnNames());
+                        DatabaseHelper db =new DatabaseHelper(getContext());
+                        Cursor curCSV = db.selectExport();
+                        String column[] ={"Уровень сахара", "Инсулин", "ХЕ", "Вес", "Комментарий", "Дата"};
+                        csvWrite.writeNext(column);
                         while(curCSV.moveToNext())
                         {
                             //Which column you want to exprort
-                            String arrStr[] ={curCSV.getString(0),curCSV.getString(1), curCSV.getString(2), curCSV.getString(3),
-                                    curCSV.getString(4), curCSV.getString(5)};
+                            String arrStr[] ={curCSV.getString(1), curCSV.getString(2), curCSV.getString(3),
+                                    curCSV.getString(4), curCSV.getString(5),  curCSV.getString(6)};
                             csvWrite.writeNext(arrStr);
                         }
                         try {
