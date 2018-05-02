@@ -178,6 +178,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public Cursor selectReminderById(int id){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_REMINDER + " DESC LIMIT 1 OFFSET " + id, null);
+        return data;
+    }
 
     public Cursor getListContents(){
         SQLiteDatabase db=this.getWritableDatabase();

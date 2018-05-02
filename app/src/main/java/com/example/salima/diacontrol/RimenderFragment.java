@@ -7,9 +7,11 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +34,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -108,6 +112,7 @@ public class RimenderFragment extends Fragment {
 
         addListenerOnButtonReminder();
 
+
         reminderButton.setFocusable(false);
 
 
@@ -123,7 +128,7 @@ public class RimenderFragment extends Fragment {
         listView.setAdapter(customListView);
 
         listViewListener();
-
+        listViewListenerEdit();
     }
 
     public void getList(){
@@ -188,6 +193,63 @@ public class RimenderFragment extends Fragment {
                 return true;
             }
         });
+
+    }
+
+    String textRemindChange="";
+    int remindday, remindweek, remindnorepeat;
+    boolean isEdit=false;
+    int poss;
+
+    public void listViewListenerEdit(){
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+                final View view1=view;
+                 poss=position;
+                TextView textViewRem = (TextView) view.findViewById(R.id.textReminder);
+                TextView textViewSeconds = (TextView) view.findViewById(R.id.textTime);
+
+                DatabaseHelper db=new DatabaseHelper(getContext());
+                Cursor data=db.selectReminderById(position);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                Calendar calendar = Calendar.getInstance();
+                while (data.moveToNext()){
+
+                    try {
+                        calendar.setTime(simpleDateFormat.parse(data.getString(2)));
+                        year_x=calendar.get(Calendar.YEAR);
+                        month_x=calendar.get(Calendar.MONTH);
+                        day_x=calendar.get(Calendar.DAY_OF_MONTH);
+                        hour_x=calendar.get(Calendar.HOUR_OF_DAY);
+                        minute_x=calendar.get(Calendar.MINUTE);
+
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    textRemindChange=data.getString(3);
+
+                    remindday=data.getInt(4);
+                    remindweek=data.getInt(5);
+                    remindnorepeat=data.getInt(6);
+
+                }
+
+
+                isEdit=true;
+                reminderButton.callOnClick();
+
+
+            }
+        });
+
 
     }
 
@@ -258,6 +320,14 @@ public class RimenderFragment extends Fragment {
 
                 final EditText editTextComment =(EditText) view2.findViewById(R.id.textAddComment);
 
+                if(!isEdit){
+                    Calendar calendar  = Calendar.getInstance();
+                    hour_x=calendar.get(Calendar.HOUR_OF_DAY);
+                    minute_x=calendar.get(Calendar.MINUTE);
+                    year_x=calendar.get(Calendar.YEAR);
+                    month_x=calendar.get(Calendar.MONTH);
+                    day_x=calendar.get(Calendar.DAY_OF_MONTH);
+                }
 
                 txtReminder=(TextView) view2.findViewById(R.id.timeReminder);
                 dateTxt = (TextView) view2.findViewById(R.id.dateReminder);
@@ -273,6 +343,12 @@ public class RimenderFragment extends Fragment {
                 final RadioButton radioButton=(RadioButton) view2.findViewById(R.id.radioButton);
                 final RadioButton radioButtonWeek=(RadioButton) view2.findViewById(R.id.radioButtonWeek);
                 final RadioButton radioButtonNRepeat=(RadioButton) view2.findViewById(R.id.radioButtonDontReepat);
+                if(isEdit){
+                    editTextComment.setText(textRemindChange);
+                    radioButton.setChecked(SettingUser.convertFromIntToBoolean(remindday));
+                    radioButtonWeek.setChecked(SettingUser.convertFromIntToBoolean(remindweek));
+                    radioButtonNRepeat.setChecked(SettingUser.convertFromIntToBoolean(remindnorepeat));
+                }
                 alert.setView(view2);
 
                 alert.setPositiveButton("СОХРАНИТЬ", new DialogInterface.OnClickListener() {
@@ -334,6 +410,38 @@ public class RimenderFragment extends Fragment {
                                 SettingUser.convertFromBoolToInt(dayRepeat),
                                 SettingUser.convertFromBoolToInt(weekRepeat),
                                 SettingUser.convertFromBoolToInt(nonRepeat));
+
+                        if(isEdit){
+                            int id= SettingUser.idRerminder.get(poss);
+
+
+                            Intent intent = new Intent(getContext(), AlarmNotificationReceiver.class);
+                            intent.putExtra("notification_id", id);
+                            intent.putExtra("text", SettingUser.textReminder.get(poss));
+                            PendingIntent sender = PendingIntent.getBroadcast(getContext(), id, intent, PendingIntent.FLAG_ONE_SHOT);
+                            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+
+                            alarmManager.cancel(sender);
+
+
+                           // DatabaseHelper db=new DatabaseHelper(getContext());
+                            db.deleteReminder(SettingUser.idRerminder.get(poss));
+                            SettingUser.idRerminder.remove(poss);
+                            SettingUser.noRepeat.remove(poss);
+                            SettingUser.repeatWeak.remove(poss);
+                            SettingUser.repeatDay.remove(poss);
+                            SettingUser.timeTextReminder.remove(poss);
+                            SettingUser.textReminder.remove(poss);
+
+                            getFragmentManager()
+                                    .beginTransaction()
+                                    .detach(newFragmen)
+                                    .attach(newFragmen)
+                                    .commit();
+                            listView.invalidateViews();
+
+                            isEdit=false;
+                        }
 
                     }
                 });
