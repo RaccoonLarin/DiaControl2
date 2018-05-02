@@ -128,6 +128,39 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/xeText"
+            android:layout_width="156dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"
+            android:text="Углеводы в 1 ХЕ" />
+
+        <EditText
+            android:id="@+id/xeUserEdit"
+            android:layout_width="97dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10sp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number"
+            android:text="12" />
+
+        <TextView
+            android:id="@+id/gramsTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="грамм   " />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -144,6 +177,7 @@
             android:text="Сохранить" />
 
     </LinearLayout>
+
 
     <TextView
         android:id="@+id/exit"

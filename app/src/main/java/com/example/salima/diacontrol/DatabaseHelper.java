@@ -45,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_XE_MAX="XE_MAX";
     public static final String COL_XE_MIN="XE_MIN";
     public static final String COL_XE_TARGET="XE_TARGET";
+    public  static final String COL_XE_USER="XE_USER";
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
 
@@ -57,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String SQL_food="CREATE TABLE " + TABLE_FOOD+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" + ");";
-        String SQL_settings="CREATE TABLE " + TABLE_SETTINGS+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_XE_MAX + " TEXT," + COL_XE_MIN + " TEXT,"+ COL_XE_TARGET + " TEXT" + ");";
+        String SQL_settings="CREATE TABLE " + TABLE_SETTINGS+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_XE_MAX + " TEXT," + COL_XE_MIN + " TEXT,"+ COL_XE_TARGET + " TEXT," + COL_XE_USER + " TEXT" + ");";
 
         db.execSQL(SQL_String);
         db.execSQL(SQL_food);
@@ -152,12 +153,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean updateSettings(Double xeMax, Double xeMin, Double xeTarget){
+    public boolean updateSettings(Double xeMax, Double xeMin, Double xeTarget, Integer xeUser){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_XE_MAX, xeMax);
         contentValues.put(COL_XE_MIN, xeMin);
         contentValues.put(COL_XE_TARGET, xeTarget);
+        contentValues.put(COL_XE_USER, xeUser);
         db.update(TABLE_SETTINGS, contentValues, "ID="+1, null);
         return true;
     }

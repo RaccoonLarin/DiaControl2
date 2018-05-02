@@ -354,7 +354,7 @@ public class DiaryFragment extends Fragment {
                  textWeight.setText(stringWeight.get(i));
                  imageWeight.setImageResource(images[3]);
              } else{
-                 relativeLayoutFood.setVisibility(View.GONE);
+                 relativeLayoutWeight.setVisibility(View.GONE);
              }
 
 

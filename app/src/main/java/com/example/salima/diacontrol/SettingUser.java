@@ -31,7 +31,7 @@ import java.util.Calendar;
 import java.util.Random;
 
 public class SettingUser {
-     public static Integer xe;
+     public static Integer xe=12;
      AssetManager mngr;
      Context myContext;
      public SettingUser(Context myContext) {
@@ -234,6 +234,10 @@ public class SettingUser {
                  xeTarget=null;
              else
                  xeTarget=data.getDouble(3);
+             if(data.getInt(4)==0)
+                 xe=12;
+             else
+                 xe=data.getInt(4);
 
 
 

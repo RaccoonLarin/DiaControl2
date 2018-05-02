@@ -93,7 +93,7 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
         int fragmentId = getIntent().getIntExtra("FRAGMENT_ID", 0);
 
         //Устанавлиаем XE пользователя
-        SettingUser.xe=12; //TODO установка
+       // SettingUser.xe=12; //TODO установка
         SettingUser stUs=new SettingUser(getApplicationContext());
         stUs.gett_json(); //парсим джейсон файл с продуктам
 

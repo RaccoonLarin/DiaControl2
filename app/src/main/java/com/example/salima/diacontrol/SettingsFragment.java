@@ -67,7 +67,7 @@ public class SettingsFragment extends Fragment {
     }*/
 
    Button buttonexport, buttonSave;
-   EditText targetXe, minXe, maxXe;
+   EditText targetXe, minXe, maxXe, userXE;
    TextView txtExit;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -78,6 +78,7 @@ public class SettingsFragment extends Fragment {
         minXe = (EditText) getActivity().findViewById(R.id.minXEEdit);
         maxXe = (EditText) getActivity().findViewById(R.id.maxXEEdit);
         txtExit=(TextView) getActivity().findViewById(R.id.exit);
+        userXE=(EditText) getActivity().findViewById(R.id.xeUserEdit);
         txtExit.setPaintFlags(txtExit.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
 
         if(SettingUser.xeTarget!=null) {
@@ -91,6 +92,8 @@ public class SettingsFragment extends Fragment {
         if(SettingUser.xeMax!=null) {
             maxXe.setText(SettingUser.xeMax.toString());
         }
+
+        userXE.setText(SettingUser.xe.toString());
 
         addListenerOnButton();
         addListenerSaveSettings();
@@ -224,6 +227,7 @@ public class SettingsFragment extends Fragment {
                         String targXe=targetXe.getText().toString();
                         String mXe=minXe.getText().toString();
                         String mxXe=maxXe.getText().toString();
+                        String oneXE=userXE.getText().toString();
                         DatabaseHelper db=new DatabaseHelper(getContext());
 
 
@@ -235,9 +239,15 @@ public class SettingsFragment extends Fragment {
                              SettingUser.xeTarget=null;
                              SettingUser.xeMin=null;
                              SettingUser.xeMax=null;
-                             db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget);
+                             db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget, SettingUser.xe);
                              Toast.makeText(getContext(), "Сохранено", Toast.LENGTH_SHORT).show();
                              return;
+                         }
+
+                         if(oneXE.matches("")){
+                             userXE.setText("12");
+                         } else{
+                             SettingUser.xe= Integer.parseInt(oneXE);
                          }
                         if (!targXe.matches(""))
                             tempTarget = Double.parseDouble(targXe);
@@ -298,7 +308,7 @@ public class SettingsFragment extends Fragment {
                         Toast.makeText(getContext(), "сохранено", Toast.LENGTH_SHORT).show();
 
 
-                        db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget);
+                        db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget, SettingUser.xe);
 
                     }
                 }
