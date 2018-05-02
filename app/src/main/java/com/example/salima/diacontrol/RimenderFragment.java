@@ -348,6 +348,13 @@ public class RimenderFragment extends Fragment {
                     radioButton.setChecked(SettingUser.convertFromIntToBoolean(remindday));
                     radioButtonWeek.setChecked(SettingUser.convertFromIntToBoolean(remindweek));
                     radioButtonNRepeat.setChecked(SettingUser.convertFromIntToBoolean(remindnorepeat));
+                } else{
+
+                        editTextComment.setText("");
+                        radioButton.setChecked(false);
+                        radioButtonWeek.setChecked(false);
+                        radioButtonNRepeat.setChecked(false);
+
                 }
                 alert.setView(view2);
 
@@ -448,6 +455,7 @@ public class RimenderFragment extends Fragment {
 
                 alert.setNegativeButton("ЗАКРЫТЬ", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        isEdit=false;
 
                 }
                 });
@@ -456,35 +464,37 @@ public class RimenderFragment extends Fragment {
 
 
 
-                ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)
-                        .setEnabled(false);
+                if(!isEdit) {
+                    ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                            .setEnabled(false);
 
-                editTextComment.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before,
-                                              int count) {
-                    }
-
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count,
-                                                  int after) {
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        // Check if edittext is empty
-                        if (TextUtils.isEmpty(s)) {
-                            // Disable ok button
-                            ((AlertDialog) dialog).getButton(
-                                    AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                        } else {
-                            // Something into edit text. Enable the button.
-                            ((AlertDialog) dialog).getButton(
-                                    AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    editTextComment.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before,
+                                                  int count) {
                         }
 
-                    }
-                });
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count,
+                                                      int after) {
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            // Check if edittext is empty
+                            if (TextUtils.isEmpty(s)) {
+                                // Disable ok button
+                                ((AlertDialog) dialog).getButton(
+                                        AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                            } else {
+                                // Something into edit text. Enable the button.
+                                ((AlertDialog) dialog).getButton(
+                                        AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                            }
+
+                        }
+                    });
+                }
 
             }
         });
