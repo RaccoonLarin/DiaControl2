@@ -118,12 +118,12 @@ public class UserLogin extends AppCompatActivity {
             else {
               //  Toast toast = Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT);
               //  toast.show();
-
                 createFile();
-
+                SettingUser.isGuest=false;
                 Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
                 intent.putExtra("token", isCorrect);
                 startActivity(intent);
+                finish();
 
             }
         } catch (Exception e) {
@@ -142,10 +142,12 @@ public class UserLogin extends AppCompatActivity {
     //Создать аккаунт
     public void onClickGuestTExt(View v){
         isCorrect="AbShHjskaHjaskjsA";
+        SettingUser.isGuest=true;
         createFile();
         Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
         intent.putExtra("token", isCorrect);
         startActivity(intent);
+        finish();
     }
 
 

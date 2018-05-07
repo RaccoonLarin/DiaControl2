@@ -34,6 +34,7 @@ public class SettingUser {
      public static Integer xe=12;
      AssetManager mngr;
      Context myContext;
+     public static boolean isGuest;
      public SettingUser(Context myContext) {
            mngr = myContext.getAssets();
            this.myContext=myContext;
