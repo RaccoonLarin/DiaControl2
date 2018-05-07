@@ -17,6 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public  static final String DATABASE_NAME = "diary.db";
     public  static final String TABLE_NAME = "diary_data";
+
     public static  final String TABLE_FOOD = "food_data";
     public static  final String TABLE_FOOD_USER = "food_data_user";
     public  static final String COL_1 = "ID";
@@ -46,6 +47,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_XE_MIN="XE_MIN";
     public static final String COL_XE_TARGET="XE_TARGET";
     public  static final String COL_XE_USER="XE_USER";
+
+    public  static final String TABLE_TOKEN = "token_data";
+    public static final String COL_token="TOKEN";
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
 
@@ -59,13 +63,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" + ");";
         String SQL_settings="CREATE TABLE " + TABLE_SETTINGS+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_XE_MAX + " TEXT," + COL_XE_MIN + " TEXT,"+ COL_XE_TARGET + " TEXT," + COL_XE_USER + " TEXT" + ");";
+        String SQL_token="CREATE TABLE " + TABLE_TOKEN+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_token + " TEXT" + ");";
 
         db.execSQL(SQL_String);
         db.execSQL(SQL_food);
         db.execSQL(SQL_food_user);
         db.execSQL(SQL_reminder);
         db.execSQL(SQL_settings);
-
+        db.execSQL(SQL_token);
 
 
     }
@@ -77,6 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTINGS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOKEN);
         onCreate(db);
 
     }
@@ -121,6 +127,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
+
+    public boolean insertToken(String token){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_token, token);
+        long result =  db.insert(TABLE_TOKEN, null, contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
 
     public boolean insertDataReminder(Integer id, String date, String text, Integer repeatDay, Integer repeatWeak, Integer noRepeat){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -167,6 +184,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor selectSettings(){
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_SETTINGS, null);
+        return data;
+    }
+
+    public Cursor selectToken(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_TOKEN, null);
         return data;
     }
 

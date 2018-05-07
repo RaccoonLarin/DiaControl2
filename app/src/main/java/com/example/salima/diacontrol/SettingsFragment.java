@@ -26,13 +26,22 @@ import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.opencsv.CSVWriter;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
@@ -65,7 +74,7 @@ public class SettingsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }*/
-
+   private String isCorrect; //false or token
    Button buttonexport, buttonSave;
    EditText targetXe, minXe, maxXe, userXE;
    TextView txtExit;
@@ -323,9 +332,20 @@ public class SettingsFragment extends Fragment {
                     public void onClick(View view) {
                         File file = new File(ServerData.getTokentxt());
                         boolean deleted = file.delete();
+                        if(!SettingUser.isGuest){
+                            try {
+                                new HttpPost().execute(ServerData.getIpServ()+"exit").get();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         getContext().deleteFile(ServerData.getTokentxt());
                         Intent intent = new Intent(getContext(), UserLogin.class);
                         startActivity(intent);
+                        getActivity().finish();
+
                         //File dir = getFilesDir();
 
                     }
@@ -395,115 +415,6 @@ public class SettingsFragment extends Fragment {
 
     }
 
-    private class ExportDatabaseCSVTask extends AsyncTask<String, String, Boolean> {
-        private final ProgressDialog dialog = new ProgressDialog(getContext());
-        boolean memoryErr = false;
-
-        // to show Loading dialog box
-        @Override
-        protected void onPreExecute() {
-            this.dialog.setMessage("Exporting database...");
-            this.dialog.show();
-        }
-
-        // to write process
-        protected Boolean doInBackground(final String... args) {
-
-
-          /*  boolean success = false;
-
-            //String currentDateString = new SimpleDateFormat(Constants.SimpleDtFrmt_ddMMyyyy).format(new Date());
-
-            File dbFile = new File("diary.db");
-        //    Log.v(TAG, "Db path is: " + dbFile); // get the path of db
-            File exportDir = new File(Environment.getExternalStorageDirectory() + File.separator, "");
-
-            long freeBytesInternal = new File(getContext().getFilesDir().getAbsoluteFile().toString()).getFreeSpace();
-            long megAvailable = freeBytesInternal / 1048576;
-
-            if (megAvailable < 0.1) {
-                System.out.println("Please check"+megAvailable);
-                memoryErr = true;
-            }else {
-                exportDirStr = exportDir.toString();// to show in dialogbox
-               // Log.v(TAG, "exportDir path::" + exportDir);
-                if (!exportDir.exists()) {
-                    exportDir.mkdirs();
-                }
-                try {
-                    List<SalesActivity> listdata = salesLst;
-                    SalesActivity sa = null;
-                    String lob = null;
-                    for (int index = 0; index < listdata.size();) {
-                        sa = listdata.get(index);
-                        lob = sa.getLob();
-                        break;
-                    }
-                    if (Constants.Common.OCEAN_LOB.equals(lob)) {
-
-                        file = new File(exportDir, Constants.FileNm.FILE_OFS + currentDateString + ".csv");
-                    } else {
-                        file = new File(exportDir, Constants.FileNm.FILE_AFS + currentDateString + ".csv");
-                    }
-                    file.createNewFile();
-                    CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-
-
-                    // this is the Column of the table and same for Header of CSV
-                    // file
-                    if (Constants.Common.OCEAN_LOB.equals(lob)) {
-                        csvWrite.writeNext(Constants.FileNm.CSV_O_HEADER);
-                    }else{
-                        csvWrite.writeNext(Constants.FileNm.CSV_A_HEADER);
-                    }
-                    String arrStr1[] = { "SR.No", "CUTSOMER NAME", "PROSPECT", "PORT OF LOAD", "PORT OF DISCHARGE" };
-                    csvWrite.writeNext(arrStr1);
-
-                    if (listdata.size() > 0) {
-                        for (int index = 0; index < listdata.size(); index++) {
-                            sa = listdata.get(index);
-                            String pol;
-                            String pod;
-                            if (Constants.Common.OCEAN_LOB.equals(sa.getLob())) {
-                                pol = sa.getPortOfLoadingOENm();
-                                pod = sa.getPortOfDischargeOENm();
-                            } else {
-                                pol = sa.getAirportOfLoadNm();
-                                pod = sa.getAirportOfDischargeNm();
-                            }
-                            int srNo = index;
-                            String arrStr[] = { String.valueOf(srNo + 1), sa.getCustomerNm(), sa.getProspectNm(), pol, pod };
-                            csvWrite.writeNext(arrStr);
-                        }
-                        success = true;
-                    }
-                    csvWrite.close();
-
-                } catch (IOException e) {
-                    Log.e("SearchResultActivity", e.getMessage(), e);
-                    return success;
-                }
-            }
-            return success;*/
-          return null;
-        }
-
-        // close dialog and give msg
-        protected void onPostExecute(Boolean success) {
-           /* if (this.dialog.isShowing()) {
-                this.dialog.dismiss();
-            }
-            if (success) {
-                dialogBox(Constants.Flag.FLAG_EXPRT_S);
-            } else {
-                if (memoryErr==true) {
-                    dialogBox(Constants.Flag.FLAG_MEMORY_ERR);
-                } else {
-                    dialogBox(Constants.Flag.FLAG_EXPRT_F);
-                }
-            }*/
-        }
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -557,5 +468,118 @@ public class SettingsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+    class HttpPost extends AsyncTask<String, Integer, Void> {
+        Toast toast;
+        String token;
+        protected String createJsonString(String... strings){
+            String jsonBody="{\"diary\": {\n\"exit\": {\n\"token\": " + "\"" + token + "\"\n" +
+                    "}\n}}";
+
+            return  jsonBody;
+        }
+
+        public void readFile(){
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //  super.onPreExecute();
+            toast= Toast.makeText(getContext(), "Пожалуйста, подождите", Toast.LENGTH_SHORT);
+            toast.show();
+         //   spinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+
+                OutputStream out = null;
+                BufferedReader reader=null;
+            DatabaseHelper db=new DatabaseHelper(getActivity());
+            ArrayList<String> theList=new ArrayList<>();
+            // Cursor data = db.getListContentsTrial(dateSet);
+            Cursor data = db.selectToken();
+
+            if(data.getCount()==0){
+
+            }
+
+
+            while (data.moveToNext()){
+                token=data.getString(1);
+
+
+            }
+                try {
+                    String urlString = strings[0];
+                    String jsonBody = createJsonString(token);
+                    publishProgress(1);
+
+                    URL url = new URL(urlString);
+
+                    // Send POST data request
+
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    wr.write(jsonBody);
+                    wr.flush();
+
+                    // Get the server response
+
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+
+                    // Read Server Response
+                    while((line = reader.readLine()) != null)
+                    {
+                        // Append server response in string
+                       isCorrect = sb.append(line).toString();
+                    }
+
+
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                }
+
+                finally {
+                    try
+                    {
+
+                        reader.close();
+                    }
+
+                    catch(Exception ex) {}
+                }
+
+
+
+
+
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+           // spinner.setProgress(1);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+         //   spinner.setProgress(0);
+          //  spinner.setVisibility(View.GONE);
+            toast.cancel();
+
+        }
     }
 }
