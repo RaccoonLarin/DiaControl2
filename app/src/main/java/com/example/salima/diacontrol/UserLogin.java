@@ -177,6 +177,7 @@ public class UserLogin extends AppCompatActivity {
         protected Void doInBackground(String... strings) {
             String mailTxt = mail.getText().toString();
             String passTxt = pass.getText().toString();
+            SettingUser.email=mailTxt;
             if(isValidEmail(mailTxt) && isValidPass(passTxt) ){
 
                 OutputStream out = null;

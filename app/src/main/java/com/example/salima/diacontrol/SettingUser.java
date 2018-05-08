@@ -35,6 +35,7 @@ public class SettingUser {
      AssetManager mngr;
      Context myContext;
      public static boolean isGuest;
+     public static String email;
      public SettingUser(Context myContext) {
            mngr = myContext.getAssets();
            this.myContext=myContext;
