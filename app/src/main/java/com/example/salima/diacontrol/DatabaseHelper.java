@@ -50,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public  static final String TABLE_TOKEN = "token_data";
     public static final String COL_token="TOKEN";
+    public static final String COL_Email="EMAIL";
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
 
@@ -63,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" + ");";
         String SQL_settings="CREATE TABLE " + TABLE_SETTINGS+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_XE_MAX + " TEXT," + COL_XE_MIN + " TEXT,"+ COL_XE_TARGET + " TEXT," + COL_XE_USER + " TEXT" + ");";
-        String SQL_token="CREATE TABLE " + TABLE_TOKEN+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_token + " TEXT" + ");";
+        String SQL_token="CREATE TABLE " + TABLE_TOKEN+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_token + " TEXT," + COL_Email + " TEXT" + ");";
 
         db.execSQL(SQL_String);
         db.execSQL(SQL_food);
@@ -128,10 +129,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean insertToken(String token){
+    public boolean insertToken(String token, String email){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_token, token);
+        contentValues.put(COL_Email, email);
         long result =  db.insert(TABLE_TOKEN, null, contentValues);
         if(result == -1)
             return false;
@@ -278,7 +280,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     }
+    public void deleteToken(String token){
+        SQLiteDatabase db=this.getWritableDatabase();
+        // Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD + " ORDER BY DATE DESC LIMIT 1 OFFSET " + numList, null);
+        db.execSQL("DELETE FROM " + TABLE_TOKEN + " WHERE TOKEN="+"\'"+token+"\'");
 
+
+    }
 
     public void deleteReminder(int idReminder){
         SQLiteDatabase db=this.getWritableDatabase();

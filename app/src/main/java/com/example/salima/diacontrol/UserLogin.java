@@ -120,7 +120,7 @@ public class UserLogin extends AppCompatActivity {
               //  toast.show();
                 createFile();
                 //DatabaseHelper db=new DatabaseHelper(getApplicationContext());
-                db.insertToken(isCorrect);
+                db.insertToken(isCorrect, mail.getText().toString());
                 SettingUser.isGuest=false;
                 Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
                 intent.putExtra("token", isCorrect);

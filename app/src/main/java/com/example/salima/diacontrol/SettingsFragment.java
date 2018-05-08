@@ -332,8 +332,10 @@ public class SettingsFragment extends Fragment {
                     public void onClick(View view) {
                         File file = new File(ServerData.getTokentxt());
                         boolean deleted = file.delete();
+
                         if(!SettingUser.isGuest){
                             try {
+
                                 new HttpPost().execute(ServerData.getIpServ()+"exit").get();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -513,6 +515,9 @@ public class SettingsFragment extends Fragment {
 
 
             }
+
+            db.deleteToken(token);
+
                 try {
                     String urlString = strings[0];
                     String jsonBody = createJsonString(token);
