@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +35,12 @@ import android.widget.Toolbar;
 
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -162,11 +170,13 @@ public class DiaryFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
 
+
+
         listView  = (ListView) getView().findViewById(R.id.listV);
         db=new DatabaseHelper(getActivity());
         ArrayList<String> theList=new ArrayList<>();
-       // Cursor data = db.getListContentsTrial(dateSet);
-       Cursor data = db.getListContents();
+        Cursor data     = db.getListContents();
+
         newFragment = this;
         if(data.getCount()==0){
 
@@ -389,4 +399,101 @@ public class DiaryFragment extends Fragment {
              return view1;
          }
      }
+
+
+    class HttpPost extends AsyncTask<String, Integer, Void> {
+        Toast toast;
+
+        protected String getJsonArray(String... strings){
+            DatabaseHelper db=new DatabaseHelper(getContext());
+
+            String jsonBody="{\"dairy\": {\n\"getData\": {\n\"email\": " + "\"" + db.selectEmail() +
+                    "\"\n"+"}\n}}";
+
+            return  jsonBody;
+        }
+
+
+
+        @Override
+        protected void onPreExecute() {
+
+            //   spinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String mailTxt = strings[1];
+            String passTxt = strings[2];
+
+            OutputStream out = null;
+            BufferedReader reader=null;
+            try {
+                String urlString = strings[0];
+                String jsonBody = getJsonArray(strings[1]);
+                //  publishProgress(1);
+
+                URL url = new URL(urlString);
+
+                // Send POST data request
+
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(jsonBody);
+                wr.flush();
+
+                // Get the server response
+
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                // Read Server Response
+                while((line = reader.readLine()) != null)
+                {
+                    // Append server response in string
+                    // isCorrect = sb.append(line).toString();
+                }
+
+
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+            }
+
+            finally {
+                try
+                {
+                    reader.close();
+                }
+
+                catch(Exception ex) {}
+            }
+
+
+
+
+
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            // spinner.setProgress(1);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            // spinner.setProgress(0);
+            // spinner.setVisibility(View.GONE);
+            //  toast.cancel();
+
+        }
+    }
 }

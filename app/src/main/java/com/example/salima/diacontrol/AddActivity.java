@@ -280,7 +280,8 @@ public class AddActivity extends AppCompatActivity {
                             return;
                         }
                     //    setResult(RESULT_OK,  intent);
-
+                        SettingUser settingUser=new SettingUser(getApplicationContext());
+                        SettingUser.IsNtwrkAv=settingUser.isNetworkAvailable();
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                         new DiaryFragment();

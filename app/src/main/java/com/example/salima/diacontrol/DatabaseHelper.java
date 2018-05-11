@@ -5,9 +5,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Salima on 11.01.2018.
@@ -17,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public  static final String DATABASE_NAME = "diary.db";
     public  static final String TABLE_NAME = "diary_data";
+    public  static  final String TABLE_NAME_RESERVE="diary_data_reserve";
 
     public static  final String TABLE_FOOD = "food_data";
     public static  final String TABLE_FOOD_USER = "food_data_user";
@@ -60,6 +70,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT" + ");";
+        String SQL_String_reserve = "CREATE TABLE " + TABLE_NAME_RESERVE + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT" + ");";
+
         String SQL_food="CREATE TABLE " + TABLE_FOOD+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
         String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" + ");";
@@ -67,6 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String SQL_token="CREATE TABLE " + TABLE_TOKEN+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_token + " TEXT," + COL_Email + " TEXT" + ");";
 
         db.execSQL(SQL_String);
+        db.execSQL(SQL_String_reserve);
         db.execSQL(SQL_food);
         db.execSQL(SQL_food_user);
         db.execSQL(SQL_reminder);
@@ -79,6 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_RESERVE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDER);
@@ -100,11 +114,114 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_6, comment);
         contentValues.put(COL_7, date1);
        long result =  db.insert(TABLE_NAME, null, contentValues);
-       if(result == -1)
+        try {
+            if(SettingUser.IsNtwrkAv) {
+                selectReserv();
+                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1).get();
+            } else{
+                insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        if(result == -1)
            return false;
        else
            return true;
     }
+
+    //TODO добавить параметры и изменить базу данных
+
+    public boolean insertDataArray(ArrayList <String> sugar, ArrayList <String>  insulin, ArrayList <String>  bredUnits,
+                                   ArrayList <String>  weight, ArrayList <String>  comment, ArrayList <String>  date1){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        long result=0;
+        for(int i=0; i<date1.size(); i++) {
+            contentValues.put(COL_2, sugar.get(i));
+            contentValues.put(COL_3, insulin.get(i));
+            contentValues.put(COL_4, bredUnits.get(i));
+            contentValues.put(COL_5, weight.get(i));
+            contentValues.put(COL_6, comment.get(i));
+            contentValues.put(COL_7, date1.get(i));
+             result =  db.insert(TABLE_NAME, null, contentValues);
+        }
+
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean insertDataReserve(String sugar, String insulin, String bredUnits, String weight, String comment, String date1){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_2, sugar);
+        contentValues.put(COL_3, insulin);
+        contentValues.put(COL_4, bredUnits);
+        contentValues.put(COL_5, weight);
+        contentValues.put(COL_6, comment);
+        contentValues.put(COL_7, date1);
+        long result =  db.insert(TABLE_NAME_RESERVE, null, contentValues);
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+
+    public void selectReserv(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE, null);
+        //тут можно сделать добавлять ArrayList, передать в пост массив и в северном приложении парсить массив
+         String sugar, insulin, bredUnits, weight, comment, date1;
+         if(data==null){
+             return;
+         }
+        while (data.moveToNext()){
+            sugar=data.getString(1);
+            insulin=data.getString(2);
+            bredUnits=data.getString(3);
+            weight=data.getString(4);
+            comment=data.getString(5);
+            date1=data.getString(6);
+
+
+            try {
+                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        deleteReserv();
+
+    }
+
+    public void deleteReserv(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data;
+        //  try {
+        // data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE DATE >= datetime('"+date1.substring(0,10)+"23:59:59', '-1 day') AND DATE <= datetime('"+date1.substring(0,10)+"23:59:59')"+" ORDER BY DATE DESC LIMIT 1 OFFSET " + id , null);
+        db.execSQL("DELETE FROM " + TABLE_NAME_RESERVE  );
+        // data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id, null);
+
+      /*  }
+        catch (Exception e){
+            data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE DATE = date('" + date1 + "')", null);
+        }*/
+
+        //   return data;
+    }
+
 
 
     public boolean insertDataProduct(Integer id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
@@ -193,7 +310,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_TOKEN, null);
         return data;
+        }
+
+
+    public String selectEmail(){
+        String hm="";
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT EMAIL FROM " + TABLE_TOKEN, null);
+        while (data.moveToNext()){
+            hm=data.getString(0);
+
+        }
+      return hm;
+        //return data;
     }
+
 
 
     public Cursor getListReminder(){
@@ -214,6 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY DATE DESC", null);
          return data;
     }
+
 
     public Cursor getIdPls(String date1){
         SQLiteDatabase db=this.getWritableDatabase();
@@ -272,6 +404,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //  data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE DATE = date('" + date1 + "') ORDER BY DATE DESC LIMIT 1 OFFSET " + id , null);
+    public void deleteAll(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_NAME );
+
+
+    }
 
     public void deleteProduct(int idDairy){
         SQLiteDatabase db=this.getWritableDatabase();
@@ -346,5 +484,118 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD_USER, null);
         return data;
+    }
+
+    public Cursor getListContentsServer(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY DATE DESC", null);
+        return data;
+    }
+
+
+
+    class HttpPost extends AsyncTask<String, Integer, Void> {
+        Toast toast;
+        protected String createJsonDiary(String... strings){
+            String jsonBody="{\"dairy\": {\n\"insertData\": {\n\"email\": " + "\"" + selectEmail() + "\",\n" +
+                    "\"blood_sugar\": " + "\"" + strings[0] + "\",\n" +
+                    "\"breadunits\": " + "\"" + strings[2] + "\",\n" +
+                    "\"insulin\": " + "\"" + strings[1] + "\",\n" +
+                    "\"weight\": " + "\"" + strings[3] + "\",\n" +
+                    "\"comment\": " + "\"" + strings[4] + "\",\n" +
+                    "\"date\": " + "\"" + strings[5] +
+                    "\"\n"+"}\n}}";
+
+            return  jsonBody;
+        }
+        protected String getJsonArray(String... strings){
+            String jsonBody="{\"dairy\": {\n\"getData\": {\n\"email\": " + "\"" + selectEmail() +
+                    "\"\n"+"}\n}}";
+
+            return  jsonBody;
+        }
+
+
+
+        @Override
+        protected void onPreExecute() {
+
+            //   spinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String mailTxt = strings[1];
+            String passTxt = strings[2];
+
+            OutputStream out = null;
+            BufferedReader reader=null;
+            try {
+                String urlString = strings[0];
+                String jsonBody = createJsonDiary(strings[1], strings[2], strings[3], strings[4], strings[5], strings[6]);
+                //  publishProgress(1);
+
+                URL url = new URL(urlString);
+
+                // Send POST data request
+
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(jsonBody);
+                wr.flush();
+
+                // Get the server response
+
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                // Read Server Response
+                while((line = reader.readLine()) != null)
+                {
+                    // Append server response in string
+                   // isCorrect = sb.append(line).toString();
+                }
+
+
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+            }
+
+            finally {
+                try
+                {
+                    reader.close();
+                }
+
+                catch(Exception ex) {}
+            }
+
+
+
+
+
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            // spinner.setProgress(1);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            // spinner.setProgress(0);
+            // spinner.setVisibility(View.GONE);
+          //  toast.cancel();
+
+        }
     }
 }

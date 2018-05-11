@@ -335,8 +335,12 @@ public class SettingsFragment extends Fragment {
 
                         if(!SettingUser.isGuest){
                             try {
+                                SettingUser su= new SettingUser(getContext());
+                                if(!su.isNetworkAvailable()) {
+                                    new HttpPost().execute(ServerData.getIpServ()+"exit").get();
+                                    return;
+                                }
 
-                                new HttpPost().execute(ServerData.getIpServ()+"exit").get();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (ExecutionException e) {
