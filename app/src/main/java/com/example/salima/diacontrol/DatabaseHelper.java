@@ -407,6 +407,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteAll(){
         SQLiteDatabase db=this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME );
+        db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_NAME+"\'" );
 
 
     }
@@ -444,6 +445,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_6, comment);
         contentValues.put(COL_7, date1);
         db.update(TABLE_NAME, contentValues, "ID="+id, null);
+
+        try {
+            if(SettingUser.IsNtwrkAv) {
+                selectReserv();
+                new HttpPost().execute(ServerData.getIpServ() + "updateDairy", sugar, insulin, bredUnits, weight, comment, date1).get();
+            } else{
+                insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 

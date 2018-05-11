@@ -145,7 +145,7 @@ public class AddActivity extends AppCompatActivity {
             editTextWeight.setText(data.getString(4));
             editText2.setText(data.getString(5));
             try {
-                calendar.setTime(simpleDateFormat.parse(data.getString(5)));
+                calendar.setTime(simpleDateFormat.parse(data.getString(6)));
                 year_x=calendar.get(Calendar.YEAR);
                 month_x=calendar.get(Calendar.MONTH);
                 day_x=calendar.get(Calendar.DAY_OF_MONTH);
