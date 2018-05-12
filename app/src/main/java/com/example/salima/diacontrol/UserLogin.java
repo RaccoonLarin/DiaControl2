@@ -31,6 +31,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class UserLogin extends AppCompatActivity {
 
@@ -123,7 +124,13 @@ public class UserLogin extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(), "Пожалуйста, подождите", Toast.LENGTH_LONG).show();
             HttpPost task = new HttpPost();
-            task.execute(ServerData.getIpServ()+"signinpost").get();
+            try {
+                task.execute(ServerData.getIpServ() + "signinpost").get(5000, TimeUnit.MILLISECONDS);
+            } catch (Exception ew){
+                Toast toast = Toast.makeText(getApplicationContext(), "Сервер недоступен", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
          //   Thread.sleep(1000);
 
           //  new HttpPost().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ServerData.getIpServ()+"signinpost");
@@ -224,6 +231,7 @@ public class UserLogin extends AppCompatActivity {
                     // Send POST data request
 
                     URLConnection conn = url.openConnection();
+                    conn.setConnectTimeout(15000);
                     conn.setDoOutput(true);
                     OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
                     wr.write(jsonBody);

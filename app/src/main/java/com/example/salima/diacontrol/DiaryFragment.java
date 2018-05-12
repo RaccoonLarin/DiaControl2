@@ -200,6 +200,7 @@ public class DiaryFragment extends Fragment {
            // stringfood=data.getString(3);
             stringWeight.add(data.getString(4));
             stringComment.add(data.getString(5));
+            String s=data.getString(6);
             String  [] dateParts = ((data.getString(6)).split(" "));
             String [] time= dateParts[1].split(":");
             String newDate=dateParts[0]+" "+time[0]+":"+time[1];
@@ -249,7 +250,7 @@ public class DiaryFragment extends Fragment {
                                         db = new DatabaseHelper(getActivity());
                                         TextView textView = (TextView) view1.findViewById(R.id.dateDiary);
                                         TextView textViewSeconds = (TextView) view1.findViewById(R.id.seconds);
-                                        String text = textView.getText().toString();
+                                        String text = textView.getText().toString()+":"+textViewSeconds.getText();
                                         db.delete(position1, text);
 
                                         getFragmentManager()
@@ -384,9 +385,9 @@ public class DiaryFragment extends Fragment {
                  textDate.setVisibility(View.GONE);
              }
 
-             if(!stringDate.get(i).equals("")){
+             if(!seconds.get(i).equals("")){
 
-                 textSeconds.setText(stringDate.get(i));
+                 textSeconds.setText(seconds.get(i));
 
              }
 
