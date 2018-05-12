@@ -120,18 +120,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_6, comment);
         contentValues.put(COL_7, date1);
        long result =  db.insert(TABLE_NAME, null, contentValues);
-        try {
+
             if(settingUser.isNetworkAvailable()) {
                 selectReserv();
-                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1).get();
+                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1);
             } else{
                 insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+
         if(result == -1)
            return false;
        else
@@ -197,13 +193,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             date1=data.getString(6);
 
 
-            try {
-                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
+                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1);
+
 
 
         }
@@ -278,6 +269,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_reminder_WEEK, repeatWeak);
         contentValues.put(COL_reminder_NOREPEAT, noRepeat);
         long result =  db.insert(TABLE_REMINDER, null, contentValues);
+
+
+            if(settingUser.isNetworkAvailable()) {
+                selectReserv();
+                new HttpPost().execute(ServerData.getIpServ() + "reminderInsert",  "reminderInsert", Integer.toString(id), date,  text,  Integer.toString(repeatDay),
+                        Integer.toString(repeatWeak), Integer.toString(noRepeat));
+            }
+
         if(result == -1)
             return false;
         else
@@ -292,7 +291,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_XE_MIN, xeMin);
         contentValues.put(COL_XE_TARGET, xeTarget);
         long result =  db.insert(TABLE_SETTINGS, null, contentValues);
-        try {
+
             if(settingUser.isNetworkAvailable()) {
 
                 //selectReserv();
@@ -315,16 +314,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     xeUserTempStr=Integer.toString(xeUser);
                 }
                 new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings",  "insertDataSettings", xeminTempStr,
-                        xeMaxTempStr,  xeTargetTempStr, xeUserTempStr).get(3000, TimeUnit.MILLISECONDS);
+                        xeMaxTempStr,  xeTargetTempStr, xeUserTempStr);
 
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+
         if(result == -1)
             return false;
         else
@@ -340,7 +333,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_XE_USER, xeUser);
         db.update(TABLE_SETTINGS, contentValues, "ID="+1, null);
 
-        try {
+
             if(settingUser.isNetworkAvailable()) {
 
                 //selectReserv();
@@ -364,15 +357,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     xeUserTempStr=Integer.toString(xeUser);
                 }
                 new HttpPost().execute(ServerData.getIpServ() + "updateDataSettings",  "updateDataSettings", xeminTempStr,
-                        xeMaxTempStr,  xeTargetTempStr, xeUserTempStr).get(3000, TimeUnit.MILLISECONDS);
+                        xeMaxTempStr,  xeTargetTempStr, xeUserTempStr);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+
         return true;
     }
 
@@ -467,16 +454,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data;
        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE ID IN (SELECT ID FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id +")");
-        try {
+
             if(settingUser.isNetworkAvailable()) {
                 selectReserv();
-                new HttpPost().execute(ServerData.getIpServ() + "deleteDiary", "deleteDiary", date1).get();
+                new HttpPost().execute(ServerData.getIpServ() + "deleteDiary", "deleteDiary", date1);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+
 
     }
 
@@ -484,8 +467,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteAll(){
         SQLiteDatabase db=this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME );
+        db.execSQL("DELETE FROM " + TABLE_SETTINGS );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_NAME+"\'" );
-
+        db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_SETTINGS+"\'" );
 
     }
 
@@ -510,8 +494,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_REMINDER + " WHERE REMINDER_ID="+idReminder);
 
 
+            if(settingUser.isNetworkAvailable()) {
+                //selectReserv();
+                new HttpPost().execute(ServerData.getIpServ() + "deleteReminder", "deleteReminder", Integer.toString(idReminder));
+            }
+
+
+
     }
-    public boolean update(Integer id, final String sugar, final String insulin, final String bredUnits, final String weight, final String comment, final String date1){
+    public boolean update(Integer id,  String sugar,  String insulin,  String bredUnits,  String weight,  String comment,  String date1){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1, id);
@@ -523,36 +514,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_7, date1);
         db.update(TABLE_NAME, contentValues, "ID="+id, null);
 
-        try {
+
             if(settingUser.isNetworkAvailable()) {
                 selectReserv();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        try {
-                            new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1).get(3000, TimeUnit.MILLISECONDS);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (TimeoutException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, 1000);
-                new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1).get(3000, TimeUnit.MILLISECONDS);
+                new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1);
             } else{
                 insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+
         return true;
     }
 
@@ -626,6 +596,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return  jsonBody;
         }
 
+
         protected String insertJsonSettings(String... strings){
             String jsonBody="{\"diary\": {\n\"getData\": {\n\"email\": " + "\"" + selectEmail() +"\",\n" +
                     "\"xe_min\": " + "\"" + strings[0] + "\",\n" +
@@ -636,6 +607,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             return  jsonBody;
         }
+
+
+        protected String createJsonReminder(String... strings){
+            String jsonBody="{\"diary\": {\n\"reminderData\": {\n\"email\": " + "\"" + selectEmail() + "\",\n" +
+                    "\"reminder_id\": " + "\"" + strings[0] + "\",\n" +
+                    "\"reminder_date\": " + "\"" + strings[1] + "\",\n" +
+                    "\"reminder_text\": " + "\"" + strings[2] + "\",\n" +
+                    "\"repeat_day\": " + "\"" + strings[3] + "\",\n" +
+                    "\"repeat_week\": " + "\"" + strings[4] + "\",\n" +
+                    "\"no_repeat\": " + "\"" + strings[5] +
+                    "\"\n"+"}\n}}";
+
+            return  jsonBody;
+        }
+
+        protected String deleteReminderJson(String... strings){
+            String jsonBody="{\"diary\": {\n\"reminderData\": {\n\"email\": " + "\"" + selectEmail() +
+                    "\",\n" +
+                    "\"reminder_id\": " + "\"" + strings[0] + "\"\n"
+                    +"}\n}}";
+
+            return  jsonBody;
+        }
+
 
 
 
@@ -666,6 +661,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     case  "deleteDiary": jsonBody= deleteDairyJson(strings[2]); break;
                     case "insertDataSettings":  jsonBody= insertJsonSettings(strings[2], strings[3], strings[4], "12"); break;
                     case "updateDataSettings": jsonBody= insertJsonSettings(strings[2], strings[3], strings[4], strings[5]); break;
+                    case "reminderInsert": jsonBody= createJsonReminder(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
+                    case  "reminderUpdate": jsonBody= createJsonReminder(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
+                    case  "deleteReminder": jsonBody= deleteReminderJson(strings[2]); break;
 
                     default:  jsonBody="";
                 }

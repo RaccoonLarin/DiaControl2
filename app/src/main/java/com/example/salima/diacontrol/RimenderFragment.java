@@ -375,9 +375,11 @@ public class RimenderFragment extends Fragment {
                         listView.setAdapter(customListView);
 
                         long time= System.currentTimeMillis();
-                        if(calendar.getTimeInMillis()<time){
-                            return;
-                        }
+
+                        //if(calendar.getTimeInMillis()<time){
+
+                          //  return;
+                        //}
 
                         boolean dayRepeat=radioButton.isChecked();
                         boolean weekRepeat=radioButtonWeek.isChecked();
@@ -446,6 +448,11 @@ public class RimenderFragment extends Fragment {
                                     .attach(newFragmen)
                                     .commit();
                             listView.invalidateViews();
+                            //try {
+                              //  Thread.sleep(1000);
+                          //  } catch (InterruptedException e) {
+                              //  e.printStackTrace();
+                           // }
 
                             isEdit=false;
                         }
