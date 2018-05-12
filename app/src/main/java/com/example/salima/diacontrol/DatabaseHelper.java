@@ -284,7 +284,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean insertDataSettings(Double xeMax, Double xeMin, Double xeTarget){
+    public boolean insertDataSettings(Double xeMax, Double xeMin, Double xeTarget, Integer xeUser){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -292,6 +292,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_XE_MIN, xeMin);
         contentValues.put(COL_XE_TARGET, xeTarget);
         long result =  db.insert(TABLE_SETTINGS, null, contentValues);
+        try {
+            if(settingUser.isNetworkAvailable()) {
+
+                //selectReserv();
+                String xeminTempStr="", xeMaxTempStr="", xeTargetTempStr="", xeUserTempStr="";
+
+                if(!(xeMin==null)){
+                    xeminTempStr=Double.toString(xeMin);
+                }
+
+                if(!(xeMax==null)){
+                    xeMaxTempStr=Double.toString(xeMax);
+                }
+
+
+                if(!(xeTarget==null)){
+                    xeTargetTempStr=Double.toString(xeTarget);
+                }
+
+                if(!(xeUser==null)){
+                    xeUserTempStr=Integer.toString(xeUser);
+                }
+                new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings",  "insertDataSettings", xeminTempStr,
+                        xeMaxTempStr,  xeTargetTempStr, xeUserTempStr).get(3000, TimeUnit.MILLISECONDS);
+
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
         if(result == -1)
             return false;
         else
@@ -306,6 +339,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_XE_TARGET, xeTarget);
         contentValues.put(COL_XE_USER, xeUser);
         db.update(TABLE_SETTINGS, contentValues, "ID="+1, null);
+
+        try {
+            if(settingUser.isNetworkAvailable()) {
+
+                //selectReserv();
+
+                String xeminTempStr="", xeMaxTempStr="", xeTargetTempStr="", xeUserTempStr="";
+
+                if(!(xeMin==null)){
+                    xeminTempStr=Double.toString(xeMin);
+                }
+
+                if(!(xeMax==null)){
+                    xeMaxTempStr=Double.toString(xeMax);
+                }
+
+
+                if(!(xeTarget==null)){
+                    xeTargetTempStr=Double.toString(xeTarget);
+                }
+
+                if(!(xeUser==null)){
+                    xeUserTempStr=Integer.toString(xeUser);
+                }
+                new HttpPost().execute(ServerData.getIpServ() + "updateDataSettings",  "updateDataSettings", xeminTempStr,
+                        xeMaxTempStr,  xeTargetTempStr, xeUserTempStr).get(3000, TimeUnit.MILLISECONDS);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
@@ -559,6 +626,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return  jsonBody;
         }
 
+        protected String insertJsonSettings(String... strings){
+            String jsonBody="{\"diary\": {\n\"getData\": {\n\"email\": " + "\"" + selectEmail() +"\",\n" +
+                    "\"xe_min\": " + "\"" + strings[0] + "\",\n" +
+                    "\"xe_max\": " + "\"" + strings[1] + "\",\n" +
+                    "\"xe_target\": " + "\"" + strings[2] + "\",\n" +
+                    "\"xe_user\": " + "\"" + strings[3] + "\"\n"
+                    +"}\n}}";
+
+            return  jsonBody;
+        }
+
 
 
         @Override
@@ -567,16 +645,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             //   spinner.setVisibility(View.VISIBLE);
         }
 
-       public String whichURI(String ... strings){
-            switch(strings[0]){
-                //case "/profile": return connectDB();
-                // case "/datapost": return postData();
-                case "dairyInsert": return createJsonDiary(strings[1], strings[2], strings[3], strings[4], strings[5], strings[6]);
-                case  "updateDairy": return createJsonDiary(strings[1], strings[2], strings[3], strings[4], strings[5], strings[6]);
-                case  "deleteDiary": return deleteDairyJson(strings[1]);
-                default: return "";
-            }
-        }
 
 
         @Override
@@ -596,6 +664,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     case "dairyInsert": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
                     case  "updateDairy": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
                     case  "deleteDiary": jsonBody= deleteDairyJson(strings[2]); break;
+                    case "insertDataSettings":  jsonBody= insertJsonSettings(strings[2], strings[3], strings[4], "12"); break;
+                    case "updateDataSettings": jsonBody= insertJsonSettings(strings[2], strings[3], strings[4], strings[5]); break;
 
                     default:  jsonBody="";
                 }

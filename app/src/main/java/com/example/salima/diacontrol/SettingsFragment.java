@@ -248,6 +248,11 @@ public class SettingsFragment extends Fragment {
                              SettingUser.xeTarget=null;
                              SettingUser.xeMin=null;
                              SettingUser.xeMax=null;
+                             if(oneXE.matches("")){
+                                 userXE.setText("12");
+                             } else{
+                                 SettingUser.xe= Integer.parseInt(oneXE);
+                             }
                              db.updateSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget, SettingUser.xe);
                              Toast.makeText(getContext(), "Сохранено", Toast.LENGTH_SHORT).show();
                              return;
@@ -258,6 +263,7 @@ public class SettingsFragment extends Fragment {
                          } else{
                              SettingUser.xe= Integer.parseInt(oneXE);
                          }
+
                         if (!targXe.matches(""))
                             tempTarget = Double.parseDouble(targXe);
                          else
@@ -300,6 +306,12 @@ public class SettingsFragment extends Fragment {
 
                         }
 
+
+                        if(SettingUser.xe<=0){
+                            Toast.makeText(getContext(), "Углевод в 1ХЕ должен быть больше 0", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         SettingUser.xeTarget=tempTarget;
                         SettingUser.xeMin=tempMin;
                         SettingUser.xeMax=tempMax;
@@ -313,6 +325,10 @@ public class SettingsFragment extends Fragment {
 
                         if(SettingUser.xeMax!=null) {
                             maxXe.setText(SettingUser.xeMax.toString());
+                        }
+
+                        if(SettingUser.xe!=null) {
+                            userXE.setText(SettingUser.xe.toString());
                         }
                         Toast.makeText(getContext(), "сохранено", Toast.LENGTH_SHORT).show();
 

@@ -111,10 +111,7 @@ public class UserLogin extends AppCompatActivity {
             //создаем 1 row  в бд settingsXE
             DatabaseHelper db=new DatabaseHelper(getApplicationContext());
 
-            Cursor data = db.selectSettings();
-            if(data.getCount()<=0) {
-                db.insertDataSettings(null, null, null);
-            }
+
           //  new HttpPost().execute(ServerData.getIpServ()+"signinpost");
            SettingUser su= new SettingUser(getApplicationContext());
                 if(!su.isNetworkAvailable()) {
@@ -148,6 +145,10 @@ public class UserLogin extends AppCompatActivity {
                 //DatabaseHelper db=new DatabaseHelper(getApplicationContext());
                 db.insertToken(isCorrect, mail.getText().toString());
                 SettingUser.isGuest=false;
+                Cursor data = db.selectSettings();
+                if(data.getCount()<=0) {
+                    db.insertDataSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget, SettingUser.xe);
+                }
                 //new HttpPostGetList().execute(ServerData.getIpServ()+"getDiaryList");
                 //new HttpPostGetList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ServerData.getIpServ()+"getDiaryList");
                 HttpPostGetList task2 = new HttpPostGetList();
@@ -356,7 +357,7 @@ public class UserLogin extends AppCompatActivity {
                     Log.d("m", jsonString);
                   //  JsonArray jsonElements=new JsonParser().parse(jsonString).getAsJsonArray();
                     DatabaseHelper db=new DatabaseHelper(getApplicationContext());
-                    db.deleteAll();
+                    db.deleteAll(); //удаляем все данные из локальной таблицы
                     JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
                     ArrayList<String> sugar=new ArrayList<>();
 
@@ -366,6 +367,35 @@ public class UserLogin extends AppCompatActivity {
                     JsonArray arrayWeight = (JsonArray)jsonObject.get("weight");
                     JsonArray arrayComment= (JsonArray)jsonObject.get("comment");
                     JsonArray arrayDate= (JsonArray)jsonObject.get("date");
+
+                    String xemin = jsonObject.get("xemin").getAsString();
+                    String xemax = jsonObject.get("xemax").getAsString();
+                    String xetarget = jsonObject.get("xetarget").getAsString();
+                    String xeuser = jsonObject.get("xeuser").getAsString();
+                    Double xeminTemp, xeMaxTemp, xeTargetTemp;
+                    Integer xeUserTemp;
+
+                    if(xemin.equals("")){
+                        xeminTemp=null;
+                    } else {
+                        xeminTemp=Double.parseDouble(xemin);
+                    }
+                    if(xemax.equals("")){
+                        xeMaxTemp=null;
+                    } else {
+                        xeMaxTemp=Double.parseDouble(xemax);
+                    }
+                    if(xetarget.equals("")){
+                        xeTargetTemp=null;
+                    } else {
+                        xeTargetTemp=Double.parseDouble(xetarget);
+                    }
+                    if(xeuser.equals("")){
+                        xeUserTemp=null;
+                    } else {
+                        xeUserTemp=Integer.parseInt(xeuser);
+                    }
+
                     ArrayList <String> arraySugarList =new ArrayList<>();
                     ArrayList <String> arrayBreadUnitsList = new ArrayList<>();
                     ArrayList <String> arrayInsulinList = new ArrayList<>();
@@ -387,6 +417,14 @@ public class UserLogin extends AppCompatActivity {
                   //  String s = array.get(0).getAsString();
                     db.insertDataArray(arraySugarList, arrayInsulinList, arrayBreadUnitsList, arrayWeightList,
                             arrayCommentList, arrayDateList);
+
+
+                    db.insertDataSettings(xeMaxTemp, xeminTemp,xeTargetTemp, xeUserTemp);
+
+                    SettingUser ss=new SettingUser(getApplicationContext());
+                   // ss.array(); //SET REMINDER LIST
+                   // ss.getArrayFromDataBase();
+                    ss.getXEUserFromDatabse();
 
 
 
