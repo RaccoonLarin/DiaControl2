@@ -368,6 +368,13 @@ public class UserLogin extends AppCompatActivity {
                     JsonArray arrayComment= (JsonArray)jsonObject.get("comment");
                     JsonArray arrayDate= (JsonArray)jsonObject.get("date");
 
+                    JsonArray reminder_id = (JsonArray)jsonObject.get("reminder_id");
+                    JsonArray reminder_date = (JsonArray)jsonObject.get("reminder_date");
+                    JsonArray reminder_text = (JsonArray)jsonObject.get("reminder_text");
+                    JsonArray repeat_day = (JsonArray)jsonObject.get("repeat_day");
+                    JsonArray repeat_week= (JsonArray)jsonObject.get("repeat_week");
+                    JsonArray no_repeat= (JsonArray)jsonObject.get("no_repeat");
+
                     String xemin = jsonObject.get("xemin").getAsString();
                     String xemax = jsonObject.get("xemax").getAsString();
                     String xetarget = jsonObject.get("xetarget").getAsString();
@@ -403,6 +410,13 @@ public class UserLogin extends AppCompatActivity {
                     ArrayList <String> arrayCommentList= new ArrayList<>();
                     ArrayList <String> arrayDateList= new ArrayList<>();
 
+                    ArrayList <String> reminderidList =new ArrayList<>();
+                    ArrayList <String> reminderdateList = new ArrayList<>();
+                    ArrayList <String> remindertextList = new ArrayList<>();
+                    ArrayList <String> repeatdayList = new ArrayList<>();
+                    ArrayList <String> repeatweekList= new ArrayList<>();
+                    ArrayList <String> norepeatList= new ArrayList<>();
+
                     for (int i=0; i<arrayDate.size(); i++) {
                         arraySugarList.add(arraySugar.get(i).getAsString());
                         arrayBreadUnitsList.add( arrayBreadUnits.get(i).getAsString());
@@ -415,15 +429,30 @@ public class UserLogin extends AppCompatActivity {
                      //   sugar.add( array.get(i).getAsString() );
                     }
                   //  String s = array.get(0).getAsString();
+
+
+                    //Notitdication read
+                    for (int i=0; i<reminder_id.size(); i++) {
+                        reminderidList.add(reminder_id.get(i).getAsString());
+                        reminderdateList.add( reminder_date.get(i).getAsString());
+                        remindertextList.add(reminder_text.get(i).getAsString());
+                        repeatdayList.add(repeat_day.get(i).getAsString());
+                        repeatweekList.add(repeat_week.get(i).getAsString());
+                        norepeatList.add(no_repeat.get(i).getAsString());
+
+                    }
+
                     db.insertDataArray(arraySugarList, arrayInsulinList, arrayBreadUnitsList, arrayWeightList,
                             arrayCommentList, arrayDateList);
 
 
                     db.insertDataSettings(xeMaxTemp, xeminTemp,xeTargetTemp, xeUserTemp);
 
+                    db.insertReminderArray(reminderidList, reminderdateList, remindertextList, repeatdayList, repeatweekList, norepeatList);
+
                     SettingUser ss=new SettingUser(getApplicationContext());
-                   // ss.array(); //SET REMINDER LIST
-                   // ss.getArrayFromDataBase();
+                   ss.array(); //SET REMINDER LIST
+                    ss.getArrayFromDataBase();
                     ss.getXEUserFromDatabse();
 
 

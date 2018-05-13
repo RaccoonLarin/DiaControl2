@@ -158,6 +158,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
+
+    public boolean insertReminderArray(ArrayList <String> reminderId, ArrayList <String>  reminderDate, ArrayList <String>  reminderTxt,
+                                   ArrayList <String>  reminderDay, ArrayList <String>  reminderWeek, ArrayList <String>  reminderNorepeat){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        long result=0;
+
+        for(int i=0; i<reminderId.size(); i++) {
+            contentValues.put(COL_reminder_ID, Integer.parseInt(reminderId.get(i)));
+            contentValues.put(COL_reminder_DATE, reminderDate.get(i));
+            contentValues.put(COL_reminder_TEXT, reminderTxt.get(i));
+            contentValues.put(COL_reminder_DAY, Integer.parseInt(reminderDay.get(i)));
+            contentValues.put(COL_reminder_WEEK, Integer.parseInt(reminderWeek.get(i)));
+            contentValues.put(COL_reminder_NOREPEAT, Integer.parseInt(reminderNorepeat.get(i)));
+            result =  db.insert(TABLE_REMINDER, null, contentValues);
+        }
+
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
     public boolean insertDataReserve(String sugar, String insulin, String bredUnits, String weight, String comment, String date1){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
