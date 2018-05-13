@@ -53,6 +53,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-5dp"
             android:layout_weight="1"
+            android:background="@drawable/my_button_bg"
+            android:textColor="@color/myBlue"
             android:text="+" />
     </LinearLayout>
 
@@ -102,7 +104,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Сохранить"
-
+        android:background="@drawable/my_button_bg"
+        android:textColor="@color/myBlue"
         android:visibility="visible" />
 
 

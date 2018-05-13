@@ -41,6 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  static final String COL_5 = "WEIGHT";
     public  static final String COL_6 = "COMMENT";
     public static final String COL_7 ="DATE";
+    public static final String COL_IDDIARY ="ID_DIARY";
     public static  final String COL_food_1="DIARY_ID";
     public static  final String COL_food_2="NAME_PRODUCT";
     public static  final String COL_food_3="GRAMS_PRODUCT";
@@ -65,6 +66,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  static final String TABLE_TOKEN = "token_data";
     public static final String COL_token="TOKEN";
     public static final String COL_Email="EMAIL";
+
+    public static final String COL_Delete="ISDELETE";
+    public static final String COL_Update="ISUPDATE";
     SettingUser settingUser;
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -75,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT" + ");";
+        String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT,"+COL_IDDIARY+" INTEGER" + ");";
         String SQL_String_reserve = "CREATE TABLE " + TABLE_NAME_RESERVE + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT" + ");";
 
         String SQL_food="CREATE TABLE " + TABLE_FOOD+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
@@ -119,11 +123,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_5, weight);
         contentValues.put(COL_6, comment);
         contentValues.put(COL_7, date1);
-       long result =  db.insert(TABLE_NAME, null, contentValues);
 
+       long result =  db.insert(TABLE_NAME, null, contentValues);
+        Cursor cr= getIdPls(date1);
+       // int s=cr.getCount();
+        int idd=0;
+        while (cr.moveToNext()){
+           idd=cr.getInt(0);
+        }
+        SQLiteDatabase db2 = this.getWritableDatabase();
+        ContentValues contentValues2 = new ContentValues();
+        contentValues2.put(COL_IDDIARY, idd);
+        db2.update(TABLE_NAME, contentValues2, COL_7+"="+"\'"+date1+"\'", null);
             if(settingUser.isNetworkAvailable()) {
                 selectReserv();
-                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1);
+                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd));
             } else{
                 insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
             }
@@ -137,7 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //TODO добавить параметры и изменить базу данных
 
     public boolean insertDataArray(ArrayList <String> sugar, ArrayList <String>  insulin, ArrayList <String>  bredUnits,
-                                   ArrayList <String>  weight, ArrayList <String>  comment, ArrayList <String>  date1){
+                                   ArrayList <String>  weight, ArrayList <String>  comment, ArrayList <String>  date1, ArrayList<String> idDiary){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         long result=0;
@@ -148,6 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put(COL_5, weight.get(i));
             contentValues.put(COL_6, comment.get(i));
             contentValues.put(COL_7, date1.get(i));
+            contentValues.put(COL_IDDIARY, idDiary.get(i));
              result =  db.insert(TABLE_NAME, null, contentValues);
         }
 
@@ -606,7 +621,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "\"insulin\": " + "\"" + strings[1] + "\",\n" +
                     "\"weight\": " + "\"" + strings[3] + "\",\n" +
                     "\"comment\": " + "\"" + strings[4] + "\",\n" +
-                    "\"date\": " + "\"" + strings[5] +
+                    "\"date\": " + "\"" + strings[5]  + "\",\n" +
+                    "\"iddate\": " + "\"" + strings[6] +
                     "\"\n"+"}\n}}";
 
             return  jsonBody;
@@ -680,7 +696,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String hm=strings[1];
 
                 switch(strings[1]){
-                    case "dairyInsert": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
+                    case "dairyInsert": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7], strings[8]); break;
                     case  "updateDairy": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
                     case  "deleteDiary": jsonBody= deleteDairyJson(strings[2]); break;
                     case "insertDataSettings":  jsonBody= insertJsonSettings(strings[2], strings[3], strings[4], "12"); break;

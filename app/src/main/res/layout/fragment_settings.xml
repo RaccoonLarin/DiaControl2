@@ -22,6 +22,8 @@
         android:descendantFocusability="beforeDescendants"
         android:focusable="false"
         android:text=".csv"
+        android:background="@drawable/my_button_bg"
+        android:textColor="@color/myBlue"
         android:textSize="10sp" />
 
     <LinearLayout
@@ -174,25 +176,13 @@
             android:layout_weight="1"
             android:descendantFocusability="beforeDescendants"
             android:focusable="false"
+            android:background="@drawable/my_button_bg"
+            android:textColor="@color/myBlue"
             android:text="Сохранить" />
 
     </LinearLayout>
 
 
-    <Button
-        android:id="@+id/syncbutton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20sp"
-        android:text="Отправить данные на сервер" />
-
-
-    <Button
-        android:id="@+id/uploadsyncbutton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20sp"
-        android:text="Загрузить данные с сервера" />
 
     <TextView
         android:id="@+id/exit"
@@ -201,7 +191,7 @@
         android:layout_weight="1"
         android:text="Выход"
         android:textColor="@color/myBlue"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="100dp"
         android:layout_gravity="center"
         android:textAlignment="center" />
 

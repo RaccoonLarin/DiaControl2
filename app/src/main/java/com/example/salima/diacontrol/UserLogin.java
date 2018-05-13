@@ -367,6 +367,7 @@ public class UserLogin extends AppCompatActivity {
                     JsonArray arrayWeight = (JsonArray)jsonObject.get("weight");
                     JsonArray arrayComment= (JsonArray)jsonObject.get("comment");
                     JsonArray arrayDate= (JsonArray)jsonObject.get("date");
+                    JsonArray arrayId= (JsonArray)jsonObject.get("iddiary");
 
                     JsonArray reminder_id = (JsonArray)jsonObject.get("reminder_id");
                     JsonArray reminder_date = (JsonArray)jsonObject.get("reminder_date");
@@ -409,6 +410,7 @@ public class UserLogin extends AppCompatActivity {
                     ArrayList <String> arrayWeightList = new ArrayList<>();
                     ArrayList <String> arrayCommentList= new ArrayList<>();
                     ArrayList <String> arrayDateList= new ArrayList<>();
+                    ArrayList <String> arrayIdList= new ArrayList<>();
 
                     ArrayList <String> reminderidList =new ArrayList<>();
                     ArrayList <String> reminderdateList = new ArrayList<>();
@@ -424,6 +426,7 @@ public class UserLogin extends AppCompatActivity {
                         arrayWeightList.add(arrayWeight.get(i).getAsString());
                         arrayCommentList.add(arrayComment.get(i).getAsString());
                         arrayDateList.add(arrayDate.get(i).getAsString());
+                        arrayIdList.add(arrayId.get(i).getAsString());
                        // db.insertData(arraySugar.get(i).getAsString(), arrayInsulin.get(i).getAsString(), arrayBreadUnits.get(i).getAsString(),
                              //   arrayWeight.get(i).getAsString(), arrayComment.get(i).getAsString(),  arrayDate.get(i).getAsString());
                      //   sugar.add( array.get(i).getAsString() );
@@ -443,7 +446,7 @@ public class UserLogin extends AppCompatActivity {
                     }
 
                     db.insertDataArray(arraySugarList, arrayInsulinList, arrayBreadUnitsList, arrayWeightList,
-                            arrayCommentList, arrayDateList);
+                            arrayCommentList, arrayDateList, arrayIdList);
 
 
                     db.insertDataSettings(xeMaxTemp, xeminTemp,xeTargetTemp, xeUserTemp);
