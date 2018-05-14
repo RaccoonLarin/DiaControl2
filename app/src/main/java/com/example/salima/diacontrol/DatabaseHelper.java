@@ -267,15 +267,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             result = db.insert(TABLE_FOOD, null, contentValues);
         }
         if(name.size()==0){return true;}
-       // String servProduct=  ServerData.getIpServ();
+        // String servProduct=  ServerData.getIpServ();
         casDataFood="fooddataInsert";
         servProduct=ServerData.getIpServ()+casDataFood;
         idFoodInsert=id;
 
-            if(settingUser.isNetworkAvailable()) {
+        if(settingUser.isNetworkAvailable()) {
 
-                new HttpPostFoodData().execute(name, grams, carbs);
-            }
+            new HttpPostFoodData().execute(name, grams, carbs);
+        }
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean insertDataProductArray(ArrayList<Integer> id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
+        long result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        for(int i=0; i<name.size(); i++) {
+
+            contentValues.put(COL_food_1, id.get(i));
+            contentValues.put(COL_food_2, name.get(i));
+            contentValues.put(COL_food_3, grams.get(i));
+            contentValues.put(COL_food_4, carbs.get(i));
+            result = db.insert(TABLE_FOOD, null, contentValues);
+        }
+
 
         if(result == -1)
             return false;
@@ -614,6 +634,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return true;
     }
+
+
 
     public Cursor selectAllUserProduct(){
         SQLiteDatabase db=this.getWritableDatabase();

@@ -369,6 +369,11 @@ public class UserLogin extends AppCompatActivity {
                     JsonArray arrayDate= (JsonArray)jsonObject.get("date");
                     JsonArray arrayId= (JsonArray)jsonObject.get("iddiary");
 
+                    JsonArray diary_id = (JsonArray)jsonObject.get("diary_id");
+                    JsonArray name_product = (JsonArray)jsonObject.get("name_product");
+                    JsonArray grams_product = (JsonArray)jsonObject.get("grams_product");
+                    JsonArray carbs_product = (JsonArray)jsonObject.get("carbs_product");
+
                     JsonArray reminder_id = (JsonArray)jsonObject.get("reminder_id");
                     JsonArray reminder_date = (JsonArray)jsonObject.get("reminder_date");
                     JsonArray reminder_text = (JsonArray)jsonObject.get("reminder_text");
@@ -419,6 +424,12 @@ public class UserLogin extends AppCompatActivity {
                     ArrayList <String> repeatweekList= new ArrayList<>();
                     ArrayList <String> norepeatList= new ArrayList<>();
 
+                    ArrayList <Integer> diary_idList =new ArrayList<>();
+                    ArrayList <String> name_productList = new ArrayList<>();
+                    ArrayList <String> grams_productList = new ArrayList<>();
+                    ArrayList <String> carbs_productist = new ArrayList<>();
+
+
                     for (int i=0; i<arrayDate.size(); i++) {
                         arraySugarList.add(arraySugar.get(i).getAsString());
                         arrayBreadUnitsList.add( arrayBreadUnits.get(i).getAsString());
@@ -445,10 +456,18 @@ public class UserLogin extends AppCompatActivity {
 
                     }
 
+                    for (int i=0; i<diary_id.size(); i++) {
+                        diary_idList.add(diary_id.get(i).getAsInt());
+                        name_productList.add( name_product.get(i).getAsString());
+                        grams_productList.add(grams_product.get(i).getAsString());
+                        carbs_productist.add(carbs_product.get(i).getAsString());
+
+                    }
+
                     db.insertDataArray(arraySugarList, arrayInsulinList, arrayBreadUnitsList, arrayWeightList,
                             arrayCommentList, arrayDateList, arrayIdList);
 
-
+                    db.insertDataProductArray(diary_idList, name_productList,grams_productList, carbs_productist);
                     db.insertDataSettings(xeMaxTemp, xeminTemp,xeTargetTemp, xeUserTemp);
 
                     db.insertReminderArray(reminderidList, reminderdateList, remindertextList, repeatdayList, repeatweekList, norepeatList);
