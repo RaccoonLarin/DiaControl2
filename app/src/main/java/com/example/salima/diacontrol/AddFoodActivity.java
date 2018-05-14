@@ -59,6 +59,7 @@ public class AddFoodActivity extends AppCompatActivity {
     ArrayList<String> xeString1;
     ArrayList<String> grams1;
 
+    ArrayAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +82,8 @@ public class AddFoodActivity extends AppCompatActivity {
 
 
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, SettingUser.foodList);
+        adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, SettingUser.foodList);
+
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setAdapter(adapter);
         setAutoCompleteTextViewListener();
@@ -151,6 +153,8 @@ public class AddFoodActivity extends AppCompatActivity {
                                             itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
                                             finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
                                             finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
+
+
                                         }
                                         catch (Exception e){
                                             finalText.setText("Итого: ");
@@ -219,8 +223,10 @@ public class AddFoodActivity extends AppCompatActivity {
                                         foodList1.remove(position);
                                         grams1.remove(position);
                                         xeString1.remove(position);
-                                        customListView = new AddFoodActivity.CustomAdapter();
+                                        customListView = new CustomAdapter();
                                         listView.setAdapter(customListView);
+
+
 
                                     }
                                 })
@@ -350,6 +356,10 @@ public class AddFoodActivity extends AppCompatActivity {
                             SettingUser.foodList.add(YouEditTextValue);
                             SettingUser.xeString.add(YouEditTextValue3);
                             SettingUser.grams.add(YouEditTextValue2);
+
+                            adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.select_dialog_item, SettingUser.foodList);
+                           adapter.notifyDataSetChanged();
+
                         }
                     }
                 });

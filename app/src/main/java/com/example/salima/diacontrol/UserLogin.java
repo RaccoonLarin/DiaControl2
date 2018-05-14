@@ -381,6 +381,11 @@ public class UserLogin extends AppCompatActivity {
                     JsonArray repeat_week= (JsonArray)jsonObject.get("repeat_week");
                     JsonArray no_repeat= (JsonArray)jsonObject.get("no_repeat");
 
+
+                    JsonArray name_product_user = (JsonArray)jsonObject.get("name_product_user");
+                    JsonArray grams_product_user = (JsonArray)jsonObject.get("grams_product_user");
+                    JsonArray carbs_product_user = (JsonArray)jsonObject.get("carbs_product_user");
+
                     String xemin = jsonObject.get("xemin").getAsString();
                     String xemax = jsonObject.get("xemax").getAsString();
                     String xetarget = jsonObject.get("xetarget").getAsString();
@@ -429,6 +434,10 @@ public class UserLogin extends AppCompatActivity {
                     ArrayList <String> grams_productList = new ArrayList<>();
                     ArrayList <String> carbs_productist = new ArrayList<>();
 
+                    ArrayList <String> name_user_productList = new ArrayList<>();
+                    ArrayList <String> grams_user_productList = new ArrayList<>();
+                    ArrayList <String> carbs_user_productist = new ArrayList<>();
+
 
                     for (int i=0; i<arrayDate.size(); i++) {
                         arraySugarList.add(arraySugar.get(i).getAsString());
@@ -463,6 +472,14 @@ public class UserLogin extends AppCompatActivity {
                         carbs_productist.add(carbs_product.get(i).getAsString());
 
                     }
+
+                    for (int i=0; i<name_product_user.size(); i++) {
+                        name_user_productList.add( name_product_user.get(i).getAsString());
+                        grams_user_productList.add(grams_product_user.get(i).getAsString());
+                        carbs_user_productist.add(carbs_product_user.get(i).getAsString());
+
+                    }
+
 
                     db.insertDataArray(arraySugarList, arrayInsulinList, arrayBreadUnitsList, arrayWeightList,
                             arrayCommentList, arrayDateList, arrayIdList);

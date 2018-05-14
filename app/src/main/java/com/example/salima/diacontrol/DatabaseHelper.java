@@ -538,8 +538,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME );
         db.execSQL("DELETE FROM " + TABLE_SETTINGS );
+        db.execSQL("DELETE FROM " + TABLE_FOOD );
+        db.execSQL("DELETE FROM " + TABLE_REMINDER);
+        db.execSQL("DELETE FROM " + TABLE_FOOD_USER);
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_NAME+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_SETTINGS+"\'" );
+        db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_FOOD+"\'" );
+        db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_REMINDER+"\'" );
+        db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_FOOD_USER+"\'" );
 
     }
 
@@ -626,9 +632,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_food_3, grams);
         contentValues.put(COL_food_4, carbs);
 
-        result = db.insert(TABLE_FOOD, null, contentValues);
+        result = db.insert(TABLE_FOOD_USER, null, contentValues);
 
-
+        if(settingUser.isNetworkAvailable()) {
+            //selectReserv();
+            new HttpPost().execute(ServerData.getIpServ() + "insertProductUser", "insertProductUser", name, grams, carbs);
+        }
         if(result == -1)
             return false;
         else
@@ -680,6 +689,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "\"xe_max\": " + "\"" + strings[1] + "\",\n" +
                     "\"xe_target\": " + "\"" + strings[2] + "\",\n" +
                     "\"xe_user\": " + "\"" + strings[3] + "\"\n"
+                    +"}\n}}";
+
+            return  jsonBody;
+        }
+
+        protected String insertJsonUserProduct(String... strings){
+            String jsonBody="{\"diary\": {\n\"getData\": {\n\"email\": " + "\"" + selectEmail() +"\",\n" +
+                    "\"name\": " + "\"" + strings[0] + "\",\n" +
+                    "\"grams\": " + "\"" + strings[1] + "\",\n" +
+                    "\"carbs\": " + "\"" + strings[2] + "\"\n"
                     +"}\n}}";
 
             return  jsonBody;
@@ -741,6 +760,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     case "reminderInsert": jsonBody= createJsonReminder(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
                     case  "reminderUpdate": jsonBody= createJsonReminder(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
                     case  "deleteReminder": jsonBody= deleteReminderJson(strings[2]); break;
+                    case "insertProductUser":jsonBody= insertJsonUserProduct(strings[2], strings[3], strings[4]); break;
 
                     default:  jsonBody="";
                 }

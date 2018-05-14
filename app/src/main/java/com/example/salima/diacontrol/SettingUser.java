@@ -46,9 +46,9 @@ public class SettingUser {
 
      public static ArrayList<String> textReminder, timeTextReminder;
      public static ArrayList<Integer> idRerminder, repeatDay, repeatWeak, noRepeat;
-     public static ArrayList<String>  foodList;
-     public static ArrayList<String>  xeString;
-     public static ArrayList<String>  grams;
+     public static ArrayList<String>  foodList=new ArrayList<String>();
+     public static ArrayList<String>  xeString=new ArrayList<String>();
+     public static ArrayList<String>  grams=new ArrayList<String>();
      public static Double xeTarget=null, xeMin, xeMax;
 
      //вызов метода в UserLogin
@@ -133,9 +133,9 @@ public class SettingUser {
     }
      public void gett_json() {
           String json, json2;
-          foodList = new ArrayList<>();
-          xeString = new ArrayList<>();
-          grams = new ArrayList<>();
+         // foodList = new ArrayList<>();
+          //xeString = new ArrayList<>();
+          //grams = new ArrayList<>();
           try {
 
                InputStream is = mngr.open("foodsamp1.json");
@@ -165,6 +165,8 @@ public class SettingUser {
                     grams.add(obj.getString("grams"));
                     // String str = new String(obj.getString("foodname").getBytes("ISO-8859-1"), "UTF-8");
                }
+
+              user__add_product_from_database();
 
               /* for(int i=0; i<jsonArray2.length(); i++){
                     JSONObject obj = jsonArray2.getJSONObject(i);
