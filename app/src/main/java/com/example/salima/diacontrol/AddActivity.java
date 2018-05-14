@@ -162,7 +162,7 @@ public class AddActivity extends AppCompatActivity {
 
             String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
 
-            Cursor dataGetId = db.getIdPls(date1);
+            Cursor dataGetId = db.getIdDiary(date1);
             while (dataGetId.moveToNext()){
                 id=dataGetId.getInt(0);
             }
@@ -335,7 +335,7 @@ public class AddActivity extends AppCompatActivity {
 
 
             isInserted= db.insertData(plswork, insulin, bredUnits, weight, comment, date1);
-        Cursor data = db.getIdPls(date1);
+        Cursor data = db.getIdDiary(date1);
         while (data.moveToNext()){
             id=data.getInt(0);
             //Toast.makeText(this, Integer.toString(id) , Toast.LENGTH_LONG).show();

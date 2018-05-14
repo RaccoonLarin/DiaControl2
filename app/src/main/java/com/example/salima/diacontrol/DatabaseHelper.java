@@ -250,8 +250,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    String servProduct=  ServerData.getIpServ() + "fooddataInsert";
-       String casDataFood=  "fooddataInsert";
+       String servProduct;
+       String casDataFood;
        Integer idFoodInsert;
     public boolean insertDataProduct(Integer id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
         long result=0;
@@ -266,17 +266,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             result = db.insert(TABLE_FOOD, null, contentValues);
         }
-        /*
+        if(name.size()==0){return true;}
+       // String servProduct=  ServerData.getIpServ();
+        casDataFood="fooddataInsert";
+        servProduct=ServerData.getIpServ()+casDataFood;
         idFoodInsert=id;
-        try {
+
             if(settingUser.isNetworkAvailable()) {
 
-                new HttpPostFoodData().execute( name, grams, carbs).get();
+                new HttpPostFoodData().execute(name, grams, carbs);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.p*/
 
         if(result == -1)
             return false;
@@ -454,6 +453,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery("SELECT id FROM " + TABLE_NAME +" WHERE DATE="+ "\'"+ date1+"\'", null);
         return data;
     }
+
+    public Cursor getIdDiary(String date1){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT ID_DIARY FROM " + TABLE_NAME +" WHERE DATE="+ "\'"+ date1+"\'", null);
+        return data;
+    }
     public Cursor getTime(String date1){
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data = db.rawQuery("SELECT BLOOD_SUGAR, DATE FROM " + TABLE_NAME +" WHERE DATE >= datetime('"+ date1.substring(0,10)+"23:59:59', '-1 day') AND DATE <= datetime('"+date1.substring(0,10)+"23:59:59')"+" ORDER BY DATE", null);
@@ -492,6 +497,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void delete(int id, String date1){
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor data;
+        Cursor cr=getIdDiary(date1);
+        int idd=0;
+        while (cr.moveToNext()){
+            idd=cr.getInt(0);
+        }
+        deleteProduct(idd);
        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE ID IN (SELECT ID FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id +")");
 
             if(settingUser.isNetworkAvailable()) {
@@ -516,6 +527,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
        // Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD + " ORDER BY DATE DESC LIMIT 1 OFFSET " + numList, null);
         db.execSQL("DELETE FROM " + TABLE_FOOD + " WHERE DIARY_ID="+idDairy);
+        casDataFood="deleteFoodData";
+         idFoodInsert=idDairy;
+        servProduct=ServerData.getIpServ()+casDataFood;
+        if(settingUser.isNetworkAvailable()) {
+            selectReserv();
+            new HttpPostFoodData().execute();
+        }
 
 
     }
@@ -529,7 +547,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteReminder(int idReminder){
         SQLiteDatabase db=this.getWritableDatabase();
-        // Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD + " ORDER BY DATE DESC LIMIT 1 OFFSET " + numList, null);
         db.execSQL("DELETE FROM " + TABLE_REMINDER + " WHERE REMINDER_ID="+idReminder);
 
 
@@ -609,8 +626,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY DATE DESC", null);
         return data;
     }
-
-
 
     class HttpPost extends AsyncTask<String, Integer, Void> {
         Toast toast;
@@ -778,17 +793,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Toast toast;
         protected String createJsonDiary(ArrayList<String> ... strings){
 
-            String email="\"email\":[ ";
-            String diary_id="\"diary_id\":[ ";
+            String email="\"email\": ";
+            String diary_id="\"diary_id\": ";
             String name_product="\"name_product\":[ ";
             String grams_product="\"grams_product\":[ ";
             String carbs_product="\"carbs_product\":[ ";
             String emailSelected=selectEmail();
             for(int i=0; i<strings[0].size(); i++) {
-                email+="\""+emailSelected+"\", ";
+              //  email+="\""+emailSelected+"\", ";
 
                 // stringBredUnits.add(rs.getString(3));
-                diary_id+="\""+idFoodInsert+"\", ";
+                //diary_id+="\""+idFoodInsert+"\", ";
 
                 //  stringInsulin.add(rs.getString(4));
                 name_product+="\""+strings[0].get(i)+"\", ";
@@ -801,8 +816,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
             }
-            email=email.substring(0,email.length()-2)+" ], \n";
-            diary_id=diary_id.substring(0, diary_id.length()-2)+" ], \n";
+           // xemin+="\""+rsSettings.getString(3)+"\", \n";
+            email+="\""+emailSelected+"\", \n";
+            diary_id+="\""+idFoodInsert+"\", \n";
+           // diary_id=diary_id.substring(0, diary_id.length()-2)+" ], \n";
             name_product=name_product.substring(0,name_product.length()-2)+" ], \n";
             grams_product=grams_product.substring(0,grams_product.length()-2)+" ], \n";
             carbs_product=carbs_product.substring(0,carbs_product.length()-2)+" ]\n";
@@ -813,11 +830,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             return  jsonBody;
         }
-        protected String deleteDairyJson(String... strings){
-            String jsonBody="{\"diary\": {\n\"getData\": {\n\"email\": " + "\"" + selectEmail() +
+        protected String deleteDairyJson(){
+            String jsonBody="{ \n\"email\": " + "\"" + selectEmail() +
                     "\",\n" +
-                    "\"date\": " + "\"" + strings[0] + "\"\n"
-                    +"}\n}}";
+                    "\"diary_id\": " + "\"" + idFoodInsert + "\"\n"
+                    +"\n}";
 
             return  jsonBody;
         }
@@ -830,8 +847,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             //   spinner.setVisibility(View.VISIBLE);
         }
 
-        String servProduct=  ServerData.getIpServ() + "fooddataInsert";
-        String casDataFood=  "fooddataInsert";
+       // String servProduct=  ServerData.getIpServ() + "fooddataInsert";
+        //String casDataFood=  "fooddataInsert";
 
         @Override
         protected Void doInBackground(ArrayList<String>... strings) {
@@ -846,8 +863,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 switch(casDataFood){
                     case "fooddataInsert": jsonBody= createJsonDiary(strings[0], strings[1], strings[2]); break;
-                  //  case  "updateDairy": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
-                  //  case  "deleteDiary": jsonBody= deleteDairyJson(strings[2]); break;
+                   case  "updateDairyData": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
+                    case  "deleteFoodData": jsonBody= deleteDairyJson(); break;
 
                     default:  jsonBody="";
                 }
