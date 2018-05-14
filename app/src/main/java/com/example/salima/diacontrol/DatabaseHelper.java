@@ -77,6 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    //TODO ADD IDDIARY to SQL_String_reserve
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT,"+COL_IDDIARY+" INTEGER" + ");";
@@ -139,7 +140,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 selectReserv();
                 new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd));
             } else{
-                insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
+               insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
             }
 
         if(result == -1)
@@ -205,7 +206,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_4, bredUnits);
         contentValues.put(COL_5, weight);
         contentValues.put(COL_6, comment);
-        contentValues.put(COL_7, date1);
+        contentValues.put(COL_7, date1); //TODO IDDIARY ADD
         long result =  db.insert(TABLE_NAME_RESERVE, null, contentValues);
 
         if(result == -1)
@@ -791,7 +792,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
             } catch (Exception e) {
+                switch(strings[1]){
+                    case "dairyInsert": insertDataReserve(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
 
+                }
                 e.printStackTrace();
 
             }
