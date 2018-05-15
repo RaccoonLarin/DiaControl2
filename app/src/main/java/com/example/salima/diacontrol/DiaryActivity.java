@@ -12,8 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.amitshekhar.DebugDB;
@@ -27,6 +31,7 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
     public boolean isInDiaryFragment; //находимся ли в фрагменте fragment_diary
     Toolbar toolbar;
     TextView toolbartext;
+    ImageView imageSync;
     BottomNavigationViewEx bottomNavigationViewEx;
 
 
@@ -115,6 +120,8 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
 
         bottomNavigationViewEx.setSelectedItemId(R.id.navigation_diary);
 
+        imageSync=(ImageView) findViewById(R.id.syncImage);
+        imageOnClickListener();
 
 
     }
@@ -149,6 +156,19 @@ public class DiaryActivity extends AppCompatActivity  implements DiaryFragment.O
 
         BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.navigation);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+    }
+
+    public  void imageOnClickListener(){
+        imageSync.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+                        db.selectReserv();
+                        Toast.makeText(getApplicationContext(), "Данные сохранены", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
 
 

@@ -30,6 +30,8 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +64,19 @@ public class UserLogin extends AppCompatActivity {
         ss.array(); //SET REMINDER LIST
         ss.getArrayFromDataBase();
         ss.getXEUserFromDatabse();
+        Log.d("dd", "EEBPY");
+        Timer uploadCkec=new Timer(true);
+        uploadCkec.scheduleAtFixedRate(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+
+                     //   Toast.makeText(getApplicationContext(), "lsdkjlsjkdf", Toast.LENGTH_SHORT).show();
+                        db.selectReserv();
+                    }
+                }, 0, 5*1000
+        );
 
 
         String[] files = fileList();

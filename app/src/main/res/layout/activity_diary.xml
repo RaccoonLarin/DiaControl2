@@ -26,6 +26,16 @@
             android:textSize="30sp" />
 
 
+        <ImageView
+            android:id="@+id/syncImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:visibility="gone"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_sync_black_24dp" />
+
+
     </android.support.v7.widget.Toolbar>
 
 

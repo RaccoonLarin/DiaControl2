@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -33,7 +34,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  static  final String TABLE_NAME_RESERVE="diary_data_reserve";
 
     public static  final String TABLE_FOOD = "food_data";
+    public static  final String TABLE_FOOD_RESERVE = "food_data_reserve";
     public static  final String TABLE_FOOD_USER = "food_data_user";
+    public static  final String TABLE_FOOD_USER_RESERVE = "food_data_user_RESERVE";
     public  static final String COL_1 = "ID";
     public  static final String COL_2 = "BLOOD_SUGAR";
     public  static final String COL_3 = "INSULIN";
@@ -42,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  static final String COL_6 = "COMMENT";
     public static final String COL_7 ="DATE";
     public static final String COL_IDDIARY ="ID_DIARY";
+    public static final String COL_TOSERVER ="TOSERV";
     public static  final String COL_food_1="DIARY_ID";
     public static  final String COL_food_2="NAME_PRODUCT";
     public static  final String COL_food_3="GRAMS_PRODUCT";
@@ -50,6 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static  final String COL_food_6="TOTAL_CARBS_PRODUCT";
 
     public static  final String TABLE_REMINDER = "reminder_data";
+    public static  final String TABLE_REMINDER_RESERVE = "reminder_data_reserve";
     public static final String COL_reminder_ID="REMINDER_ID";
     public static final String COL_reminder_DATE="REMINDER_DATE";
     public static final String COL_reminder_TEXT="REMINDER_TEXT";
@@ -58,6 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_reminder_NOREPEAT="NO_REPEAT";
 
     public static  final String TABLE_SETTINGS = "settings_data";
+    public static  final String TABLE_SETTINGS_RESERVE = "settings_data_reserve";
     public static final String COL_XE_MAX="XE_MAX";
     public static final String COL_XE_MIN="XE_MIN";
     public static final String COL_XE_TARGET="XE_TARGET";
@@ -67,8 +73,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_token="TOKEN";
     public static final String COL_Email="EMAIL";
 
-    public static final String COL_Delete="ISDELETE";
-    public static final String COL_Update="ISUPDATE";
+    public static final String INSERT_DB="INS";
+    public static final String UPDATE_DB="UPD";
+    public static final String DELETE_DB="DEL";
     SettingUser settingUser;
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -81,21 +88,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SQL_String = "CREATE TABLE " + TABLE_NAME + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT,"+COL_IDDIARY+" INTEGER" + ");";
-        String SQL_String_reserve = "CREATE TABLE " + TABLE_NAME_RESERVE + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT" + ");";
+        String SQL_String_reserve = "CREATE TABLE " + TABLE_NAME_RESERVE + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_2 + " TEXT," + COL_3 + " TEXT," + COL_4 +" TEXT," + COL_5 + " TEXT," + COL_6 + " TEXT," + COL_7 + " TEXT," + COL_IDDIARY+" INTEGER," + COL_TOSERVER+ " TEXT"+");";
 
         String SQL_food="CREATE TABLE " + TABLE_FOOD+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
+        String SQL_food_reserve = "CREATE TABLE " + TABLE_FOOD_RESERVE + "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_1 + " INTEGER," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT," + COL_TOSERVER+ " TEXT"+");";
+
         String SQL_food_user="CREATE TABLE " + TABLE_FOOD_USER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT" + ");";
-        String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" + ");";
+        String SQL_food_user_reserve="CREATE TABLE " + TABLE_FOOD_USER_RESERVE+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_food_2 + " TEXT," + COL_food_3 +" TEXT,"+ COL_food_4 + " TEXT,"  + COL_TOSERVER+ " TEXT"+ ");";
+
+
+        String SQL_reminder="CREATE TABLE " + TABLE_REMINDER+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER" +  ");";
+        String SQL_reminder_reserve="CREATE TABLE " + TABLE_REMINDER_RESERVE+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_reminder_ID + " INTEGER," + COL_reminder_DATE +" TEXT,"+ COL_reminder_TEXT + " TEXT," + COL_reminder_DAY + " INTEGER," + COL_reminder_WEEK + " INTEGER," +COL_reminder_NOREPEAT + " INTEGER,"+COL_TOSERVER+ " TEXT"+ ");";
+
         String SQL_settings="CREATE TABLE " + TABLE_SETTINGS+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_XE_MAX + " TEXT," + COL_XE_MIN + " TEXT,"+ COL_XE_TARGET + " TEXT," + COL_XE_USER + " TEXT" + ");";
+        String SQL_settings_RESERVE="CREATE TABLE " + TABLE_SETTINGS_RESERVE+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_XE_MAX + " TEXT," + COL_XE_MIN + " TEXT,"+ COL_XE_TARGET + " TEXT," + COL_XE_USER + " TEXT," + COL_TOSERVER+ " TEXT"+ ");";
+
         String SQL_token="CREATE TABLE " + TABLE_TOKEN+ "(" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_token + " TEXT," + COL_Email + " TEXT" + ");";
 
         db.execSQL(SQL_String);
-        db.execSQL(SQL_String_reserve);
         db.execSQL(SQL_food);
         db.execSQL(SQL_food_user);
         db.execSQL(SQL_reminder);
         db.execSQL(SQL_settings);
         db.execSQL(SQL_token);
+
+        db.execSQL(SQL_String_reserve);
+        db.execSQL(SQL_food_reserve);
+        db.execSQL(SQL_food_user_reserve);
+        db.execSQL(SQL_reminder_reserve);
+        db.execSQL(SQL_settings_RESERVE);
 
 
     }
@@ -103,12 +124,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_RESERVE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTINGS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOKEN);
+
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_RESERVE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_RESERVE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOOD_USER_RESERVE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDER_RESERVE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTINGS_RESERVE);
+
         onCreate(db);
 
     }
@@ -137,10 +165,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues2.put(COL_IDDIARY, idd);
         db2.update(TABLE_NAME, contentValues2, COL_7+"="+"\'"+date1+"\'", null);
             if(settingUser.isNetworkAvailable()) {
-                selectReserv();
                 new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd));
             } else{
-               insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
+               insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1, Integer.toString(idd), INSERT_DB);
             }
 
         if(result == -1)
@@ -198,7 +225,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return true;
     }
-    public boolean insertDataReserve(String sugar, String insulin, String bredUnits, String weight, String comment, String date1){
+    public boolean insertDataReserve(String sugar, String insulin, String bredUnits, String weight, String comment, String date1, String id, String toserv){
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2, sugar);
@@ -207,6 +239,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_5, weight);
         contentValues.put(COL_6, comment);
         contentValues.put(COL_7, date1); //TODO IDDIARY ADD
+        contentValues.put(COL_IDDIARY, Integer.parseInt(id));
+        contentValues.put(COL_TOSERVER, toserv);
+        long result =  db.insert(TABLE_NAME_RESERVE, null, contentValues);
+
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean deleteDataReserve(String date, String toserv){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_7, date);
+        contentValues.put(COL_TOSERVER, toserv);
         long result =  db.insert(TABLE_NAME_RESERVE, null, contentValues);
 
         if(result == -1)
@@ -218,9 +266,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void selectReserv(){
         SQLiteDatabase db=this.getWritableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE, null);
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+INSERT_DB+"\'", null);
         //тут можно сделать добавлять ArrayList, передать в пост массив и в северном приложении парсить массив
-         String sugar, insulin, bredUnits, weight, comment, date1;
+         String sugar, insulin, bredUnits, weight, comment, date1, id;
          if(data==null){
              return;
          }
@@ -231,13 +279,59 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             weight=data.getString(4);
             comment=data.getString(5);
             date1=data.getString(6);
-
-
-                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1);
-
+            id=data.getString(7);
+            new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, id);
 
 
         }
+
+
+
+
+        Cursor updTableNameReserve = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+ UPDATE_DB+"\'", null);
+
+        while (updTableNameReserve.moveToNext()){
+            sugar=updTableNameReserve.getString(1);
+            insulin=updTableNameReserve.getString(2);
+            bredUnits=updTableNameReserve.getString(3);
+            weight=updTableNameReserve.getString(4);
+            comment=updTableNameReserve.getString(5);
+            date1=updTableNameReserve.getString(6);
+            id=updTableNameReserve.getString(7);
+            new HttpPost().execute(ServerData.getIpServ() + "updateDairy",  "updateDairy", sugar, insulin, bredUnits, weight, comment, date1, id);
+
+        }
+
+        Cursor data2 = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+ DELETE_DB+"\'", null);
+
+        while (data2.moveToNext()){
+            date1=data2.getString(6);
+            new HttpPost().execute(ServerData.getIpServ() + "deleteDiary",  "deleteDiary", date1);
+
+
+        }
+
+
+        Cursor tableFoodUpd = db.rawQuery("SELECT * FROM " + TABLE_FOOD_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+ INSERT_DB+"\'", null);
+         ArrayList <String> nameFood, gramsFood, carbsFood, idFood;
+        casDataFood="fooddataInsert";
+        servProduct=ServerData.getIpServ()+casDataFood;
+
+        while (tableFoodUpd.moveToNext()){
+            nameFood=new ArrayList<>();
+            gramsFood=new ArrayList<>();
+            carbsFood=new ArrayList<>();
+            idFoodInsert=tableFoodUpd.getInt(1);
+            nameFood.add(tableFoodUpd.getString(2));
+            gramsFood.add(tableFoodUpd.getString(3));
+            carbsFood.add(tableFoodUpd.getString(4));
+            new HttpPostFoodData().execute(nameFood, gramsFood, carbsFood);
+
+        }
+
+
+
+
 
         deleteReserv();
 
@@ -276,6 +370,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(settingUser.isNetworkAvailable()) {
 
             new HttpPostFoodData().execute(name, grams, carbs);
+        } else {
+            insertDataProductReserve(id, name, grams, carbs);
         }
 
         if(result == -1)
@@ -283,7 +379,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return true;
     }
-
     public boolean insertDataProductArray(ArrayList<Integer> id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
         long result=0;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -295,6 +390,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put(COL_food_3, grams.get(i));
             contentValues.put(COL_food_4, carbs.get(i));
             result = db.insert(TABLE_FOOD, null, contentValues);
+        }
+
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+    public boolean insertDataProductReserve(Integer id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
+        long result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        for(int i=0; i<name.size(); i++) {
+
+            contentValues.put(COL_food_1, id);
+            contentValues.put(COL_food_2, name.get(i));
+            contentValues.put(COL_food_3, grams.get(i));
+            contentValues.put(COL_food_4, carbs.get(i));
+            result = db.insert(TABLE_FOOD_RESERVE, null, contentValues);
         }
 
 
@@ -331,7 +445,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
             if(settingUser.isNetworkAvailable()) {
-                selectReserv();
                 new HttpPost().execute(ServerData.getIpServ() + "reminderInsert",  "reminderInsert", Integer.toString(id), date,  text,  Integer.toString(repeatDay),
                         Integer.toString(repeatWeak), Integer.toString(noRepeat));
             }
@@ -353,7 +466,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             if(settingUser.isNetworkAvailable()) {
 
-                //selectReserv();
                 String xeminTempStr="", xeMaxTempStr="", xeTargetTempStr="", xeUserTempStr="";
 
                 if(!(xeMin==null)){
@@ -394,8 +506,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
             if(settingUser.isNetworkAvailable()) {
-
-                //selectReserv();
 
                 String xeminTempStr="", xeMaxTempStr="", xeTargetTempStr="", xeUserTempStr="";
 
@@ -527,8 +637,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE ID IN (SELECT ID FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id +")");
 
             if(settingUser.isNetworkAvailable()) {
-                selectReserv();
+
                 new HttpPost().execute(ServerData.getIpServ() + "deleteDiary", "deleteDiary", date1);
+            }
+            else {
+                deleteDataReserve(date1, DELETE_DB);
             }
 
 
@@ -542,7 +655,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_FOOD );
         db.execSQL("DELETE FROM " + TABLE_REMINDER);
         db.execSQL("DELETE FROM " + TABLE_FOOD_USER);
-        db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_NAME+"\'" );
+       // db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_NAME+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_SETTINGS+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_FOOD+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_REMINDER+"\'" );
@@ -558,7 +671,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          idFoodInsert=idDairy;
         servProduct=ServerData.getIpServ()+casDataFood;
         if(settingUser.isNetworkAvailable()) {
-            selectReserv();
+
             new HttpPostFoodData().execute();
         }
 
@@ -578,7 +691,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
             if(settingUser.isNetworkAvailable()) {
-                //selectReserv();
+
                 new HttpPost().execute(ServerData.getIpServ() + "deleteReminder", "deleteReminder", Integer.toString(idReminder));
             }
 
@@ -595,15 +708,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_5, weight);
         contentValues.put(COL_6, comment);
         contentValues.put(COL_7, date1);
-        db.update(TABLE_NAME, contentValues, "ID="+id, null);
-
+        db.update(TABLE_NAME, contentValues, "ID_DIARY="+id, null);
+        Cursor cr= getIdPls(date1);
+        // int s=cr.getCount();
+        int idd=0;
+        while (cr.moveToNext()){
+            idd=cr.getInt(0);
+        }
 
             if(settingUser.isNetworkAvailable()) {
-                selectReserv();
 
-                new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1);
+
+                new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd));
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else{
-                insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1);
+
+                insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1, Integer.toString(idd), UPDATE_DB);
             }
 
         return true;
@@ -636,7 +760,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         result = db.insert(TABLE_FOOD_USER, null, contentValues);
 
         if(settingUser.isNetworkAvailable()) {
-            //selectReserv();
             new HttpPost().execute(ServerData.getIpServ() + "insertProductUser", "insertProductUser", name, grams, carbs);
         }
         if(result == -1)
@@ -754,7 +877,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 switch(strings[1]){
                     case "dairyInsert": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7], strings[8]); break;
-                    case  "updateDairy": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
+                    case  "updateDairy": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7], strings[8]); break;
                     case  "deleteDiary": jsonBody= deleteDairyJson(strings[2]); break;
                     case "insertDataSettings":  jsonBody= insertJsonSettings(strings[2], strings[3], strings[4], "12"); break;
                     case "updateDataSettings": jsonBody= insertJsonSettings(strings[2], strings[3], strings[4], strings[5]); break;
@@ -793,7 +916,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             } catch (Exception e) {
                 switch(strings[1]){
-                    case "dairyInsert": insertDataReserve(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
+                    case "dairyInsert": insertDataReserve(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7], strings[8], INSERT_DB); break;
+                    case "deleteDiary": deleteDataReserve(strings[2], DELETE_DB); break;
+                    case "updateDairy": insertDataReserve(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7], strings[8], UPDATE_DB); break;
 
                 }
                 e.printStackTrace();
@@ -941,6 +1066,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
             } catch (Exception e) {
+                switch(casDataFood){
+                case "fooddataInsert":   insertDataProductReserve(idFoodInsert,strings[0], strings[1], strings[2]); break;
+              //  case  "updateDairyData": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
+               // case  "deleteFoodData": jsonBody= deleteDairyJson(); break;
+                }
 
                 e.printStackTrace();
 
