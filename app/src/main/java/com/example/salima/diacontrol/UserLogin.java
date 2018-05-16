@@ -65,25 +65,32 @@ public class UserLogin extends AppCompatActivity {
         ss.getArrayFromDataBase();
         ss.getXEUserFromDatabse();
         Log.d("dd", "EEBPY");
-        Timer uploadCkec=new Timer(true);
-        uploadCkec.scheduleAtFixedRate(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        DatabaseHelper db=new DatabaseHelper(getApplicationContext());
-
-                     //   Toast.makeText(getApplicationContext(), "lsdkjlsjkdf", Toast.LENGTH_SHORT).show();
-                        db.selectReserv();
-                    }
-                }, 0, 5*1000
-        );
-
 
         String[] files = fileList();
         int k=0;
         for (String file : files) {
 
             if (file.equals(ServerData.getTokentxt())) {
+                Timer uploadCkec=new Timer(true);
+                uploadCkec.scheduleAtFixedRate(
+                        new TimerTask() {
+                            @Override
+                            public void run() {
+                                DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+
+                                //   Toast.makeText(getApplicationContext(), "lsdkjlsjkdf", Toast.LENGTH_SHORT).show();
+                                db.selectReserv();
+                            }
+                        }, 0, 60*1000 //TODO множить на 60
+                );
+
+                SettingUser.isGuest=false;
+                Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
+                startActivity(intent);
+                finish();
+            } else
+            if (file.equals(ServerData.getTokentxt())) {
+                SettingUser.isGuest=true;
                 Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
                 startActivity(intent);
                 finish();
@@ -101,6 +108,19 @@ public class UserLogin extends AppCompatActivity {
 
         try {
             outputStream = openFileOutput(ServerData.getTokentxt(), Context.MODE_PRIVATE);
+            outputStream.write(isCorrect.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void createFileGuest(){
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(ServerData.getTokentxtGuest(), Context.MODE_PRIVATE);
             outputStream.write(isCorrect.getBytes());
             outputStream.close();
         } catch (Exception e) {
@@ -192,7 +212,7 @@ public class UserLogin extends AppCompatActivity {
     public void onClickGuestTExt(View v){
         isCorrect="AbShHjskaHjaskjsA";
         SettingUser.isGuest=true;
-        createFile();
+        createFileGuest();
         Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
         intent.putExtra("token", isCorrect);
         startActivity(intent);

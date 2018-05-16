@@ -346,10 +346,12 @@ public class SettingsFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        File file = new File(ServerData.getTokentxt());
-                        boolean deleted = file.delete();
+
 
                         if(!SettingUser.isGuest){
+                            File file = new File(ServerData.getTokentxt());
+                            boolean deleted = file.delete();
+                            getContext().deleteFile(ServerData.getTokentxt());
                             try {
                                 SettingUser su= new SettingUser(getContext());
                                 if(!su.isNetworkAvailable()) {
@@ -362,8 +364,12 @@ public class SettingsFragment extends Fragment {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
+                        } else if (SettingUser.isGuest){
+                            File file = new File(ServerData.getTokentxtGuest());
+                            boolean deleted = file.delete();
+                            getContext().deleteFile(ServerData.getTokentxt());
                         }
-                        getContext().deleteFile(ServerData.getTokentxt());
+
                         Intent intent = new Intent(getContext(), UserLogin.class);
                         startActivity(intent);
                         getActivity().finish();

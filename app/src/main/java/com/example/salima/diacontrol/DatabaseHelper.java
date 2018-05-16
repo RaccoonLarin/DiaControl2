@@ -164,11 +164,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues2 = new ContentValues();
         contentValues2.put(COL_IDDIARY, idd);
         db2.update(TABLE_NAME, contentValues2, COL_7+"="+"\'"+date1+"\'", null);
-            if(settingUser.isNetworkAvailable()) {
-                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd));
-            } else{
-               insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1, Integer.toString(idd), INSERT_DB);
+
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
+                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert", "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd));
+            } else {
+                insertDataReserve(sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd), INSERT_DB);
             }
+        }
 
         if(result == -1)
            return false;
@@ -226,11 +229,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
     public boolean insertDataReserve(String sugar, String insulin, String bredUnits, String weight, String comment, String date1, String id, String toserv){
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2, sugar);
@@ -265,81 +264,96 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public void selectReserv(){
-        SQLiteDatabase db=this.getWritableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+INSERT_DB+"\'", null);
-        //тут можно сделать добавлять ArrayList, передать в пост массив и в северном приложении парсить массив
-         String sugar, insulin, bredUnits, weight, comment, date1, id;
-         if(data==null){
-             return;
-         }
-        while (data.moveToNext()){
-            sugar=data.getString(1);
-            insulin=data.getString(2);
-            bredUnits=data.getString(3);
-            weight=data.getString(4);
-            comment=data.getString(5);
-            date1=data.getString(6);
-            id=data.getString(7);
-            new HttpPost().execute(ServerData.getIpServ() + "dairyInsert",  "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, id);
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + INSERT_DB + "\'", null);
+            //тут можно сделать добавлять ArrayList, передать в пост массив и в северном приложении парсить массив
+            String sugar, insulin, bredUnits, weight, comment, date1, id;
+            if (data == null) {
+                return;
+            }
+            while (data.moveToNext()) {
+                sugar = data.getString(1);
+                insulin = data.getString(2);
+                bredUnits = data.getString(3);
+                weight = data.getString(4);
+                comment = data.getString(5);
+                date1 = data.getString(6);
+                id = data.getString(7);
+                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert", "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, id);
+                deleteReserv(date1, INSERT_DB);
 
+            }
+
+
+            Cursor updTableNameReserve = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + UPDATE_DB + "\'", null);
+
+            while (updTableNameReserve.moveToNext()) {
+                sugar = updTableNameReserve.getString(1);
+                insulin = updTableNameReserve.getString(2);
+                bredUnits = updTableNameReserve.getString(3);
+                weight = updTableNameReserve.getString(4);
+                comment = updTableNameReserve.getString(5);
+                date1 = updTableNameReserve.getString(6);
+                id = updTableNameReserve.getString(7);
+                new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1, id);
+                deleteReserv(date1, UPDATE_DB);
+            }
+
+            Cursor data2 = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + DELETE_DB + "\'", null);
+
+            while (data2.moveToNext()) {
+                date1 = data2.getString(6);
+                new HttpPost().execute(ServerData.getIpServ() + "deleteDiary", "deleteDiary", date1);
+                deleteReserv(date1, DELETE_DB);
+
+            }
+
+
+            Cursor tableFoodUpd = db.rawQuery("SELECT * FROM " + TABLE_FOOD_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + INSERT_DB + "\'", null);
+            ArrayList<String> nameFood, gramsFood, carbsFood, idFood;
+
+
+            while (tableFoodUpd.moveToNext()) {
+                nameFood = new ArrayList<>();
+                gramsFood = new ArrayList<>();
+                carbsFood = new ArrayList<>();
+                idFoodInsert = tableFoodUpd.getInt(1);
+                nameFood.add(tableFoodUpd.getString(2));
+                gramsFood.add(tableFoodUpd.getString(3));
+                carbsFood.add(tableFoodUpd.getString(4));
+                casDataFood = "fooddataInsert";
+                servProduct = ServerData.getIpServ() + casDataFood;
+                new HttpPostFoodData().execute(nameFood, gramsFood, carbsFood);
+                deleteReservProduct(idFoodInsert, INSERT_DB);
+
+            }
+        } catch (Exception e){
 
         }
 
-
-
-
-        Cursor updTableNameReserve = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+ UPDATE_DB+"\'", null);
-
-        while (updTableNameReserve.moveToNext()){
-            sugar=updTableNameReserve.getString(1);
-            insulin=updTableNameReserve.getString(2);
-            bredUnits=updTableNameReserve.getString(3);
-            weight=updTableNameReserve.getString(4);
-            comment=updTableNameReserve.getString(5);
-            date1=updTableNameReserve.getString(6);
-            id=updTableNameReserve.getString(7);
-            new HttpPost().execute(ServerData.getIpServ() + "updateDairy",  "updateDairy", sugar, insulin, bredUnits, weight, comment, date1, id);
-
-        }
-
-        Cursor data2 = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+ DELETE_DB+"\'", null);
-
-        while (data2.moveToNext()){
-            date1=data2.getString(6);
-            new HttpPost().execute(ServerData.getIpServ() + "deleteDiary",  "deleteDiary", date1);
-
-
-        }
-
-
-        Cursor tableFoodUpd = db.rawQuery("SELECT * FROM " + TABLE_FOOD_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+ INSERT_DB+"\'", null);
-         ArrayList <String> nameFood, gramsFood, carbsFood, idFood;
-        casDataFood="fooddataInsert";
-        servProduct=ServerData.getIpServ()+casDataFood;
+       /* Cursor tableFoodDel = db.rawQuery("SELECT * FROM " + TABLE_FOOD_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+ DELETE_DB+"\'", null);
 
         while (tableFoodUpd.moveToNext()){
-            nameFood=new ArrayList<>();
-            gramsFood=new ArrayList<>();
-            carbsFood=new ArrayList<>();
-            idFoodInsert=tableFoodUpd.getInt(1);
-            nameFood.add(tableFoodUpd.getString(2));
-            gramsFood.add(tableFoodUpd.getString(3));
-            carbsFood.add(tableFoodUpd.getString(4));
-            new HttpPostFoodData().execute(nameFood, gramsFood, carbsFood);
+            casDataFood="deleteFoodData";
+            servProduct=ServerData.getIpServ()+casDataFood;
+            idFoodInsert=tableFoodDel.getInt(1);
+            new HttpPostFoodData().execute();
+            deleteReservProduct(idFoodInsert, DELETE_DB);
+        }*/
 
-        }
-
-
-
-
-
-        deleteReserv();
 
     }
 
-    public void deleteReserv(){
+    public void deleteReserv(String date, String toserv){
         SQLiteDatabase db=this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_NAME_RESERVE  );
+        db.execSQL("DELETE FROM " + TABLE_NAME_RESERVE + " WHERE DATE="+"\'"+date+"\'" + " AND " + COL_TOSERVER+"=" + "\'"+ toserv+"\'" );
+
+    }
+
+    public void deleteReservProduct(Integer id, String toserv){
+        SQLiteDatabase db=this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_FOOD_RESERVE + " WHERE "+COL_food_1+"="+id+ " AND " + COL_TOSERVER+"=" + "\'"+ toserv+"\'" );
 
     }
 
@@ -367,11 +381,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         servProduct=ServerData.getIpServ()+casDataFood;
         idFoodInsert=id;
 
-        if(settingUser.isNetworkAvailable()) {
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
 
-            new HttpPostFoodData().execute(name, grams, carbs);
-        } else {
-            insertDataProductReserve(id, name, grams, carbs);
+                new HttpPostFoodData().execute(name, grams, carbs);
+            } else {
+                insertDataProductReserve(id, name, grams, carbs, INSERT_DB);
+            }
         }
 
         if(result == -1)
@@ -379,6 +395,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return true;
     }
+
+
+
+
     public boolean insertDataProductArray(ArrayList<Integer> id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
         long result=0;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -398,7 +418,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return true;
     }
-    public boolean insertDataProductReserve(Integer id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
+    public boolean insertDataProductReserve(Integer id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs, String toserv){
         long result=0;
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -408,6 +428,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put(COL_food_2, name.get(i));
             contentValues.put(COL_food_3, grams.get(i));
             contentValues.put(COL_food_4, carbs.get(i));
+            contentValues.put(COL_TOSERVER, toserv);
             result = db.insert(TABLE_FOOD_RESERVE, null, contentValues);
         }
 
@@ -443,11 +464,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_reminder_NOREPEAT, noRepeat);
         long result =  db.insert(TABLE_REMINDER, null, contentValues);
 
-
-            if(settingUser.isNetworkAvailable()) {
-                new HttpPost().execute(ServerData.getIpServ() + "reminderInsert",  "reminderInsert", Integer.toString(id), date,  text,  Integer.toString(repeatDay),
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
+                new HttpPost().execute(ServerData.getIpServ() + "reminderInsert", "reminderInsert", Integer.toString(id), date, text, Integer.toString(repeatDay),
                         Integer.toString(repeatWeak), Integer.toString(noRepeat));
             }
+        }
 
         if(result == -1)
             return false;
@@ -463,31 +485,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_XE_MIN, xeMin);
         contentValues.put(COL_XE_TARGET, xeTarget);
         long result =  db.insert(TABLE_SETTINGS, null, contentValues);
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
 
-            if(settingUser.isNetworkAvailable()) {
+                String xeminTempStr = "", xeMaxTempStr = "", xeTargetTempStr = "", xeUserTempStr = "";
 
-                String xeminTempStr="", xeMaxTempStr="", xeTargetTempStr="", xeUserTempStr="";
-
-                if(!(xeMin==null)){
-                    xeminTempStr=Double.toString(xeMin);
+                if (!(xeMin == null)) {
+                    xeminTempStr = Double.toString(xeMin);
                 }
 
-                if(!(xeMax==null)){
-                    xeMaxTempStr=Double.toString(xeMax);
+                if (!(xeMax == null)) {
+                    xeMaxTempStr = Double.toString(xeMax);
                 }
 
 
-                if(!(xeTarget==null)){
-                    xeTargetTempStr=Double.toString(xeTarget);
+                if (!(xeTarget == null)) {
+                    xeTargetTempStr = Double.toString(xeTarget);
                 }
 
-                if(!(xeUser==null)){
-                    xeUserTempStr=Integer.toString(xeUser);
+                if (!(xeUser == null)) {
+                    xeUserTempStr = Integer.toString(xeUser);
                 }
-                new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings",  "insertDataSettings", xeminTempStr,
-                        xeMaxTempStr,  xeTargetTempStr, xeUserTempStr);
+                new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings", "insertDataSettings", xeminTempStr,
+                        xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
 
             }
+        }
 
         if(result == -1)
             return false;
@@ -504,31 +527,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_XE_USER, xeUser);
         db.update(TABLE_SETTINGS, contentValues, "ID="+1, null);
 
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
 
-            if(settingUser.isNetworkAvailable()) {
+                String xeminTempStr = "", xeMaxTempStr = "", xeTargetTempStr = "", xeUserTempStr = "";
 
-                String xeminTempStr="", xeMaxTempStr="", xeTargetTempStr="", xeUserTempStr="";
-
-                if(!(xeMin==null)){
-                    xeminTempStr=Double.toString(xeMin);
+                if (!(xeMin == null)) {
+                    xeminTempStr = Double.toString(xeMin);
                 }
 
-                if(!(xeMax==null)){
-                    xeMaxTempStr=Double.toString(xeMax);
+                if (!(xeMax == null)) {
+                    xeMaxTempStr = Double.toString(xeMax);
                 }
 
 
-                if(!(xeTarget==null)){
-                    xeTargetTempStr=Double.toString(xeTarget);
+                if (!(xeTarget == null)) {
+                    xeTargetTempStr = Double.toString(xeTarget);
                 }
 
-                if(!(xeUser==null)){
-                    xeUserTempStr=Integer.toString(xeUser);
+                if (!(xeUser == null)) {
+                    xeUserTempStr = Integer.toString(xeUser);
                 }
-                new HttpPost().execute(ServerData.getIpServ() + "updateDataSettings",  "updateDataSettings", xeminTempStr,
-                        xeMaxTempStr,  xeTargetTempStr, xeUserTempStr);
+                new HttpPost().execute(ServerData.getIpServ() + "updateDataSettings", "updateDataSettings", xeminTempStr,
+                        xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
             }
-
+        }
         return true;
     }
 
@@ -635,14 +658,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         deleteProduct(idd);
        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE ID IN (SELECT ID FROM " + TABLE_NAME + " ORDER BY DATE DESC LIMIT 1 OFFSET " + id +")");
-
-            if(settingUser.isNetworkAvailable()) {
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
 
                 new HttpPost().execute(ServerData.getIpServ() + "deleteDiary", "deleteDiary", date1);
-            }
-            else {
+            } else {
                 deleteDataReserve(date1, DELETE_DB);
             }
+        }
 
 
     }
@@ -670,13 +693,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         casDataFood="deleteFoodData";
          idFoodInsert=idDairy;
         servProduct=ServerData.getIpServ()+casDataFood;
-        if(settingUser.isNetworkAvailable()) {
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
 
-            new HttpPostFoodData().execute();
+                new HttpPostFoodData().execute();
+            } else {
+                deleteDataProductReserve(idFoodInsert, DELETE_DB);
+            }
         }
 
 
     }
+
+    public boolean deleteDataProductReserve(int idFoodInsert, String del){
+        long result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_FOOD_RESERVE + " WHERE DIARY_ID="+idFoodInsert);
+        //int i=db.delete(TABLE_FOOD_RESERVE, "DIARY_ID="+idFoodInsert, null);
+
+            return true;
+
+       //int i= db.execSQL("DELETE FROM " + TABLE_FOOD_RESERVE + " WHERE DIARY_ID="+idFoodInsert);
+   //     ContentValues contentValues = new ContentValues();
+     //   contentValues.put(COL_food_1, idFoodInsert);
+       // contentValues.put(COL_TOSERVER, DELETE_DB);
+        //result = db.insert(TABLE_FOOD_RESERVE, null, contentValues);
+
+
+        //if(result == -1)
+          //  return false;
+        //else
+          //  return true;
+
+    }
+
+
     public void deleteToken(String token){
         SQLiteDatabase db=this.getWritableDatabase();
         // Cursor data = db.rawQuery("SELECT * FROM " + TABLE_FOOD + " ORDER BY DATE DESC LIMIT 1 OFFSET " + numList, null);
@@ -689,11 +740,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_REMINDER + " WHERE REMINDER_ID="+idReminder);
 
-
-            if(settingUser.isNetworkAvailable()) {
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
 
                 new HttpPost().execute(ServerData.getIpServ() + "deleteReminder", "deleteReminder", Integer.toString(idReminder));
             }
+        }
 
 
 
@@ -715,31 +767,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (cr.moveToNext()){
             idd=cr.getInt(0);
         }
-
-            if(settingUser.isNetworkAvailable()) {
-
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
 
                 new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd));
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else{
 
-                insertDataReserve(sugar, insulin,  bredUnits,  weight,  comment,  date1, Integer.toString(idd), UPDATE_DB);
+            } else {
+
+                insertDataReserve(sugar, insulin, bredUnits, weight, comment, date1, Integer.toString(idd), UPDATE_DB);
             }
+        }
 
         return true;
     }
 
     public void updateFood(Integer id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
-        deleteProduct(id);
-        if(name.size()<=0){
-          return;
-        } else{
-            insertDataProduct(id, name, grams, carbs);
+        deleteProduct(id); //удаляем все продукты
+
+        if(name.size()!=0){
+          insertDataProduct(id, name, grams, carbs); //добавляем их заново
         }
+        /*idFoodInsert = id;
+        casDataFood = "updateFoodData";
+        servProduct = ServerData.getIpServ() + casDataFood;
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
+
+                new HttpPostFoodData().execute(name, grams, carbs);
+
+            } else {
+
+               updateFoodReserv( id,  name,  grams, carbs);
+            }
+        }*/
+
+
+
+    }
+
+    public  void updateFoodReserv(Integer id, ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
+        deleteReservProduct(id, DELETE_DB);
+
+        if(name.size()<=0){
+            return;
+        }else{
+         insertDataProductReserve(id, name, grams, carbs, INSERT_DB); //добавляем их заново
+        }
+
     }
     public Cursor getListContentsTrial(String date1){
         SQLiteDatabase db=this.getWritableDatabase();
@@ -758,9 +832,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_food_4, carbs);
 
         result = db.insert(TABLE_FOOD_USER, null, contentValues);
-
-        if(settingUser.isNetworkAvailable()) {
-            new HttpPost().execute(ServerData.getIpServ() + "insertProductUser", "insertProductUser", name, grams, carbs);
+        if(!SettingUser.isGuest) {
+            if (settingUser.isNetworkAvailable()) {
+                new HttpPost().execute(ServerData.getIpServ() + "insertProductUser", "insertProductUser", name, grams, carbs);
+            }
         }
         if(result == -1)
             return false;
@@ -1034,7 +1109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 switch(casDataFood){
                     case "fooddataInsert": jsonBody= createJsonDiary(strings[0], strings[1], strings[2]); break;
-                   case  "updateDairyData": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
+                   case  "updateFoodData":  jsonBody= createJsonDiary(strings[0], strings[1], strings[2]); break;
                     case  "deleteFoodData": jsonBody= deleteDairyJson(); break;
 
                     default:  jsonBody="";
@@ -1066,10 +1141,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
             } catch (Exception e) {
-                switch(casDataFood){
-                case "fooddataInsert":   insertDataProductReserve(idFoodInsert,strings[0], strings[1], strings[2]); break;
-              //  case  "updateDairyData": jsonBody= createJsonDiary(strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]); break;
-               // case  "deleteFoodData": jsonBody= deleteDairyJson(); break;
+                try {
+                    switch (casDataFood) {
+
+                        case "fooddataInsert":
+                            insertDataProductReserve(idFoodInsert, strings[0], strings[1], strings[2], INSERT_DB);
+                            break;
+
+                       // case  "updateFoodData": updateFoodReserv(idFoodInsert, strings[0], strings[1], strings[2]); break;
+                        case "deleteFoodData":
+                         //   deleteDataProductReserve(idFoodInsert, INSERT_DB);
+                           // break;
+                    }
+                } catch (Exception ex){
+
                 }
 
                 e.printStackTrace();
