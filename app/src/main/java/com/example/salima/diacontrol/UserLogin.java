@@ -184,10 +184,12 @@ public class UserLogin extends AppCompatActivity {
                 //DatabaseHelper db=new DatabaseHelper(getApplicationContext());
                 db.insertToken(isCorrect, mail.getText().toString());
                 SettingUser.isGuest=false;
+                /*
                 Cursor data = db.selectSettings();
+
                 if(data.getCount()<=0) {
-                    db.insertDataSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget, SettingUser.xe);
-                }
+                    db.insertDataSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget, SettingUser.xe, false);
+                }*/
                 //new HttpPostGetList().execute(ServerData.getIpServ()+"getDiaryList");
                 //new HttpPostGetList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ServerData.getIpServ()+"getDiaryList");
                 HttpPostGetList task2 = new HttpPostGetList();
@@ -524,8 +526,11 @@ public class UserLogin extends AppCompatActivity {
                             arrayCommentList, arrayDateList, arrayIdList);
 
                     db.insertDataProductArray(diary_idList, name_productList,grams_productList, carbs_productist);
-                    db.insertDataSettings(xeMaxTemp, xeminTemp,xeTargetTemp, xeUserTemp);
-
+                    db.insertDataSettings(xeMaxTemp, xeminTemp,xeTargetTemp, xeUserTemp, false);
+                    SettingUser.xeMax=xeMaxTemp;
+                    SettingUser.xeMin=xeminTemp;
+                    SettingUser.xeTarget=xeTargetTemp;
+                    SettingUser.xeTarget=xeTargetTemp;
                     db.insertReminderArray(reminderidList, reminderdateList, remindertextList, repeatdayList, repeatweekList, norepeatList);
 
                     SettingUser ss=new SettingUser(getApplicationContext());

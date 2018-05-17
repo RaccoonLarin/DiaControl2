@@ -328,6 +328,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 deleteReservProduct(idFoodInsert, INSERT_DB);
 
             }
+
+
+            /*
+            Cursor settingsInsert = db.rawQuery("SELECT * FROM " + TABLE_SETTINGS_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + INSERT_DB + "\'", null);
+            Double xeMin, xeMax, xeTarget;
+            Integer xeUser;
+
+
+            while (settingsInsert.moveToNext()) {
+
+                xeMax=settingsInsert.getDouble(1);
+                xeMin=settingsInsert.getDouble(2);
+                xeTarget=settingsInsert.getDouble(3);
+                xeUser=settingsInsert.getInt(4);
+                String xeminTempStr = "", xeMaxTempStr = "", xeTargetTempStr = "", xeUserTempStr = "";
+
+                if (!(xeMin == null)) {
+                    xeminTempStr = Double.toString(xeMin);
+                }
+
+                if (!(xeMax == null)) {
+                    xeMaxTempStr = Double.toString(xeMax);
+                }
+
+
+                if (!(xeTarget == null)) {
+                    xeTargetTempStr = Double.toString(xeTarget);
+                }
+
+                if (!(xeUser == null)) {
+                    xeUserTempStr = Integer.toString(xeUser);
+                }
+                new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings", "insertDataSettings", xeminTempStr,
+                        xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
+                deleteReservProduct(idFoodInsert, INSERT_DB);
+
+            }*/
         } catch (Exception e){
 
         }
@@ -354,6 +391,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteReservProduct(Integer id, String toserv){
         SQLiteDatabase db=this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_FOOD_RESERVE + " WHERE "+COL_food_1+"="+id+ " AND " + COL_TOSERVER+"=" + "\'"+ toserv+"\'" );
+
+    }
+
+
+    public void deleteReservSettings(String toserv){
+        SQLiteDatabase db=this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_SETTINGS_RESERVE + " WHERE "+COL_TOSERVER+"=" + "\'"+ toserv+"\'");
 
     }
 
@@ -477,7 +521,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean insertDataSettings(Double xeMax, Double xeMin, Double xeTarget, Integer xeUser){
+    public boolean insertDataSettings(Double xeMax, Double xeMin, Double xeTarget, Integer xeUser, Boolean neetosend){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -506,11 +550,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 if (!(xeUser == null)) {
                     xeUserTempStr = Integer.toString(xeUser);
                 }
-                new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings", "insertDataSettings", xeminTempStr,
-                        xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
 
+                if(neetosend) {
+                    new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings", "insertDataSettings", xeminTempStr,
+                            xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
+                }
+
+            }  else {
+              //  insertDataSetingsReserve(xeMax, xeMin, xeTarget, xeUser, INSERT_DB);
             }
         }
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean insertDataSetingsReserve(Double xeMax, Double xeMin, Double xeTarget, Integer xeUser, String toserv){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+
+        contentValues.put(COL_XE_MAX, xeMax);
+        contentValues.put(COL_XE_MIN, xeMin);
+        contentValues.put(COL_XE_TARGET, xeTarget);
+        contentValues.put(COL_TOSERVER, toserv);
+        long result =  db.insert(TABLE_SETTINGS_RESERVE, null, contentValues);
+
 
         if(result == -1)
             return false;

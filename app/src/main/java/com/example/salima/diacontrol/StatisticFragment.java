@@ -596,6 +596,8 @@ public class StatisticFragment extends Fragment {
 
                         ScatterDataSet dataSet = new ScatterDataSet(entries, "Dataset 1"); // add entries to dataset
                         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
+                        scatterChart.getLegend().setEnabled(false);
+                        scatterChart.setDescription(null);
                         //  ;
                      //   dataSet.setFillAlpha(110);
 
@@ -783,6 +785,8 @@ public class StatisticFragment extends Fragment {
 
                         ScatterDataSet dataSet = new ScatterDataSet(entries, "Dataset 1"); // add entries to dataset
                         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
+                        scatterChartMonth.getLegend().setEnabled(false);
+                        scatterChartMonth.setDescription(null);
                         //  ;
                         //   dataSet.setFillAlpha(110);
 

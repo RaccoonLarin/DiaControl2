@@ -92,14 +92,20 @@ public class SettingsFragment extends Fragment {
 
         if(SettingUser.xeTarget!=null) {
             targetXe.setText(SettingUser.xeTarget.toString());
+        } else{
+            targetXe.setText("");
         }
 
         if(SettingUser.xeMin!=null) {
             minXe.setText(SettingUser.xeMin.toString());
+        } else{
+            minXe.setText("");
         }
 
         if(SettingUser.xeMax!=null) {
             maxXe.setText(SettingUser.xeMax.toString());
+        } else{
+            maxXe.setText("");
         }
 
         userXE.setText(SettingUser.xe.toString());
@@ -358,7 +364,7 @@ public class SettingsFragment extends Fragment {
                                 SettingUser.xe=12;
                                 SettingUser.xeMax=null;
                                 SettingUser.xeMin=null;
-                                SettingUser.xeMax=null;
+                                SettingUser.xeTarget=null;
                                 SettingUser.email="";
 
                                 db.deleteAll();
@@ -379,7 +385,7 @@ public class SettingsFragment extends Fragment {
                             SettingUser.xe=12;
                             SettingUser.xeMax=null;
                             SettingUser.xeMin=null;
-                            SettingUser.xeMax=null;
+                            SettingUser.xeTarget=null;
                             SettingUser.email="";
                             DatabaseHelper db=new DatabaseHelper(getContext());
                             db.deleteAll();
