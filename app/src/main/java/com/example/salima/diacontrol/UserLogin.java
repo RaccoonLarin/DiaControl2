@@ -76,12 +76,16 @@ public class UserLogin extends AppCompatActivity {
                         new TimerTask() {
                             @Override
                             public void run() {
-                                DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+                                try {
+                                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-                                //   Toast.makeText(getApplicationContext(), "lsdkjlsjkdf", Toast.LENGTH_SHORT).show();
-                                db.selectReserv();
+                                    //   Toast.makeText(getApplicationContext(), "lsdkjlsjkdf", Toast.LENGTH_SHORT).show();
+                                    db.selectReserv();
+                                } catch (Exception e){
+
+                                }
                             }
-                        }, 0, 60*1000 //TODO множить на 60
+                        }, 0, 1000 //TODO множить на 60
                 );
 
                 SettingUser.isGuest=false;

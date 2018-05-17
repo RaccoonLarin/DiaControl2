@@ -678,6 +678,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_FOOD );
         db.execSQL("DELETE FROM " + TABLE_REMINDER);
         db.execSQL("DELETE FROM " + TABLE_FOOD_USER);
+
        // db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_NAME+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_SETTINGS+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_FOOD+"\'" );

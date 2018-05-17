@@ -354,7 +354,16 @@ public class SettingsFragment extends Fragment {
                             getContext().deleteFile(ServerData.getTokentxt());
                             try {
                                 SettingUser su= new SettingUser(getContext());
+                                DatabaseHelper db=new DatabaseHelper(getContext());
+                                SettingUser.xe=12;
+                                SettingUser.xeMax=null;
+                                SettingUser.xeMin=null;
+                                SettingUser.xeMax=null;
+                                SettingUser.email="";
+
+                                db.deleteAll();
                                 if(!su.isNetworkAvailable()) {
+
                                     new HttpPost().execute(ServerData.getIpServ()+"exit").get();
                                     return;
                                 }
@@ -367,6 +376,13 @@ public class SettingsFragment extends Fragment {
                         } else if (SettingUser.isGuest){
                             File file = new File(ServerData.getTokentxtGuest());
                             boolean deleted = file.delete();
+                            SettingUser.xe=12;
+                            SettingUser.xeMax=null;
+                            SettingUser.xeMin=null;
+                            SettingUser.xeMax=null;
+                            SettingUser.email="";
+                            DatabaseHelper db=new DatabaseHelper(getContext());
+                            db.deleteAll();
                             getContext().deleteFile(ServerData.getTokentxt());
                         }
 
