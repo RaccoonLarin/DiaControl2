@@ -93,7 +93,7 @@ public class UserLogin extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else
-            if (file.equals(ServerData.getTokentxt())) {
+            if (file.equals(ServerData.getTokentxtGuest())) {
                 SettingUser.isGuest=true;
                 Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
                 startActivity(intent);
@@ -152,6 +152,12 @@ public class UserLogin extends AppCompatActivity {
 
 
           //  new HttpPost().execute(ServerData.getIpServ()+"signinpost");
+            String mailTxt = mail.getText().toString();
+            String passTxt = pass.getText().toString();
+            if (mailTxt.equals("")||passTxt.equals("")){
+                Toast.makeText(getApplicationContext(), "Введите данные", Toast.LENGTH_LONG).show();
+                return;
+            }
            SettingUser su= new SettingUser(getApplicationContext());
                 if(!su.isNetworkAvailable()) {
                     Toast.makeText(getApplicationContext(), "Нет подключения к интернету", Toast.LENGTH_LONG).show();
@@ -214,11 +220,13 @@ public class UserLogin extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //Создать аккаунт
+    //Войти как гость
     public void onClickGuestTExt(View v){
         isCorrect="AbShHjskaHjaskjsA";
         SettingUser.isGuest=true;
         createFileGuest();
+        DatabaseHelper db=new DatabaseHelper(getApplicationContext());
+        db.insertDataSettings(SettingUser.xeMax, SettingUser.xeMin, SettingUser.xeTarget, SettingUser.xe, false);
         Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
         intent.putExtra("token", isCorrect);
         startActivity(intent);

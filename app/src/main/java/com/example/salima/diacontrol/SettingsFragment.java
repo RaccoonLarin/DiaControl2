@@ -151,6 +151,7 @@ public class SettingsFragment extends Fragment {
                         DatabaseHelper dbhelper=new DatabaseHelper(getContext());
                         DatabaseHelper db =new DatabaseHelper(getContext());
                         Cursor curCSV = db.selectExport();
+
                         String column[] ={"Уровень сахара", "Инсулин", "ХЕ", "Вес", "Комментарий", "Дата"};
                         csvWrite.writeNext(column);
                         while(curCSV.moveToNext())
@@ -160,13 +161,23 @@ public class SettingsFragment extends Fragment {
                                     curCSV.getString(4), curCSV.getString(5),  curCSV.getString(6)};
                             csvWrite.writeNext(arrStr);
                         }
+
+                       // String columnSettings[] ={"Минимальный сахар", "Максимальный сахар", "Целевой сахар", "Углеводы в 1 ХЕ"};
+                     //   csvWrite.writeNext(columnSettings);
+                   //     Cursor curCSVSettings = db.selectExportSettings();
+
+
+
                         try {
                             csvWrite.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
+
+
                         curCSV.close();
-                        Toast.makeText(getContext(), "Сохранено", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Сохранено в"+filePath, Toast.LENGTH_SHORT).show();
 
                        /* File dbFile= new File("diary.db");
                         DatabaseHelper dbhelper = new DatabaseHelper(getContext());

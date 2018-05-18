@@ -715,6 +715,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery("SELECT * FROM diary_data", null);
         return data;
     }
+
+    public Cursor selectExportSettings(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM "+TABLE_SETTINGS, null);
+        return data;
+    }
     //удалить запись дневника
     public void delete(int id, String date1){
         SQLiteDatabase db=this.getWritableDatabase();
