@@ -386,6 +386,9 @@ public class StatisticFragment extends Fragment {
                             leftAxis.addLimitLine(ll);
                         }
 
+                        //leftAxis.se
+
+
 
 
                         //  axisX.setValues(axisValues)
@@ -397,9 +400,10 @@ public class StatisticFragment extends Fragment {
                             entries.add(new Entry(hours.get(i), blood_sugar.get(i)));
                         }
 
-                        LineDataSet dataSet = new LineDataSet(entries, "Dataset 1"); // add entries to dataset
-                        chartLine.getLegend().setEnabled(false);
+                        LineDataSet dataSet = new LineDataSet(entries, "Уровень глюкозы за день"); // add entries to dataset
+                      //  chartLine.getLegend().setEnabled(false);
                         chartLine.setDescription(null);
+
                         dataSet.setFillAlpha(110);
                         dataSet.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                         dataSet.setLineWidth(2f);
@@ -594,9 +598,9 @@ public class StatisticFragment extends Fragment {
 
                         //  axisX.setValues(axisValues)
 
-                        ScatterDataSet dataSet = new ScatterDataSet(entries, "Dataset 1"); // add entries to dataset
+                        ScatterDataSet dataSet = new ScatterDataSet(entries, "Уровень сахара за неделю"); // add entries to dataset
                         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-                        scatterChart.getLegend().setEnabled(false);
+                       // scatterChart.getLegend().setEnabled(false);
                         scatterChart.setDescription(null);
                         //  ;
                      //   dataSet.setFillAlpha(110);
@@ -783,7 +787,7 @@ public class StatisticFragment extends Fragment {
 
                         //  axisX.setValues(axisValues)
 
-                        ScatterDataSet dataSet = new ScatterDataSet(entries, "Dataset 1"); // add entries to dataset
+                        ScatterDataSet dataSet = new ScatterDataSet(entries, "Уровень сахара за месяц"); // add entries to dataset
                         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
                         scatterChartMonth.getLegend().setEnabled(false);
                         scatterChartMonth.setDescription(null);
