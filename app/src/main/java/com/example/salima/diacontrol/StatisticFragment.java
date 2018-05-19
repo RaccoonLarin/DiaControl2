@@ -789,7 +789,7 @@ public class StatisticFragment extends Fragment {
 
                         ScatterDataSet dataSet = new ScatterDataSet(entries, "Уровень сахара за месяц"); // add entries to dataset
                         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-                        scatterChartMonth.getLegend().setEnabled(false);
+                       // scatterChartMonth.getLegend().setEnabled(false);
                         scatterChartMonth.setDescription(null);
                         //  ;
                         //   dataSet.setFillAlpha(110);
