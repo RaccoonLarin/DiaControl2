@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -162,6 +163,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         SQLiteDatabase db2 = this.getWritableDatabase();
         ContentValues contentValues2 = new ContentValues();
+        int random=new Random().nextInt(Integer.MAX_VALUE-3);
+        idd=random;
         contentValues2.put(COL_IDDIARY, idd);
         db2.update(TABLE_NAME, contentValues2, COL_7+"="+"\'"+date1+"\'", null);
 
@@ -330,8 +333,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
 
 
-            /*
-            Cursor settingsInsert = db.rawQuery("SELECT * FROM " + TABLE_SETTINGS_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + INSERT_DB + "\'", null);
+
+            Cursor settingsInsert = db.rawQuery("SELECT * FROM " + TABLE_SETTINGS_RESERVE, null);
             Double xeMin, xeMax, xeTarget;
             Integer xeUser;
 
@@ -364,7 +367,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
                 deleteReservProduct(idFoodInsert, INSERT_DB);
 
-            }*/
+            }
         } catch (Exception e){
 
         }
@@ -395,9 +398,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void deleteReservSettings(String toserv){
+    public void deleteReservSettings(){
         SQLiteDatabase db=this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_SETTINGS_RESERVE + " WHERE "+COL_TOSERVER+"=" + "\'"+ toserv+"\'");
+        db.execSQL("DELETE FROM " + TABLE_SETTINGS_RESERVE);
 
     }
 
@@ -556,8 +559,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
                 }
 
-            }  else {
-              //  insertDataSetingsReserve(xeMax, xeMin, xeTarget, xeUser, INSERT_DB);
             }
         }
 
@@ -571,10 +572,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        deleteReservSettings();
 
 
         contentValues.put(COL_XE_MAX, xeMax);
         contentValues.put(COL_XE_MIN, xeMin);
+        contentValues.put(COL_XE_USER, xeUser);
         contentValues.put(COL_XE_TARGET, xeTarget);
         contentValues.put(COL_TOSERVER, toserv);
         long result =  db.insert(TABLE_SETTINGS_RESERVE, null, contentValues);
@@ -618,6 +621,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 new HttpPost().execute(ServerData.getIpServ() + "updateDataSettings", "updateDataSettings", xeminTempStr,
                         xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
+            }  else {
+               insertDataSetingsReserve(xeMax, xeMin, xeTarget, xeUser, INSERT_DB);
             }
         }
         return true;

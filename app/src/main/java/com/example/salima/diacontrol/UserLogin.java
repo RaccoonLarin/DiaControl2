@@ -138,6 +138,12 @@ public class UserLogin extends AppCompatActivity {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
+    public final static boolean isValidLogin(CharSequence target) {
+        return !TextUtils.isEmpty(target) && (!target.toString().contains(" "))&&(target.toString().matches("[a-zA-Z0-9]*")
+                &&(target.length()>=5));
+    }
+
+
     //проверка верно ли введена структура пароля
     public final static boolean isValidPass(CharSequence target) {
         return !TextUtils.isEmpty(target) && (target.length()>=8);
@@ -267,7 +273,7 @@ public class UserLogin extends AppCompatActivity {
             String mailTxt = mail.getText().toString();
             String passTxt = pass.getText().toString();
             SettingUser.email=mailTxt;
-            if(isValidEmail(mailTxt) && isValidPass(passTxt) ){
+            if(isValidLogin(mailTxt) && isValidPass(passTxt) ){
 
                 OutputStream out = null;
                 BufferedReader reader=null;

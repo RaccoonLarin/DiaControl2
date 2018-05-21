@@ -285,6 +285,7 @@ public class AddActivity extends AppCompatActivity {
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
                         new DiaryFragment();
+
                   //     finish(); // TODO убрать если передаются данные
 
                     }

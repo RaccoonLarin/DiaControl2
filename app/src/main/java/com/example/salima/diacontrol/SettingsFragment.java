@@ -179,65 +179,6 @@ public class SettingsFragment extends Fragment {
                         curCSV.close();
                         Toast.makeText(getContext(), "Сохранено в"+filePath, Toast.LENGTH_SHORT).show();
 
-                       /* File dbFile= new File("diary.db");
-                        DatabaseHelper dbhelper = new DatabaseHelper(getContext());
-                        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-                        if (!exportDir.exists())
-                        {
-                            exportDir.mkdirs();
-                        }
-
-                        Random random=new Random();
-                        Integer s=random.nextInt();
-                        String str = s.toString();
-                        File file = new File(exportDir, "DiaControl_"+str+".csv");
-                        try
-                        {
-                            if(!file.exists())
-                                file.mkdirs();
-                            else if(!file.isDirectory()&&file.canWrite()){
-                                file.delete();
-                                file.mkdirs();
-                            }
-                            file.createNewFile();
-                            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-                            SQLiteDatabase db = dbhelper.getReadableDatabase();
-                            Cursor curCSV = db.rawQuery("SELECT * FROM diary_data",null);
-                            csvWrite.writeNext(curCSV.getColumnNames());
-                            while(curCSV.moveToNext())
-                            {
-                                //Which column you want to exprort
-                                String arrStr[] ={curCSV.getString(0),curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
-                                csvWrite.writeNext(arrStr);
-                            }
-                            csvWrite.close();
-                            curCSV.close();
-                        }
-                        catch(Exception sqlEx)
-                        {
-                            Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
-                        }*/
-                       /* CSVWriter writer = null;
-                        try
-                        {
-                            writer = new CSVWriter(new FileWriter("myfile.csv"),',','\'','-', "~");
-
-                            String[] entries = "first#second#third".split("#"); // array of your values
-                            writer.writeNext(entries);
-                            writer.close();
-                        }
-                        catch (IOException e)
-                        {
-                            //error
-                        }*/
-                       // Intent createIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                     //   createIntent.setType("text/*").addCategory(Intent.CATEGORY_OPENABLE);
-                     //   String filename="dfsd.pdf";
-                   //     createIntent.putExtra(Intent.EXTRA_TITLE, filename);
-                     // startActivityForResult(createIntent, RESULT_OK);
-                  //  Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-
-                   // startActivityForResult(intent, RESULT_OK);
 
                     }
                 });

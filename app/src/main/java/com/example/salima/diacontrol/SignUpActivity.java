@@ -41,6 +41,11 @@ public class SignUpActivity extends AppCompatActivity {
     public final static boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
+    public final static boolean isValidLogin(CharSequence target) {
+        return !TextUtils.isEmpty(target) && (!target.toString().contains(" "))&&(target.toString().matches("[a-zA-Z0-9]*")
+        &&(target.length()>=5));
+    }
+
 
     //проверка верно ли введена структура пароля
     public final static boolean isValidPass(CharSequence target) {
@@ -53,8 +58,8 @@ public class SignUpActivity extends AppCompatActivity {
             // sigin.setBackgroundColor(Color.GRAY);
             String mailTxt = mail.getText().toString();
             String passTxt = pass.getText().toString();
-            if(!isValidEmail(mailTxt) ) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Неверная почта", Toast.LENGTH_SHORT);
+            if(!isValidLogin(mailTxt) ) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Логин должен состоять из символов букв и цифр и длиной больше 4 символов", Toast.LENGTH_SHORT);
                 toast.show();
                 return;
 
