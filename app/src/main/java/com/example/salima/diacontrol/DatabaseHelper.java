@@ -267,109 +267,110 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public void selectReserv(){
-        try {
-            SQLiteDatabase db = this.getWritableDatabase();
-            Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + INSERT_DB + "\'", null);
-            //тут можно сделать добавлять ArrayList, передать в пост массив и в северном приложении парсить массив
-            String sugar, insulin, bredUnits, weight, comment, date1, id;
-            if (data == null) {
-                return;
-            }
-            while (data.moveToNext()) {
-                sugar = data.getString(1);
-                insulin = data.getString(2);
-                bredUnits = data.getString(3);
-                weight = data.getString(4);
-                comment = data.getString(5);
-                date1 = data.getString(6);
-                id = data.getString(7);
-                new HttpPost().execute(ServerData.getIpServ() + "dairyInsert", "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, id);
-                deleteReserv(date1, INSERT_DB);
-
-            }
-
-
-            Cursor updTableNameReserve = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + UPDATE_DB + "\'", null);
-
-            while (updTableNameReserve.moveToNext()) {
-                sugar = updTableNameReserve.getString(1);
-                insulin = updTableNameReserve.getString(2);
-                bredUnits = updTableNameReserve.getString(3);
-                weight = updTableNameReserve.getString(4);
-                comment = updTableNameReserve.getString(5);
-                date1 = updTableNameReserve.getString(6);
-                id = updTableNameReserve.getString(7);
-                new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1, id);
-                deleteReserv(date1, UPDATE_DB);
-            }
-
-            Cursor data2 = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + DELETE_DB + "\'", null);
-
-            while (data2.moveToNext()) {
-                date1 = data2.getString(6);
-                new HttpPost().execute(ServerData.getIpServ() + "deleteDiary", "deleteDiary", date1);
-                deleteReserv(date1, DELETE_DB);
-
-            }
-
-
-            Cursor tableFoodUpd = db.rawQuery("SELECT * FROM " + TABLE_FOOD_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + INSERT_DB + "\'", null);
-            ArrayList<String> nameFood, gramsFood, carbsFood, idFood;
-
-
-            while (tableFoodUpd.moveToNext()) {
-                nameFood = new ArrayList<>();
-                gramsFood = new ArrayList<>();
-                carbsFood = new ArrayList<>();
-                idFoodInsert = tableFoodUpd.getInt(1);
-                nameFood.add(tableFoodUpd.getString(2));
-                gramsFood.add(tableFoodUpd.getString(3));
-                carbsFood.add(tableFoodUpd.getString(4));
-                casDataFood = "fooddataInsert";
-                servProduct = ServerData.getIpServ() + casDataFood;
-                new HttpPostFoodData().execute(nameFood, gramsFood, carbsFood);
-                deleteReservProduct(idFoodInsert, INSERT_DB);
-
-            }
-
-
-
-            Cursor settingsInsert = db.rawQuery("SELECT * FROM " + TABLE_SETTINGS_RESERVE, null);
-            Double xeMin, xeMax, xeTarget;
-            Integer xeUser;
-
-
-            while (settingsInsert.moveToNext()) {
-
-                xeMax=settingsInsert.getDouble(1);
-                xeMin=settingsInsert.getDouble(2);
-                xeTarget=settingsInsert.getDouble(3);
-                xeUser=settingsInsert.getInt(4);
-                String xeminTempStr = "", xeMaxTempStr = "", xeTargetTempStr = "", xeUserTempStr = "";
-
-                if (!(xeMin == null)) {
-                    xeminTempStr = Double.toString(xeMin);
+        if(settingUser.isNetworkAvailable()) {
+            try {
+                SQLiteDatabase db = this.getWritableDatabase();
+                Cursor data = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + INSERT_DB + "\'", null);
+                //тут можно сделать добавлять ArrayList, передать в пост массив и в северном приложении парсить массив
+                String sugar, insulin, bredUnits, weight, comment, date1, id;
+                if (data == null) {
+                    return;
                 }
+                while (data.moveToNext()) {
+                    sugar = data.getString(1);
+                    insulin = data.getString(2);
+                    bredUnits = data.getString(3);
+                    weight = data.getString(4);
+                    comment = data.getString(5);
+                    date1 = data.getString(6);
+                    id = data.getString(7);
+                    new HttpPost().execute(ServerData.getIpServ() + "dairyInsert", "dairyInsert", sugar, insulin, bredUnits, weight, comment, date1, id);
+                    deleteReserv(date1, INSERT_DB);
 
-                if (!(xeMax == null)) {
-                    xeMaxTempStr = Double.toString(xeMax);
                 }
 
 
-                if (!(xeTarget == null)) {
-                    xeTargetTempStr = Double.toString(xeTarget);
+                Cursor updTableNameReserve = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + UPDATE_DB + "\'", null);
+
+                while (updTableNameReserve.moveToNext()) {
+                    sugar = updTableNameReserve.getString(1);
+                    insulin = updTableNameReserve.getString(2);
+                    bredUnits = updTableNameReserve.getString(3);
+                    weight = updTableNameReserve.getString(4);
+                    comment = updTableNameReserve.getString(5);
+                    date1 = updTableNameReserve.getString(6);
+                    id = updTableNameReserve.getString(7);
+                    new HttpPost().execute(ServerData.getIpServ() + "updateDairy", "updateDairy", sugar, insulin, bredUnits, weight, comment, date1, id);
+                    deleteReserv(date1, UPDATE_DB);
                 }
 
-                if (!(xeUser == null)) {
-                    xeUserTempStr = Integer.toString(xeUser);
+                Cursor data2 = db.rawQuery("SELECT * FROM " + TABLE_NAME_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + DELETE_DB + "\'", null);
+
+                while (data2.moveToNext()) {
+                    date1 = data2.getString(6);
+                    new HttpPost().execute(ServerData.getIpServ() + "deleteDiary", "deleteDiary", date1);
+                    deleteReserv(date1, DELETE_DB);
+
                 }
-                new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings", "insertDataSettings", xeminTempStr,
-                        xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
-                deleteReservProduct(idFoodInsert, INSERT_DB);
+
+
+                Cursor tableFoodUpd = db.rawQuery("SELECT * FROM " + TABLE_FOOD_RESERVE + " WHERE " + COL_TOSERVER + "=" + "\'" + INSERT_DB + "\'", null);
+                ArrayList<String> nameFood, gramsFood, carbsFood, idFood;
+
+
+                while (tableFoodUpd.moveToNext()) {
+                    nameFood = new ArrayList<>();
+                    gramsFood = new ArrayList<>();
+                    carbsFood = new ArrayList<>();
+                    idFoodInsert = tableFoodUpd.getInt(1);
+                    nameFood.add(tableFoodUpd.getString(2));
+                    gramsFood.add(tableFoodUpd.getString(3));
+                    carbsFood.add(tableFoodUpd.getString(4));
+                    casDataFood = "fooddataInsert";
+                    servProduct = ServerData.getIpServ() + casDataFood;
+                    new HttpPostFoodData().execute(nameFood, gramsFood, carbsFood);
+                    deleteReservProduct(idFoodInsert, INSERT_DB);
+
+                }
+
+
+                Cursor settingsInsert = db.rawQuery("SELECT * FROM " + TABLE_SETTINGS_RESERVE, null);
+                Double xeMin, xeMax, xeTarget;
+                Integer xeUser;
+
+
+                while (settingsInsert.moveToNext()) {
+
+                    xeMax = settingsInsert.getDouble(1);
+                    xeMin = settingsInsert.getDouble(2);
+                    xeTarget = settingsInsert.getDouble(3);
+                    xeUser = settingsInsert.getInt(4);
+                    String xeminTempStr = "", xeMaxTempStr = "", xeTargetTempStr = "", xeUserTempStr = "";
+
+                    if (!(xeMin == null)) {
+                        xeminTempStr = Double.toString(xeMin);
+                    }
+
+                    if (!(xeMax == null)) {
+                        xeMaxTempStr = Double.toString(xeMax);
+                    }
+
+
+                    if (!(xeTarget == null)) {
+                        xeTargetTempStr = Double.toString(xeTarget);
+                    }
+
+                    if (!(xeUser == null)) {
+                        xeUserTempStr = Integer.toString(xeUser);
+                    }
+                    new HttpPost().execute(ServerData.getIpServ() + "insertDataSettings", "insertDataSettings", xeminTempStr,
+                            xeMaxTempStr, xeTargetTempStr, xeUserTempStr);
+                    deleteReservProduct(idFoodInsert, INSERT_DB);
+
+                }
+            } catch (Exception e) {
 
             }
-        } catch (Exception e){
-
         }
 
        /* Cursor tableFoodDel = db.rawQuery("SELECT * FROM " + TABLE_FOOD_RESERVE + " WHERE " + COL_TOSERVER+"=" + "\'"+ DELETE_DB+"\'", null);

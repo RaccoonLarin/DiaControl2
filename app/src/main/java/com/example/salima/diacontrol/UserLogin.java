@@ -85,7 +85,7 @@ public class UserLogin extends AppCompatActivity {
 
                                 }
                             }
-                        }, 0, 1000 //TODO множить на 60
+                        }, 0, 3*1000 //TODO множить на 60
                 );
 
                 SettingUser.isGuest=false;
