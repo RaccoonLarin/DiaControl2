@@ -306,7 +306,7 @@ public class SettingsFragment extends Fragment {
                     public void onClick(View view) {
 
 
-                        if(!SettingUser.isGuest){
+                         if(!SettingUser.isGuest){
                             File file = new File(ServerData.getTokentxt());
                             boolean deleted = file.delete();
                             getContext().deleteFile(ServerData.getTokentxt());
@@ -331,7 +331,7 @@ public class SettingsFragment extends Fragment {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
-                        } else if (SettingUser.isGuest){
+                        } else {
                             File file = new File(ServerData.getTokentxtGuest());
                             boolean deleted = file.delete();
                             SettingUser.xe=12;
@@ -341,7 +341,7 @@ public class SettingsFragment extends Fragment {
                             SettingUser.email="";
                             DatabaseHelper db=new DatabaseHelper(getContext());
                             db.deleteAll();
-                            getContext().deleteFile(ServerData.getTokentxt());
+                            getContext().deleteFile(ServerData.getTokentxtGuest());
                         }
 
                         Intent intent = new Intent(getContext(), UserLogin.class);

@@ -18,6 +18,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,36 +100,38 @@ public class RimenderFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        reminderButton=(Button)  getView().findViewById(R.id.reminderButton);
-         //view1=getLayoutInflater().inflate(R.layout.reminder_deign_layout, null);
+       try {
+           reminderButton = (Button) getView().findViewById(R.id.reminderButton);
+           //view1=getLayoutInflater().inflate(R.layout.reminder_deign_layout, null);
 
-        newFragmen=this;
-        Calendar calendar  = Calendar.getInstance();
-        hour_x=calendar.get(Calendar.HOUR_OF_DAY);
-        minute_x=calendar.get(Calendar.MINUTE);
-        year_x=calendar.get(Calendar.YEAR);
-        month_x=calendar.get(Calendar.MONTH);
-        day_x=calendar.get(Calendar.DAY_OF_MONTH);
+           newFragmen = this;
+           Calendar calendar = Calendar.getInstance();
+           hour_x = calendar.get(Calendar.HOUR_OF_DAY);
+           minute_x = calendar.get(Calendar.MINUTE);
+           year_x = calendar.get(Calendar.YEAR);
+           month_x = calendar.get(Calendar.MONTH);
+           day_x = calendar.get(Calendar.DAY_OF_MONTH);
 
-        addListenerOnButtonReminder();
-
-
-        reminderButton.setFocusable(false);
+           addListenerOnButtonReminder();
 
 
+           reminderButton.setFocusable(false);
 
 
-        //SettingUser.textReminder.add("yo");
-     //   SettingUser.timeTextReminder.add("15"+":"+"30");
+           //SettingUser.textReminder.add("yo");
+           //   SettingUser.timeTextReminder.add("15"+":"+"30");
 
-        //TODO этот год в диалог
+           //TODO этот год в диалог
 
-        listView=(ListView) getView().findViewById(R.id.remindList);
-        customListView = new CustomAdapter();
-        listView.setAdapter(customListView);
+           listView = (ListView) getView().findViewById(R.id.remindList);
+           customListView = new CustomAdapter();
+           listView.setAdapter(customListView);
 
-        listViewListener();
-        listViewListenerEdit();
+           listViewListener();
+           listViewListenerEdit();
+       } catch (Exception e){
+           Log.e("Het", e.getMessage());
+       }
     }
 
     public void getList(){
