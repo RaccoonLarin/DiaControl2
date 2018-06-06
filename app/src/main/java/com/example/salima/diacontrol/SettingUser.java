@@ -132,6 +132,9 @@ public class SettingUser {
 
     }
      public void gett_json() {
+         foodList.clear();
+         xeString.clear();
+         grams.clear();
           String json, json2;
          // foodList = new ArrayList<>();
           //xeString = new ArrayList<>();

@@ -47,7 +47,7 @@ public class AddFoodActivity extends AppCompatActivity {
     TextView textView3, finalText;
     EditText gramsEdit, calEdit;
     //данные из json
-    //rrayList<String> foodList, xeString, grams;
+
     ListView listView;
     CustomAdapter customListView;
     Button buttonSaveFood, buttonAddFood;
@@ -74,6 +74,9 @@ public class AddFoodActivity extends AppCompatActivity {
         foodList1 = new ArrayList<>();
         xeString1 = new ArrayList<>();
         grams1 = new ArrayList<>();
+        foodList1.clear();
+        xeString1.clear();
+        grams1.clear();
         listView = (ListView) findViewById(R.id.listviewFood);
         buttonSaveFood=(Button) findViewById(R.id.buttonSaveFood);
         buttonAddFood=(Button) findViewById(R.id.buttonAddFood);
@@ -353,12 +356,15 @@ public class AddFoodActivity extends AppCompatActivity {
                             //TODO записывать еду пользователя в sqlite
                             DatabaseHelper db= new DatabaseHelper(getApplicationContext());
                             db.insertDataProductUser(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
+
                             SettingUser.foodList.add(YouEditTextValue);
                             SettingUser.xeString.add(YouEditTextValue3);
                             SettingUser.grams.add(YouEditTextValue2);
+                         //   autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
+                          adapter = new ArrayAdapter(getBaseContext(), android.R.layout.select_dialog_item, SettingUser.foodList);
+                            autoCompleteTextView.setAdapter(adapter);
+                          adapter.notifyDataSetChanged();
 
-                            adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.select_dialog_item, SettingUser.foodList);
-                           adapter.notifyDataSetChanged();
 
                         }
                     }
@@ -366,7 +372,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
                 alert.setNegativeButton("ЗАКРЫТЬ", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        // what ever you want to do with No option.
+
                     }
                 });
                 final AlertDialog dialog = alert.create();

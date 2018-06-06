@@ -152,7 +152,7 @@ public class SettingsFragment extends Fragment {
                         DatabaseHelper db =new DatabaseHelper(getContext());
                         Cursor curCSV = db.selectExport();
 
-                        String column[] ={"Уровень сахара", "Инсулин", "ХЕ", "Вес", "Комментарий", "Дата"};
+                        String column[] ={"Сахар (ммоль/л)", "Инсулин (ед.)", "Еда (ХЕ)", "Вес (кг)", "Комментарий", "Дата"};
                         csvWrite.writeNext(column);
                         while(curCSV.moveToNext())
                         {
