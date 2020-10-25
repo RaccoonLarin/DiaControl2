@@ -39,5 +39,4 @@ dependencies {
     compile 'com.opencsv:opencsv:4.1'
     compile 'com.nbsp:library:1.8'
 
-
 }
