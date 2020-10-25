@@ -182,8 +182,8 @@ public class StatisticFragment extends Fragment {
     HashMap<Integer, Integer> hashMapWweek;
     HashMap<Integer, Integer> hasMapMonthInt;
     HashMap<String, Integer> hashMapMonth;
-    HashMap <String, Integer> hashMapMonthUser;
-    Boolean flagDay=false, flagWeek=false, flagMonth=false;
+    HashMap<String, Integer> hashMapMonthUser;
+    Boolean flagDay = false, flagWeek = false, flagMonth = false;
     TextView dateTxt;
     int year_x, month_x, day_x;
 
@@ -193,63 +193,62 @@ public class StatisticFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        hours=new ArrayList<>();
-        blood_sugar=new ArrayList<>();
-        weekList=new ArrayList<>();
-        monthList=new ArrayList<>();
-        weekBlood=new HashMap<>();
-        dateTxt=(TextView) getActivity().findViewById(R.id.dateStatistic);
+        hours = new ArrayList<>();
+        blood_sugar = new ArrayList<>();
+        weekList = new ArrayList<>();
+        monthList = new ArrayList<>();
+        weekBlood = new HashMap<>();
+        dateTxt = (TextView) getActivity().findViewById(R.id.dateStatistic);
         dateTxt.setPaintFlags(dateTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
-        hashMapMonth=new HashMap<>();
-        hashMapMonthUser=new HashMap<>();
+        hashMapMonth = new HashMap<>();
+        hashMapMonthUser = new HashMap<>();
 
 
-        Calendar calendar  = Calendar.getInstance();
-        year_x=calendar.get(Calendar.YEAR);
-        month_x=calendar.get(Calendar.MONTH);
-        day_x=calendar.get(Calendar.DAY_OF_MONTH);
+        Calendar calendar = Calendar.getInstance();
+        year_x = calendar.get(Calendar.YEAR);
+        month_x = calendar.get(Calendar.MONTH);
+        day_x = calendar.get(Calendar.DAY_OF_MONTH);
 
-        buttonDay=(Button) getActivity().findViewById(R.id.buttonDay);
-        buttonWeek=(Button) getActivity().findViewById(R.id.buttonWeek);
-        buttonMonth=(Button) getActivity().findViewById(R.id.buttonMonth);
-        datePickerDialog=new DatePickerDialog(getContext(), dpickerListner, year_x, month_x, day_x);
-        dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+        buttonDay = (Button) getActivity().findViewById(R.id.buttonDay);
+        buttonWeek = (Button) getActivity().findViewById(R.id.buttonWeek);
+        buttonMonth = (Button) getActivity().findViewById(R.id.buttonMonth);
+        datePickerDialog = new DatePickerDialog(getContext(), dpickerListner, year_x, month_x, day_x);
+        dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x + 1) + "." + year_x);
         addListenerOnText();
         addListenerOnButtonMonth();
         addListenerOnButtonDay();
         addListenerOnButtonWeek();
         getDate();
-        flagDay=true;
+        flagDay = true;
 
-        scatterChart= getActivity().findViewById(R.id.chartScatter);
-        scatterChartMonth= getActivity().findViewById(R.id.chartScatterMonth);
+        scatterChart = getActivity().findViewById(R.id.chartScatter);
+        scatterChartMonth = getActivity().findViewById(R.id.chartScatterMonth);
 
         caseButton();
 
         LineData ld = new LineData();
 
 
-       // ld.addLimitLine(ll);
-
-
+        // ld.addLimitLine(ll);
 
 
     }
 
-    private  DatePickerDialog.OnDateSetListener dpickerListner = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener dpickerListner = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            year_x=i;
-            month_x=i1;
-            day_x=i2;
-            dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+            year_x = i;
+            month_x = i1;
+            day_x = i2;
+            dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x + 1) + "." + year_x);
             caseButton();
 
 
             //  Toast.makeText(AddActivity.this, day_x + "." + month_x + "." + year_x, Toast.LENGTH_LONG).show();
         }
     };
-    public void  addListenerOnText() {
+
+    public void addListenerOnText() {
         dateTxt.setOnClickListener(
                 new View.OnClickListener() {
 
@@ -261,11 +260,11 @@ public class StatisticFragment extends Fragment {
                 });
 
 
-
     }
-  int tempWeek;
 
-    public void addListenerOnButtonDay(){
+    int tempWeek;
+
+    public void addListenerOnButtonDay() {
         buttonDay.setOnClickListener(
                 new View.OnClickListener() {
 
@@ -274,23 +273,23 @@ public class StatisticFragment extends Fragment {
 
 
                         getDate();
-                        flagDay=true;
-                        flagMonth=false;
-                        flagWeek=false;
-                       // ScatterChart sctrchart=(ScatterChart) getActivity().findViewById(R.id.chart)
+                        flagDay = true;
+                        flagMonth = false;
+                        flagWeek = false;
+                        // ScatterChart sctrchart=(ScatterChart) getActivity().findViewById(R.id.chart)
                         chartLine = (LineChart) getActivity().findViewById(R.id.chart);
                         chartLine.setVisibility(View.VISIBLE);
                         scatterChart.setVisibility(View.GONE);
                         scatterChartMonth.setVisibility(View.GONE);
 
-                        PieChart  pieChart=(PieChart) getActivity().findViewById(R.id.piechart);
+                        PieChart pieChart = (PieChart) getActivity().findViewById(R.id.piechart);
                         chartLine.clear();
                         pieChart.clear();
                         chartLine.setScaleEnabled(false);
                         chartLine.setDragEnabled(true);
                         chartLine.setTouchEnabled(true);
 
-                        if(hours.size()==0){
+                        if (hours.size() == 0) {
                             chartLine.setNoDataText("Нет данных");
                             pieChart.setNoDataText("");
                             chartLine.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
@@ -298,7 +297,7 @@ public class StatisticFragment extends Fragment {
                             return;
                         }
 
-                        if(blood_sugar.size()==0){
+                        if (blood_sugar.size() == 0) {
                             chartLine.setNoDataText("Нет данных");
                             pieChart.setNoDataText("");
                             chartLine.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
@@ -306,18 +305,16 @@ public class StatisticFragment extends Fragment {
                         }
 
 
-
-
-                        int precMin=0, precMax=0, precTarget=0;
-                        for(int i=0; i<blood_sugar.size(); i++){
-                            if(SettingUser.xeMin!=null) {
+                        int precMin = 0, precMax = 0, precTarget = 0;
+                        for (int i = 0; i < blood_sugar.size(); i++) {
+                            if (SettingUser.xeMin != null) {
 
                                 if (blood_sugar.get(i) <= SettingUser.xeMin) {
                                     precMin++;
                                     continue;
                                 }
                             }
-                            if(SettingUser.xeMax!=null) {
+                            if (SettingUser.xeMax != null) {
                                 if (blood_sugar.get(i) >= SettingUser.xeMax) {
                                     precMax++;
                                     continue;
@@ -327,13 +324,13 @@ public class StatisticFragment extends Fragment {
 
                         }
 
-                        if(SettingUser.xeMin==null){
-                            precMin=0;
+                        if (SettingUser.xeMin == null) {
+                            precMin = 0;
 
                         }
 
-                        if(SettingUser.xeMax==null){
-                            precMax=0;
+                        if (SettingUser.xeMax == null) {
+                            precMax = 0;
                         }
 
                         // if(SettingUser.xeTarget==null){
@@ -345,9 +342,9 @@ public class StatisticFragment extends Fragment {
                         XAxis xAxis = chartLine.getXAxis();
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-                        ArrayList<String> clock=new ArrayList<>();
-                        for(int i=0; i<24; i++){
-                            clock.add( Integer.toString(i+1));
+                        ArrayList<String> clock = new ArrayList<>();
+                        for (int i = 0; i < 24; i++) {
+                            clock.add(Integer.toString(i + 1));
                         }
 
                         xAxis.setLabelCount(12, true);
@@ -367,7 +364,7 @@ public class StatisticFragment extends Fragment {
                         leftAxis.addLimitLine(ll);*/
                         YAxis leftAxis = chartLine.getAxisLeft();
                         leftAxis.removeAllLimitLines();
-                        if(SettingUser.xeMin!=null) {
+                        if (SettingUser.xeMin != null) {
                             LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMin.toString()));
                             ll.setLineColor(ContextCompat.getColor(getContext(), R.color.yellowColor));
                             ll.setLineWidth(2f);
@@ -377,7 +374,7 @@ public class StatisticFragment extends Fragment {
                             leftAxis.addLimitLine(ll);
                         }
 
-                        if(SettingUser.xeMax!=null) {
+                        if (SettingUser.xeMax != null) {
                             LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMax.toString()));
                             ll.setLineColor(Color.RED);
                             ll.setLineWidth(2f);
@@ -389,19 +386,17 @@ public class StatisticFragment extends Fragment {
                         //leftAxis.se
 
 
-
-
                         //  axisX.setValues(axisValues)
                         ArrayList<Entry> entries = new ArrayList<Entry>();
 
-                        for (int i=0; i<blood_sugar.size(); i++) {
+                        for (int i = 0; i < blood_sugar.size(); i++) {
 
                             // turn your data into Entry objects
                             entries.add(new Entry(hours.get(i), blood_sugar.get(i)));
                         }
 
                         LineDataSet dataSet = new LineDataSet(entries, "Уровень глюкозы за день"); // add entries to dataset
-                      //  chartLine.getLegend().setEnabled(false);
+                        //  chartLine.getLegend().setEnabled(false);
                         chartLine.setDescription(null);
 
                         dataSet.setFillAlpha(110);
@@ -412,7 +407,7 @@ public class StatisticFragment extends Fragment {
                         // IMarker marker = new YourMarkerView();
                         //fchart.setMarker(marker);
 
-                        ArrayList<ILineDataSet> dataSets=new ArrayList<>();
+                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
                         dataSets.add(dataSet);
 
                         LineData lineData = new LineData(dataSets);
@@ -430,7 +425,7 @@ public class StatisticFragment extends Fragment {
 
                         pieChart.getDescription().setEnabled(false);
                         //  pieChart.getLegend().setEnabled(false);
-                        pieChart.setExtraOffsets(5,10,5,5);
+                        pieChart.setExtraOffsets(5, 10, 5, 5);
                         pieChart.setDragDecelerationFrictionCoef(0.95f);
                         pieChart.setDrawHoleEnabled(true);
                         pieChart.setHoleColor(Color.WHITE);
@@ -442,11 +437,10 @@ public class StatisticFragment extends Fragment {
                         // pieChart.setDrawSlicesUnderHole(false);
 
 
-
                         pieChart.setHoleRadius(60f);
                         // pieChart.setTouchEnabled(false);
 
-                        ArrayList<PieEntry> yValue=new ArrayList<>();
+                        ArrayList<PieEntry> yValue = new ArrayList<>();
 
                         yValue.add(new PieEntry(precMax, "Повышенный сахар"));
                         yValue.add(new PieEntry(precMin, "Пониженный сахар"));
@@ -464,10 +458,10 @@ public class StatisticFragment extends Fragment {
 
                         //   final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.cuteColor), ContextCompat.getColor(getContext(), R.color.myBlue)};
                         ArrayList<Integer> colors = new ArrayList<Integer>();
-                        for(int c: MY_COLORS) colors.add(c);
+                        for (int c : MY_COLORS) colors.add(c);
                         dataSetPie.setColors(colors);
 
-                        PieData pieData=new PieData(dataSetPie);
+                        PieData pieData = new PieData(dataSetPie);
                         pieChart.setData(pieData);
                         pieChart.invalidate();
 
@@ -476,23 +470,24 @@ public class StatisticFragment extends Fragment {
                 });
 
     }
-    public void addListenerOnButtonWeek(){
+
+    public void addListenerOnButtonWeek() {
         buttonWeek.setOnClickListener(
                 new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        flagDay=false;
-                        flagMonth=false;
-                        flagWeek=true;
+                        flagDay = false;
+                        flagMonth = false;
+                        flagWeek = true;
                         getWeekDate();
                         chartLine.setVisibility(View.GONE);
                         scatterChart.setVisibility(View.VISIBLE);
                         scatterChartMonth.setVisibility(View.GONE);
-                       // scatterChart=(ScatterChart) getActivity().findViewById(R.id.chartScatter);
+                        // scatterChart=(ScatterChart) getActivity().findViewById(R.id.chartScatter);
 
                         //LineChart chart = (LineChart) getActivity().findViewById(R.id.chart);
-                        PieChart  pieChart=(PieChart) getActivity().findViewById(R.id.piechart);
+                        PieChart pieChart = (PieChart) getActivity().findViewById(R.id.piechart);
                         pieChart.clear();
                         // pieChart.clearValues();
                         scatterChart.clear();
@@ -502,36 +497,35 @@ public class StatisticFragment extends Fragment {
                         scatterChart.setTouchEnabled(true);
 
                         //scatterChart.setVisibleXRangeMaximum(30); // allow 20 values to be displayed at once on the x-axis, not more
-                       // scatterChart.moveViewToX(1);
+                        // scatterChart.moveViewToX(1);
 
                         //  chart.animateX(1000, Easing.EasingOption.EaseOutBack);
-                        if(weekList.size()==0){
+                        if (weekList.size() == 0) {
                             scatterChart.setNoDataText("Нет данных");
                             pieChart.setNoDataText("");
                             scatterChart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                             return;
                         }
 
-                        if(blood_sugar.size()==0){
+                        if (blood_sugar.size() == 0) {
                             scatterChart.setNoDataText("Нет данных");
                             pieChart.setNoDataText("");
                             scatterChart.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                             return;
                         }
-
 
 
                         //считаем процентное соотношение сахаров пользователя
-                        int precMin=0, precMax=0, precTarget=0;
-                        for(int i=0; i<blood_sugar.size(); i++){
-                            if(SettingUser.xeMin!=null) {
+                        int precMin = 0, precMax = 0, precTarget = 0;
+                        for (int i = 0; i < blood_sugar.size(); i++) {
+                            if (SettingUser.xeMin != null) {
 
                                 if (blood_sugar.get(i) <= SettingUser.xeMin) {
                                     precMin++;
                                     continue;
                                 }
                             }
-                            if(SettingUser.xeMax!=null) {
+                            if (SettingUser.xeMax != null) {
                                 if (blood_sugar.get(i) >= SettingUser.xeMax) {
                                     precMax++;
                                     continue;
@@ -541,33 +535,33 @@ public class StatisticFragment extends Fragment {
 
                         }
 
-                        if(SettingUser.xeMin==null){
-                            precMin=0;
+                        if (SettingUser.xeMin == null) {
+                            precMin = 0;
 
                         }
 
-                        if(SettingUser.xeMax==null){
-                            precMax=0;
+                        if (SettingUser.xeMax == null) {
+                            precMax = 0;
                         }
 
-                        if(SettingUser.xeTarget==null){
-                            precTarget=0;
+                        if (SettingUser.xeTarget == null) {
+                            precTarget = 0;
                         }
 
 
                         ArrayList<Entry> entries = new ArrayList<Entry>();
-                        int temp=hours.get(0);
+                        int temp = hours.get(0);
                         int hour;
                         //  ArrayList<Integer> shiift=new ArrayList<>();
                         // int shiftt=hours.indexOf(0);
                         //shiift=multiplyShiftLeft(hours, shiftt);
 
 
-                        for (int i=0; i<blood_sugar.size(); i++) {
+                        for (int i = 0; i < blood_sugar.size(); i++) {
 
                             // turn your data into Entry objects
 
-                            hour= hashMapWweek.get(hours.get(i));
+                            hour = hashMapWweek.get(hours.get(i));
                             //  if(hours.get(i)<tempWeek){
                             //  hour=hours.get(i)+tempWeek;
                             // }
@@ -577,7 +571,7 @@ public class StatisticFragment extends Fragment {
 
                         YAxis leftAxis = scatterChart.getAxisLeft();
                         leftAxis.removeAllLimitLines();
-                        if(SettingUser.xeMin!=null) {
+                        if (SettingUser.xeMin != null) {
                             LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMin.toString()));
                             ll.setLineColor(ContextCompat.getColor(getContext(), R.color.yellowColor));
                             ll.setLineWidth(2f);
@@ -587,7 +581,7 @@ public class StatisticFragment extends Fragment {
                             leftAxis.addLimitLine(ll);
                         }
 
-                        if(SettingUser.xeMax!=null) {
+                        if (SettingUser.xeMax != null) {
                             LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMax.toString()));
                             ll.setLineColor(Color.RED);
                             ll.setLineWidth(2f);
@@ -600,16 +594,16 @@ public class StatisticFragment extends Fragment {
 
                         ScatterDataSet dataSet = new ScatterDataSet(entries, "Уровень сахара за неделю"); // add entries to dataset
                         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-                       // scatterChart.getLegend().setEnabled(false);
+                        // scatterChart.getLegend().setEnabled(false);
                         scatterChart.setDescription(null);
                         //  ;
-                     //   dataSet.setFillAlpha(110);
+                        //   dataSet.setFillAlpha(110);
 
-                        ArrayList<IScatterDataSet> dataSets=new ArrayList<>();
+                        ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
                         dataSets.add(dataSet);
 
                         dataSet.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
-                       // dataSet.setLineWidth(2f);
+                        // dataSet.setLineWidth(2f);
                         //dataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.blackStar));
                         //dataSet.setCircleColorHole(ContextCompat.getColor(getContext(), R.color.blackStar));
                         ScatterData lineData = new ScatterData(dataSets);
@@ -631,15 +625,12 @@ public class StatisticFragment extends Fragment {
                         xAxis.setAxisMaximum(7); //
 
 
-
-
-
                         pieChart.setUsePercentValues(true);
                         // pieChart.setDescription(null);
 
                         pieChart.getDescription().setEnabled(false);
                         //  pieChart.getLegend().setEnabled(false);
-                        pieChart.setExtraOffsets(5,10,5,5);
+                        pieChart.setExtraOffsets(5, 10, 5, 5);
                         pieChart.setDragDecelerationFrictionCoef(0.95f);
                         pieChart.setDrawHoleEnabled(true);
                         pieChart.setHoleColor(Color.WHITE);
@@ -649,7 +640,7 @@ public class StatisticFragment extends Fragment {
 
                         pieChart.setHoleRadius(60f);
 
-                        ArrayList<PieEntry> yValue=new ArrayList<>();
+                        ArrayList<PieEntry> yValue = new ArrayList<>();
 
                         yValue.add(new PieEntry(precMax, "Повышенный сахар"));
                         yValue.add(new PieEntry(precMin, "Пониженный сахар"));
@@ -661,16 +652,17 @@ public class StatisticFragment extends Fragment {
 
                         //   final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.cuteColor), ContextCompat.getColor(getContext(), R.color.myBlue)};
                         ArrayList<Integer> colors = new ArrayList<Integer>();
-                        for(int c: MY_COLORS) colors.add(c);
+                        for (int c : MY_COLORS) colors.add(c);
                         dataSetPie.setColors(colors);
 
-                        PieData pieData=new PieData(dataSetPie);
+                        PieData pieData = new PieData(dataSetPie);
                         pieChart.setData(pieData);
                         pieChart.invalidate();
 
                     }
                 });
     }
+
     public void addListenerOnButtonMonth() {
 
 
@@ -679,15 +671,15 @@ public class StatisticFragment extends Fragment {
 
                     @Override
                     public void onClick(View v) {
-                        flagDay=false;
-                        flagMonth=true;
-                        flagWeek=false;
+                        flagDay = false;
+                        flagMonth = true;
+                        flagWeek = false;
                         getMonthDate();
                         chartLine.setVisibility(View.GONE);
                         scatterChart.setVisibility(View.GONE);
                         scatterChartMonth.setVisibility(View.VISIBLE);
 
-                        PieChart  pieChart=(PieChart) getActivity().findViewById(R.id.piechart);
+                        PieChart pieChart = (PieChart) getActivity().findViewById(R.id.piechart);
                         pieChart.clear();
                         scatterChartMonth.clear();
 
@@ -695,14 +687,14 @@ public class StatisticFragment extends Fragment {
                         scatterChartMonth.setDragEnabled(true);
                         scatterChartMonth.setTouchEnabled(true);
 
-                        if(monthList.size()==0){
+                        if (monthList.size() == 0) {
                             scatterChartMonth.setNoDataText("Нет данных");
                             pieChart.setNoDataText("");
                             scatterChartMonth.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
                             return;
                         }
 
-                        if(blood_sugar.size()==0){
+                        if (blood_sugar.size() == 0) {
                             scatterChartMonth.setNoDataText("Нет данных");
                             pieChart.setNoDataText("");
                             scatterChartMonth.setNoDataTextColor(ContextCompat.getColor(getContext(), R.color.myBlue));
@@ -710,17 +702,16 @@ public class StatisticFragment extends Fragment {
                         }
 
 
-
-                        int precMin=0, precMax=0, precTarget=0;
-                        for(int i=0; i<blood_sugar.size(); i++){
-                            if(SettingUser.xeMin!=null) {
+                        int precMin = 0, precMax = 0, precTarget = 0;
+                        for (int i = 0; i < blood_sugar.size(); i++) {
+                            if (SettingUser.xeMin != null) {
 
                                 if (blood_sugar.get(i) <= SettingUser.xeMin) {
                                     precMin++;
                                     continue;
                                 }
                             }
-                            if(SettingUser.xeMax!=null) {
+                            if (SettingUser.xeMax != null) {
                                 if (blood_sugar.get(i) >= SettingUser.xeMax) {
                                     precMax++;
                                     continue;
@@ -730,17 +721,17 @@ public class StatisticFragment extends Fragment {
 
                         }
 
-                        if(SettingUser.xeMin==null){
-                            precMin=0;
+                        if (SettingUser.xeMin == null) {
+                            precMin = 0;
 
                         }
 
-                        if(SettingUser.xeMax==null){
-                            precMax=0;
+                        if (SettingUser.xeMax == null) {
+                            precMax = 0;
                         }
 
-                        if(SettingUser.xeTarget==null){
-                            precTarget=0;
+                        if (SettingUser.xeTarget == null) {
+                            precTarget = 0;
                         }
 
 
@@ -752,11 +743,11 @@ public class StatisticFragment extends Fragment {
                         //shiift=multiplyShiftLeft(hours, shiftt);
 
 
-                        for (int i=0; i<blood_sugar.size(); i++) {
+                        for (int i = 0; i < blood_sugar.size(); i++) {
 
                             // turn your data into Entry objects
 
-                           hour= hours.get(i);
+                            hour = hours.get(i);
                             //  if(hours.get(i)<tempWeek){
                             //  hour=hours.get(i)+tempWeek;
                             // }
@@ -766,7 +757,7 @@ public class StatisticFragment extends Fragment {
 
                         YAxis leftAxis = scatterChartMonth.getAxisLeft();
                         leftAxis.removeAllLimitLines();
-                        if(SettingUser.xeMin!=null) {
+                        if (SettingUser.xeMin != null) {
                             LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMin.toString()));
                             ll.setLineColor(ContextCompat.getColor(getContext(), R.color.yellowColor));
                             ll.setLineWidth(2f);
@@ -776,7 +767,7 @@ public class StatisticFragment extends Fragment {
                             leftAxis.addLimitLine(ll);
                         }
 
-                        if(SettingUser.xeMax!=null) {
+                        if (SettingUser.xeMax != null) {
                             LimitLine ll = new LimitLine(Float.parseFloat(SettingUser.xeMax.toString()));
                             ll.setLineColor(Color.RED);
                             ll.setLineWidth(2f);
@@ -789,12 +780,12 @@ public class StatisticFragment extends Fragment {
 
                         ScatterDataSet dataSet = new ScatterDataSet(entries, "Уровень сахара за месяц"); // add entries to dataset
                         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-                       // scatterChartMonth.getLegend().setEnabled(false);
+                        // scatterChartMonth.getLegend().setEnabled(false);
                         scatterChartMonth.setDescription(null);
                         //  ;
                         //   dataSet.setFillAlpha(110);
 
-                        ArrayList<IScatterDataSet> dataSets=new ArrayList<>();
+                        ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
                         dataSets.add(dataSet);
 
                         dataSet.setColor(ContextCompat.getColor(getContext(), R.color.myBlue));
@@ -814,7 +805,7 @@ public class StatisticFragment extends Fragment {
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                         // String [] val=new String[] {"Sr", "Ch", "Pt", "SUb", "Vos", "Pn", "Vt"};
                         xAxis.setValueFormatter(new MyAxisValueFormatter(nameMonth));
-                       xAxis.setLabelCount(32, false);
+                        xAxis.setLabelCount(32, false);
                         xAxis.setGranularity(1f);
                         xAxis.setAxisMinimum(0);
                         xAxis.setAxisMaximum(31); //
@@ -827,7 +818,7 @@ public class StatisticFragment extends Fragment {
 
                         pieChart.getDescription().setEnabled(false);
                         //  pieChart.getLegend().setEnabled(false);
-                        pieChart.setExtraOffsets(5,10,5,5);
+                        pieChart.setExtraOffsets(5, 10, 5, 5);
                         pieChart.setDragDecelerationFrictionCoef(0.95f);
                         pieChart.setDrawHoleEnabled(true);
                         pieChart.setHoleColor(Color.WHITE);
@@ -837,7 +828,7 @@ public class StatisticFragment extends Fragment {
 
                         pieChart.setHoleRadius(60f);
 
-                        ArrayList<PieEntry> yValue=new ArrayList<>();
+                        ArrayList<PieEntry> yValue = new ArrayList<>();
 
                         yValue.add(new PieEntry(precMax, "Повышенный сахар"));
                         yValue.add(new PieEntry(precMin, "Пониженный сахар"));
@@ -849,10 +840,10 @@ public class StatisticFragment extends Fragment {
 
                         //   final int[] MY_COLORS = {ContextCompat.getColor(getContext(), R.color.cuteColor), ContextCompat.getColor(getContext(), R.color.myBlue)};
                         ArrayList<Integer> colors = new ArrayList<Integer>();
-                        for(int c: MY_COLORS) colors.add(c);
+                        for (int c : MY_COLORS) colors.add(c);
                         dataSetPie.setColors(colors);
 
-                        PieData pieData=new PieData(dataSetPie);
+                        PieData pieData = new PieData(dataSetPie);
                         pieChart.setData(pieData);
                         pieChart.invalidate();
 
@@ -860,16 +851,17 @@ public class StatisticFragment extends Fragment {
                 });
     }
 
-    public int daysBetween(Date d1, Date d2){
-        return (int)(d2.getTime() - d1.getTime());
+    public int daysBetween(Date d1, Date d2) {
+        return (int) (d2.getTime() - d1.getTime());
     }
-    public void getMonthDate(){
-        nameMonth=new ArrayList<>();
+
+    public void getMonthDate() {
+        nameMonth = new ArrayList<>();
         blood_sugar.clear();
         monthList.clear();
         hours.clear();
-        dichh=new ArrayList<>();
-       // weekList.clear();
+        dichh = new ArrayList<>();
+        // weekList.clear();
         String date1 = year_x + "-" + getStringMonth(month_x + 1) + "-" + getStringDay(day_x);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -882,23 +874,23 @@ public class StatisticFragment extends Fragment {
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(myDate);
-        Calendar calendar2= calendar;
+        Calendar calendar2 = calendar;
         calendar.add(Calendar.MONTH, -1);
 
 
-     //   tempWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        //   tempWeek = calendar.get(Calendar.DAY_OF_WEEK);
         Date newDate = calendar.getTime();
         String dateStart = simpleDateFormat.format(newDate);
-        long tempDays=myDate.getTime()-newDate.getTime();
-       long days= TimeUnit.DAYS.convert(tempDays,TimeUnit.MILLISECONDS);
-       fillMonth(newDate, days);
+        long tempDays = myDate.getTime() - newDate.getTime();
+        long days = TimeUnit.DAYS.convert(tempDays, TimeUnit.MILLISECONDS);
+        fillMonth(newDate, days);
 
 
         DatabaseHelper db = new DatabaseHelper(getContext());
         Cursor data = db.getTimeMonth(dateStart, date1);
 
 
-        boolean flag=true;
+        boolean flag = true;
         while (data.moveToNext()) {
             String ss = data.getString(0);
             if (ss.equals("")) {
@@ -906,21 +898,21 @@ public class StatisticFragment extends Fragment {
             }
             blood_sugar.add(Integer.parseInt(data.getString(0)));
             try {
-                String dates=data.getString(1);
+                String dates = data.getString(1);
                 calendar.setTime(simpleDateFormat2.parse(data.getString(1)));
-                if(flag) {
+                if (flag) {
                     // fillWeek(simpleDateFormat2.parse(data.getString(1)));
-                    flag=false;
+                    flag = false;
 
                 }
-                String dayLongName = getStringDay(calendar.get(Calendar.DAY_OF_MONTH)) + "."+getStringMonth(calendar.get(Calendar.MONTH)+1);
+                String dayLongName = getStringDay(calendar.get(Calendar.DAY_OF_MONTH)) + "." + getStringMonth(calendar.get(Calendar.MONTH) + 1);
 
                 //int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                 monthList.add(dayLongName);
+                monthList.add(dayLongName);
                 hours.add(hashMapMonth.get(dayLongName));
-               // hashMapMonthUser.put(dayLongName, hashMapMonth.get(dayLongName));
-              //  hashMapMonth.put(dayLongName, Integer.parseInt(data.getString(0)));
-              //  hours.add(dayOfWeek);
+                // hashMapMonthUser.put(dayLongName, hashMapMonth.get(dayLongName));
+                //  hashMapMonth.put(dayLongName, Integer.parseInt(data.getString(0)));
+                //  hours.add(dayOfWeek);
 
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -929,7 +921,8 @@ public class StatisticFragment extends Fragment {
     }
 
     ArrayList<String> dichh;
-    public void fillMonth(Date date, long count){
+
+    public void fillMonth(Date date, long count) {
         nameMonth.clear();
         dichh.clear();
         Calendar calendar = Calendar.getInstance();
@@ -937,9 +930,9 @@ public class StatisticFragment extends Fragment {
         //hashMapWweek=new HashMap<>();
 
         calendar.setTime(date);
-       // calendar.add(Calendar.DAY_OF_WEEK, 0);
+        // calendar.add(Calendar.DAY_OF_WEEK, 0);
         //String dayLongNam4e = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-        String nameDayMontth= getStringDay(calendar.get(Calendar.DAY_OF_MONTH)) + "."+getStringMonth(calendar.get(Calendar.MONTH)+1);
+        String nameDayMontth = getStringDay(calendar.get(Calendar.DAY_OF_MONTH)) + "." + getStringMonth(calendar.get(Calendar.MONTH) + 1);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         nameMonth.add(nameDayMontth);
         hashMapMonth.put(nameDayMontth, 0);
@@ -947,11 +940,11 @@ public class StatisticFragment extends Fragment {
         //hashMapWweek.put(dayOfWeek, 0);
         for (int i = 0; i < count; i++) {
             calendar.add(Calendar.DAY_OF_MONTH, +1);
-             nameDayMontth= getStringDay(calendar.get(Calendar.DAY_OF_MONTH)) + "."+getStringMonth(calendar.get(Calendar.MONTH)+1);
-           String nameDayMontth2= getStringDay(calendar.get(Calendar.DAY_OF_MONTH));
+            nameDayMontth = getStringDay(calendar.get(Calendar.DAY_OF_MONTH)) + "." + getStringMonth(calendar.get(Calendar.MONTH) + 1);
+            String nameDayMontth2 = getStringDay(calendar.get(Calendar.DAY_OF_MONTH));
             nameMonth.add(nameDayMontth);
             dichh.add(nameDayMontth2);
-            hashMapMonth.put(nameDayMontth, i+1);
+            hashMapMonth.put(nameDayMontth, i + 1);
             //Date newDate2 = calendar.getTime();
             // String dateStarrt = simpleDateFormat.format(newDate2);
         }
@@ -961,7 +954,7 @@ public class StatisticFragment extends Fragment {
 
     public void getWeekDate() {
 
-        nameWeek=new ArrayList<>();
+        nameWeek = new ArrayList<>();
         blood_sugar.clear();
         hours.clear();
         weekList.clear();
@@ -992,7 +985,7 @@ public class StatisticFragment extends Fragment {
         Calendar sCalendar = Calendar.getInstance();
 
 
-        boolean flag=true;
+        boolean flag = true;
         while (data.moveToNext()) {
             String ss = data.getString(0);
             if (ss.equals("")) {
@@ -1000,11 +993,11 @@ public class StatisticFragment extends Fragment {
             }
             blood_sugar.add(Integer.parseInt(data.getString(0)));
             try {
-                String dates=data.getString(1);
+                String dates = data.getString(1);
                 calendar.setTime(simpleDateFormat2.parse(data.getString(1)));
-                if(flag) {
-                   // fillWeek(simpleDateFormat2.parse(data.getString(1)));
-                    flag=false;
+                if (flag) {
+                    // fillWeek(simpleDateFormat2.parse(data.getString(1)));
+                    flag = false;
 
                 }
                 String dayLongName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
@@ -1020,29 +1013,25 @@ public class StatisticFragment extends Fragment {
     }
 
 
-
-
-
-
     public void fillWeek(Date date) {
         nameWeek.clear();
         Calendar calendar = Calendar.getInstance();
 
-        hashMapWweek=new HashMap<>();
+        hashMapWweek = new HashMap<>();
 
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_WEEK, 0);
         String dayLongNam4e = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         nameWeek.add(cutWeekRusName(dayLongNam4e));
-       // numOfWeekNAme.add(0);
+        // numOfWeekNAme.add(0);
         hashMapWweek.put(dayOfWeek, 0);
         for (int i = 0; i < 6; i++) {
             calendar.add(Calendar.DAY_OF_WEEK, +1);
             String dayLongNam = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
             nameWeek.add(cutWeekRusName(dayLongNam));
             dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            hashMapWweek.put(dayOfWeek, i+1);
+            hashMapWweek.put(dayOfWeek, i + 1);
             //Date newDate2 = calendar.getTime();
             // String dateStarrt = simpleDateFormat.format(newDate2);
         }
@@ -1075,30 +1064,30 @@ public class StatisticFragment extends Fragment {
         }
     }
 
-    public void gett_json(){
+    public void gett_json() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();
-        int year_x=calendar.get(Calendar.YEAR);
-        int month_x=calendar.get(Calendar.MONTH);
-        int day_x=calendar.get(Calendar.DAY_OF_MONTH);
-        int hour_x=calendar.get(Calendar.HOUR_OF_DAY);
-        int minute_x=calendar.get(Calendar.MINUTE);
-        int seconds_x=calendar.get(Calendar.SECOND);
+        int year_x = calendar.get(Calendar.YEAR);
+        int month_x = calendar.get(Calendar.MONTH);
+        int day_x = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour_x = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute_x = calendar.get(Calendar.MINUTE);
+        int seconds_x = calendar.get(Calendar.SECOND);
 
-        String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
+        String date1 = year_x + "-" + getStringMonth(month_x + 1) + "-" + getStringDay(day_x) + " " + getStringTime(hour_x) + ":" + getStringTime(minute_x) + ":" + getStringTime(seconds_x);
 
-        DatabaseHelper db=new DatabaseHelper(getContext());
+        DatabaseHelper db = new DatabaseHelper(getContext());
         Cursor data = db.getTime(date1);
 
-        while (data.moveToNext()){
-            String ss=data.getString(0);
-            if(ss.equals("")){
+        while (data.moveToNext()) {
+            String ss = data.getString(0);
+            if (ss.equals("")) {
                 continue;
             }
             blood_sugar.add(Integer.parseInt(data.getString(0)));
             try {
-                calendar.setTime(simpleDateFormat.parse( data.getString(1)));
-                hour_x=calendar.get(Calendar.HOUR_OF_DAY);
+                calendar.setTime(simpleDateFormat.parse(data.getString(1)));
+                hour_x = calendar.get(Calendar.HOUR_OF_DAY);
                 hours.add(hour_x);
 
             } catch (ParseException e) {
@@ -1117,81 +1106,89 @@ public class StatisticFragment extends Fragment {
 
     }
 
-    public String cutWeekRusName(String weekName){
-        switch (weekName){
-            case "понедельник": return "пн";
-            case "вторник": return "вт";
-            case "среда": return "ср";
-            case "четверг": return "чт";
-            case "пятница": return "пт";
-            case "суббота": return "сб";
-            case "воскресенье": return "вс";
+    public String cutWeekRusName(String weekName) {
+        switch (weekName) {
+            case "понедельник":
+                return "пн";
+            case "вторник":
+                return "вт";
+            case "среда":
+                return "ср";
+            case "четверг":
+                return "чт";
+            case "пятница":
+                return "пт";
+            case "суббота":
+                return "сб";
+            case "воскресенье":
+                return "вс";
 
         }
         return "";
 
     }
 
-    public void caseButton(){
-        if(flagDay){
+    public void caseButton() {
+        if (flagDay) {
             buttonDay.callOnClick();
             return;
         }
 
-        if(flagWeek){
+        if (flagWeek) {
             buttonWeek.callOnClick();
         }
 
 
-        if(flagMonth){
+        if (flagMonth) {
             buttonMonth.callOnClick();
         }
     }
 
-    private String getStringDay(int day){
+    private String getStringDay(int day) {
 
 
-        if(day < 10){
+        if (day < 10) {
 
-            return  "0" + day;
+            return "0" + day;
         }
 
         return Integer.toString(day);
     }
 
-    private String getStringMonth(int month){
+    private String getStringMonth(int month) {
 
 
-        if(month < 10){
+        if (month < 10) {
 
-            return  "0" + month;
+            return "0" + month;
         }
 
         return Integer.toString(month);
     }
 
 
-    private String getStringTime(int time){
+    private String getStringTime(int time) {
 
 
-        if(time < 10){
+        if (time < 10) {
 
-            return  "0" + time;
+            return "0" + time;
         }
 
         return Integer.toString(time);
     }
 
-    public  class MyAxisValueFormatter implements IAxisValueFormatter{
-        private  ArrayList<String> mValues;
-      //  private String [] mVlues;
+    public class MyAxisValueFormatter implements IAxisValueFormatter {
+        private ArrayList<String> mValues;
+        //  private String [] mVlues;
 
-        public MyAxisValueFormatter(ArrayList<String> values){
-            this.mValues=values;
+        public MyAxisValueFormatter(ArrayList<String> values) {
+            this.mValues = values;
         }
+
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
-            return  mValues.get((int)value%mValues.size());
+            return mValues.get((int) value % mValues.size());
         }
 
 

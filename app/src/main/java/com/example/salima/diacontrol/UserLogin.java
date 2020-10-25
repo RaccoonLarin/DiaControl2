@@ -541,6 +541,7 @@ public class UserLogin extends AppCompatActivity {
 
                     db.insertDataProductArray(diary_idList, name_productList,grams_productList, carbs_productist);
                     db.insertDataSettings(xeMaxTemp, xeminTemp,xeTargetTemp, xeUserTemp, false);
+                    db.insertDataProductUserArray(name_user_productList, grams_user_productList,carbs_user_productist);
                     SettingUser.xeMax=xeMaxTemp;
                     SettingUser.xeMin=xeminTemp;
                     SettingUser.xeTarget=xeTargetTemp;
@@ -551,6 +552,7 @@ public class UserLogin extends AppCompatActivity {
                    ss.array(); //SET REMINDER LIST
                     ss.getArrayFromDataBase();
                     ss.getXEUserFromDatabse();
+                    ss.user__add_product_from_database();
 
 
 

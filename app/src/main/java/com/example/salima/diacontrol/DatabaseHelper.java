@@ -757,9 +757,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_SETTINGS );
         db.execSQL("DELETE FROM " + TABLE_FOOD );
         db.execSQL("DELETE FROM " + TABLE_REMINDER);
-        db.execSQL("DELETE FROM " + TABLE_FOOD_USER);
+       db.execSQL("DELETE FROM " + TABLE_FOOD_USER);
 
-       // db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_NAME+"\'" );
+        db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_NAME+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_SETTINGS+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_FOOD+"\'" );
         db.execSQL("delete from sqlite_sequence where name=" + "\'"+TABLE_REMINDER+"\'" );
@@ -924,6 +924,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
+
+    public boolean insertDataProductUserArray( ArrayList<String> name, ArrayList<String> grams, ArrayList<String> carbs){
+        long result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        for(int i=0; i<name.size(); i++) {
+
+         //   contentValues.put(COL_food_1, id.get(i));
+            contentValues.put(COL_food_2, name.get(i));
+            contentValues.put(COL_food_3, grams.get(i));
+            contentValues.put(COL_food_4, carbs.get(i));
+            result = db.insert(TABLE_FOOD_USER, null, contentValues);
+        }
+
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
 
 
     public Cursor selectAllUserProduct(){

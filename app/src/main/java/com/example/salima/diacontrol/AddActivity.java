@@ -49,10 +49,10 @@ public class AddActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
 
     ArrayList<String> foodList, gramsList, carbsList;
-    String flag="false";
-    EditText editText, editText1,editText2, editText3, editTextWeight;
+    String flag = "false";
+    EditText editText, editText1, editText2, editText3, editTextWeight;
 
-    boolean isEdit=false;
+    boolean isEdit = false;
     int id;
 
     @Override
@@ -62,82 +62,77 @@ public class AddActivity extends AppCompatActivity {
         addListenerOnButton();
 
 
-        xeText=(EditText)findViewById(R.id.foodEdit);
-         editText = (EditText) findViewById(R.id.sugarEdit);
-         editText1 = (EditText) findViewById(R.id.insulinEdit);
-         editText2 = (EditText) findViewById(R.id.commentEdit);
-         editText3 = (EditText) findViewById(R.id.foodEdit);
-         editTextWeight=(EditText) findViewById(R.id.weightEdit);
+        xeText = (EditText) findViewById(R.id.foodEdit);
+        editText = (EditText) findViewById(R.id.sugarEdit);
+        editText1 = (EditText) findViewById(R.id.insulinEdit);
+        editText2 = (EditText) findViewById(R.id.commentEdit);
+        editText3 = (EditText) findViewById(R.id.foodEdit);
+        editTextWeight = (EditText) findViewById(R.id.weightEdit);
 
-        dateTxt=(TextView) findViewById(R.id.date);
-        timeTxt=(TextView) findViewById(R.id.time);
+        dateTxt = (TextView) findViewById(R.id.date);
+        timeTxt = (TextView) findViewById(R.id.time);
         foodList = new ArrayList<>();
         gramsList = new ArrayList<>();
         carbsList = new ArrayList<>();
         dateTxt.setPaintFlags(dateTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
         timeTxt.setPaintFlags(timeTxt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //подчеркнуть текст
-        Calendar calendar  = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
 
-        searchButton=(ImageButton) findViewById(R.id.searchImageButton);
+        searchButton = (ImageButton) findViewById(R.id.searchImageButton);
         addListenerOnSearchImageButton();
 
 
+        year_x = calendar.get(Calendar.YEAR);
+        month_x = calendar.get(Calendar.MONTH);
+        day_x = calendar.get(Calendar.DAY_OF_MONTH);
+        hour_x = calendar.get(Calendar.HOUR_OF_DAY);
+        minute_x = calendar.get(Calendar.MINUTE);
+        seconds_x = calendar.get(Calendar.SECOND);
+        //  seconds_x=calendar.get(Calendar.SECOND);
 
-        year_x=calendar.get(Calendar.YEAR);
-        month_x=calendar.get(Calendar.MONTH);
-        day_x=calendar.get(Calendar.DAY_OF_MONTH);
-        hour_x=calendar.get(Calendar.HOUR_OF_DAY);
-        minute_x=calendar.get(Calendar.MINUTE);
-        seconds_x=calendar.get(Calendar.SECOND);
-      //  seconds_x=calendar.get(Calendar.SECOND);
+        timePickerDialog = new TimePickerDialog(this, timePickerListner, hour_x, minute_x, true);
+        datePickerDialog = new DatePickerDialog(this, dpickerListner, year_x, month_x, day_x);
 
-        timePickerDialog=new TimePickerDialog(this, timePickerListner,hour_x, minute_x,  true);
-        datePickerDialog=new DatePickerDialog(this, dpickerListner, year_x, month_x, day_x);
-
-        dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
-       timeTxt.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x));
+        dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x + 1) + "." + year_x);
+        timeTxt.setText(getStringTime(hour_x) + ":" + getStringTime(minute_x));
 
         addListenerOnText();
 
 
-
-       try {
-           String edit = getIntent().getStringExtra("edit");
-           if (edit.equals("true")) {
-               int i = 0;
-               i = getIntent().getIntExtra("item", -1);
-               setEditText(i);
-               isEdit=true;
-
-
-           }
-
-       }
-
-       catch (Exception e){
-          // e.printStackTrace();
-
-       }
-    }
-
-    public void setEditText(int i){
-
-        db=new DatabaseHelper(this);
-        Cursor data = db.select(i);
-         id=-1;
+        try {
+            String edit = getIntent().getStringExtra("edit");
+            if (edit.equals("true")) {
+                int i = 0;
+                i = getIntent().getIntExtra("item", -1);
+                setEditText(i);
+                isEdit = true;
 
 
-        if(data.getCount()==0){
+            }
+
+        } catch (Exception e) {
+            // e.printStackTrace();
 
         }
+    }
 
+    public void setEditText(int i) {
+
+        db = new DatabaseHelper(this);
+        Cursor data = db.select(i);
+        id = -1;
+
+
+        if (data.getCount() == 0) {
+
+        }
 
 
         //Парсить дату
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();
 
-        while (data.moveToNext()){
+        while (data.moveToNext()) {
             editText.setText(data.getString(1));
             editText1.setText(data.getString(2));
             editText3.setText(data.getString(3));
@@ -146,38 +141,36 @@ public class AddActivity extends AppCompatActivity {
             editText2.setText(data.getString(5));
             try {
                 calendar.setTime(simpleDateFormat.parse(data.getString(6)));
-                year_x=calendar.get(Calendar.YEAR);
-                month_x=calendar.get(Calendar.MONTH);
-                day_x=calendar.get(Calendar.DAY_OF_MONTH);
-                hour_x=calendar.get(Calendar.HOUR_OF_DAY);
-                minute_x=calendar.get(Calendar.MINUTE);
-                seconds_x=calendar.get(Calendar.SECOND);
-                dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
-                timeTxt.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x));
+                year_x = calendar.get(Calendar.YEAR);
+                month_x = calendar.get(Calendar.MONTH);
+                day_x = calendar.get(Calendar.DAY_OF_MONTH);
+                hour_x = calendar.get(Calendar.HOUR_OF_DAY);
+                minute_x = calendar.get(Calendar.MINUTE);
+                seconds_x = calendar.get(Calendar.SECOND);
+                dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x + 1) + "." + year_x);
+                timeTxt.setText(getStringTime(hour_x) + ":" + getStringTime(minute_x));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
 
-
-            String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
+            String date1 = year_x + "-" + getStringMonth(month_x + 1) + "-" + getStringDay(day_x) + " " + getStringTime(hour_x) + ":" + getStringTime(minute_x) + ":" + getStringTime(seconds_x);
 
             Cursor dataGetId = db.getIdDiary(date1);
-            while (dataGetId.moveToNext()){
-                id=dataGetId.getInt(0);
+            while (dataGetId.moveToNext()) {
+                id = dataGetId.getInt(0);
             }
-            if(id==-1){
+            if (id == -1) {
                 return;
             }
-            flag="true";
-            Cursor dataProduct=db.selectProduct(id);
+            flag = "true";
+            Cursor dataProduct = db.selectProduct(id);
             while (dataProduct.moveToNext()) {
                 foodList.add(dataProduct.getString(2));
                 gramsList.add(dataProduct.getString(3));
                 carbsList.add(dataProduct.getString(4));
             }
             // dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
-
 
 
         }
@@ -190,13 +183,13 @@ public class AddActivity extends AppCompatActivity {
     String str2;
     String str3;
 
-    public void  addListenerOnText() {
+    public void addListenerOnText() {
         dateTxt.setOnClickListener(
                 new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                       datePickerDialog.show();
+                        datePickerDialog.show();
 
                     }
                 });
@@ -212,32 +205,30 @@ public class AddActivity extends AppCompatActivity {
                 });
 
 
-
     }
 
 
-
-    private  DatePickerDialog.OnDateSetListener dpickerListner = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener dpickerListner = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            year_x=i;
-            month_x=i1;
-            day_x=i2;
-            dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x+1) + "." + year_x);
+            year_x = i;
+            month_x = i1;
+            day_x = i2;
+            dateTxt.setText(getStringDay(day_x) + "." + getStringMonth(month_x + 1) + "." + year_x);
 
 
-          //  Toast.makeText(AddActivity.this, day_x + "." + month_x + "." + year_x, Toast.LENGTH_LONG).show();
+            //  Toast.makeText(AddActivity.this, day_x + "." + month_x + "." + year_x, Toast.LENGTH_LONG).show();
         }
     };
 
-    protected  TimePickerDialog.OnTimeSetListener timePickerListner = new TimePickerDialog.OnTimeSetListener() {
+    protected TimePickerDialog.OnTimeSetListener timePickerListner = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker timePicker, int i, int i1) {
             hour_x = i;
             minute_x = i1;
-            timeTxt.setText( getStringTime(hour_x)+ ":" + getStringTime(minute_x) );
+            timeTxt.setText(getStringTime(hour_x) + ":" + getStringTime(minute_x));
 
-          //  timePickerDialog.closeOptionsMenu();
+            //  timePickerDialog.closeOptionsMenu();
 
 
         }
@@ -254,39 +245,39 @@ public class AddActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         boolean fl;
-                         str = editText.getText().toString();
-                         str1 = editText1.getText().toString();
-                         str2=editText2.getText().toString();
-                         str3=editText3.getText().toString();
-                         strWeight=editTextWeight.getText().toString();
-                        int i=0;
-                        i=getIntent().getIntExtra("item", -1);
+                        str = editText.getText().toString();
+                        str1 = editText1.getText().toString();
+                        str2 = editText2.getText().toString();
+                        str3 = editText3.getText().toString();
+                        strWeight = editTextWeight.getText().toString();
+                        int i = 0;
+                        i = getIntent().getIntExtra("item", -1);
                         Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
-                     //   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        //   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         intent.putExtra("FRAGMENT_ID", 1);
                         intent.putExtra("year_x", year_x);
                         intent.putExtra("month_x", month_x);
                         intent.putExtra("day_x", day_x);
-                        if(isEdit)  {
-                            String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
-                            db=new DatabaseHelper(getApplicationContext());
-                            fl=db.update(id, str,str1,str3, strWeight, str2, date1);
+                        if (isEdit) {
+                            String date1 = year_x + "-" + getStringMonth(month_x + 1) + "-" + getStringDay(day_x) + " " + getStringTime(hour_x) + ":" + getStringTime(minute_x) + ":" + getStringTime(seconds_x);
+                            db = new DatabaseHelper(getApplicationContext());
+                            fl = db.update(id, str, str1, str3, strWeight, str2, date1);
                             db.updateFood(id, foodList, gramsList, carbsList);
                         } else {
                             fl = addData();
                         }
-                        if(!fl) {
+                        if (!fl) {
                             Toast.makeText(getApplicationContext(), "Введите данные", Toast.LENGTH_LONG).show();
                             return;
                         }
-                    //    setResult(RESULT_OK,  intent);
-                        SettingUser settingUser=new SettingUser(getApplicationContext());
-                        SettingUser.IsNtwrkAv=settingUser.isNetworkAvailable();
+                        //    setResult(RESULT_OK,  intent);
+                        SettingUser settingUser = new SettingUser(getApplicationContext());
+                        SettingUser.IsNtwrkAv = settingUser.isNetworkAvailable();
                         startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         new DiaryFragment();
 
-                  //     finish(); // TODO убрать если передаются данные
+                        //     finish(); // TODO убрать если передаются данные
 
                     }
                 });
@@ -294,14 +285,14 @@ public class AddActivity extends AppCompatActivity {
 
 
     //переход на страницу AddFoodActivity
-    public void addListenerOnSearchImageButton(){
-        searchButton.setOnClickListener( new View.OnClickListener(){
+    public void addListenerOnSearchImageButton() {
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent intent = new Intent(getApplicationContext(), AddFoodActivity.class);
                 intent.putExtra("flag", flag);
-                if(flag.equals("true")){
+                if (flag.equals("true")) {
                     intent.putStringArrayListExtra("foodList", foodList);
                     intent.putStringArrayListExtra("carbsList", carbsList);
                     intent.putStringArrayListExtra("gramsList", gramsList);
@@ -316,76 +307,75 @@ public class AddActivity extends AppCompatActivity {
     }
 
     //Добавить данные в бж
-    public boolean addData(){
+    public boolean addData() {
         boolean isInserted;
 
-       db=new DatabaseHelper(this);
+        db = new DatabaseHelper(this);
         String plswork = str;
         String insulin = str1;
-        String bredUnits=str3;
+        String bredUnits = str3;
         String comment = str2;
-        String weight=strWeight;
-        int id=0;
-        String date1=year_x+"-"+getStringMonth(month_x+1)+"-"+getStringDay(day_x)+" "+getStringTime(hour_x)+":"+getStringTime(minute_x)+":"+getStringTime(seconds_x);
+        String weight = strWeight;
+        int id = 0;
+        String date1 = year_x + "-" + getStringMonth(month_x + 1) + "-" + getStringDay(day_x) + " " + getStringTime(hour_x) + ":" + getStringTime(minute_x) + ":" + getStringTime(seconds_x);
 
-        if (plswork.equals("") &&insulin.equals("") && weight.equals("")  && comment.equals("") && bredUnits.equals("") ){
+        if (plswork.equals("") && insulin.equals("") && weight.equals("") && comment.equals("") && bredUnits.equals("")) {
 
             return false;
         }
 
 
-
-            isInserted= db.insertData(plswork, insulin, bredUnits, weight, comment, date1);
+        isInserted = db.insertData(plswork, insulin, bredUnits, weight, comment, date1);
         Cursor data = db.getIdDiary(date1);
-        while (data.moveToNext()){
-            id=data.getInt(0);
+        while (data.moveToNext()) {
+            id = data.getInt(0);
             //Toast.makeText(this, Integer.toString(id) , Toast.LENGTH_LONG).show();
         }
 
-        if(!foodList.isEmpty()){
-            db.insertDataProduct(id,foodList, gramsList, carbsList);
+        if (!foodList.isEmpty()) {
+            db.insertDataProduct(id, foodList, gramsList, carbsList);
         }
 
-        if(isInserted)
-            return  true;
+        if (isInserted)
+            return true;
             //Toast.makeText(this, "Data inserted", Toast.LENGTH_LONG);
         else
-            return  false;
-          //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
+            return false;
+        //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
         //adapter.notifyDataSetChanged();
 
         //  bottomNavigationViewEx.setSelectedItemId(R.id.navigation_diary);
     }
 
-    private String getStringDay(int day){
+    private String getStringDay(int day) {
 
 
-        if(day < 10){
+        if (day < 10) {
 
-            return  "0" + day;
+            return "0" + day;
         }
 
         return Integer.toString(day);
     }
 
-   private String getStringMonth(int month){
+    private String getStringMonth(int month) {
 
 
-        if(month < 10){
+        if (month < 10) {
 
-            return  "0" + month;
+            return "0" + month;
         }
 
         return Integer.toString(month);
     }
 
 
-    private String getStringTime(int time){
+    private String getStringTime(int time) {
 
 
-        if(time < 10){
+        if (time < 10) {
 
-            return  "0" + time;
+            return "0" + time;
         }
 
         return Integer.toString(time);
@@ -396,14 +386,14 @@ public class AddActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        if(resultCode==RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             foodList = (ArrayList<String>) data.getStringArrayListExtra("foodList");
             gramsList = (ArrayList<String>) data.getStringArrayListExtra("gramsList");
             carbsList = (ArrayList<String>) data.getStringArrayListExtra("carbsList");
             xeDouble = data.getDoubleExtra("xe", 1);
             xeText.setText(xeDouble.toString());
             flag = "true";
-        } else if(resultCode==-2 ) {
+        } else if (resultCode == -2) {
             foodList.clear();
             gramsList.clear();
             carbsList.clear();
@@ -412,7 +402,6 @@ public class AddActivity extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
 
 }

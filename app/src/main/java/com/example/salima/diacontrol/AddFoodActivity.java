@@ -41,8 +41,8 @@ import java.util.ArrayList;
 
 public class AddFoodActivity extends AppCompatActivity {
 
-    Double finalCarbs=0.0;
-    Double itogo=0.0;
+    Double finalCarbs = 0.0;
+    Double itogo = 0.0;
     private AutoCompleteTextView autoCompleteTextView;
     TextView textView3, finalText;
     EditText gramsEdit, calEdit;
@@ -54,12 +54,13 @@ public class AddFoodActivity extends AppCompatActivity {
 
     String flag;
 
-   //пользовательские данные
+    //пользовательские данные
     ArrayList<String> foodList1;
     ArrayList<String> xeString1;
     ArrayList<String> grams1;
 
     ArrayAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,10 +79,9 @@ public class AddFoodActivity extends AppCompatActivity {
         xeString1.clear();
         grams1.clear();
         listView = (ListView) findViewById(R.id.listviewFood);
-        buttonSaveFood=(Button) findViewById(R.id.buttonSaveFood);
-        buttonAddFood=(Button) findViewById(R.id.buttonAddFood);
-       // gett_json();
-
+        buttonSaveFood = (Button) findViewById(R.id.buttonSaveFood);
+        buttonAddFood = (Button) findViewById(R.id.buttonAddFood);
+        // gett_json();
 
 
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
@@ -92,8 +92,8 @@ public class AddFoodActivity extends AppCompatActivity {
         setAutoCompleteTextViewListener();
         addListenerOnButtonSaveFood();
         addListenerOnButtonAddFood();
-        flag=getIntent().getStringExtra("flag");
-        if(flag.equals("true")){
+        flag = getIntent().getStringExtra("flag");
+        if (flag.equals("true")) {
             fullList(getIntent());
         }
         customListView = new AddFoodActivity.CustomAdapter();
@@ -103,26 +103,26 @@ public class AddFoodActivity extends AppCompatActivity {
     }
 
 
-    void fullList(Intent data){
-        foodList1 =(ArrayList<String>) data.getStringArrayListExtra("foodList");
-        grams1 =(ArrayList<String>) data.getStringArrayListExtra("gramsList");
-        xeString1 =(ArrayList<String>) data.getStringArrayListExtra("carbsList");
-        itogo=data.getDoubleExtra("xe", 1);
-        finalCarbs=0.0;
-        for(int i=0; i<xeString1.size(); i++){
-            finalCarbs+= Double.parseDouble(xeString1.get(i));
+    void fullList(Intent data) {
+        foodList1 = (ArrayList<String>) data.getStringArrayListExtra("foodList");
+        grams1 = (ArrayList<String>) data.getStringArrayListExtra("gramsList");
+        xeString1 = (ArrayList<String>) data.getStringArrayListExtra("carbsList");
+        itogo = data.getDoubleExtra("xe", 1);
+        finalCarbs = 0.0;
+        for (int i = 0; i < xeString1.size(); i++) {
+            finalCarbs += Double.parseDouble(xeString1.get(i));
         }
 
 
         itogo = finalCarbs / SettingUser.xe;
-        itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        itogo = new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        finalCarbs = new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
         finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
 
     }
 
 
-    public void setOnLongClickListener(){
+    public void setOnLongClickListener() {
 
         listView.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
@@ -130,8 +130,8 @@ public class AddFoodActivity extends AppCompatActivity {
                     public boolean onItemLongClick(AdapterView<?> arg0, final View view,
                                                    final int position, long id) {
                         //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
-                        final View view1=view;
-                        final  int position1=position;
+                        final View view1 = view;
+                        final int position1 = position;
                         android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(AddFoodActivity.this)
                                 .setTitle("Удалить запись?")
                                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
@@ -146,20 +146,19 @@ public class AddFoodActivity extends AppCompatActivity {
                                         listView.setAdapter(customListView);
 
                                         try {
-                                            finalCarbs=0.0;
-                                            for(int i=0; i<xeString1.size(); i++){
-                                                finalCarbs+= Double.parseDouble(xeString1.get(i));
+                                            finalCarbs = 0.0;
+                                            for (int i = 0; i < xeString1.size(); i++) {
+                                                finalCarbs += Double.parseDouble(xeString1.get(i));
                                             }
 
 
-                                             itogo = finalCarbs / SettingUser.xe;
-                                            itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                                            finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                                            itogo = finalCarbs / SettingUser.xe;
+                                            itogo = new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                                            finalCarbs = new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
                                             finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
 
 
-                                        }
-                                        catch (Exception e){
+                                        } catch (Exception e) {
                                             finalText.setText("Итого: ");
                                         }
 
@@ -169,7 +168,7 @@ public class AddFoodActivity extends AppCompatActivity {
                         dialog.show();
 
 
-                        return  true;
+                        return true;
                     }
                 }
 
@@ -179,29 +178,27 @@ public class AddFoodActivity extends AppCompatActivity {
     }
 
 
-
-
     public void setAutoCompleteTextViewListener() {
 
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
                 String selection = (String) parent.getItemAtPosition(position);
-               // textView3.setText(foodList.get(position) + "-" + xeString.get(position));
+                // textView3.setText(foodList.get(position) + "-" + xeString.get(position));
 
-                int id= SettingUser.foodList.indexOf(selection);
+                int id = SettingUser.foodList.indexOf(selection);
                 foodList1.add(selection);
                 grams1.add(SettingUser.grams.get(id));
-                xeString1.add( SettingUser.xeString.get(id));
-               // listView = (ListView) findViewById(R.id.listviewFood);
+                xeString1.add(SettingUser.xeString.get(id));
+                // listView = (ListView) findViewById(R.id.listviewFood);
 
                 customListView = new AddFoodActivity.CustomAdapter();
                 listView.setAdapter(customListView);
-                 finalCarbs+= Double.parseDouble(SettingUser.xeString.get(id));
-                 itogo=finalCarbs/ SettingUser.xe;
-                itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                finalCarbs += Double.parseDouble(SettingUser.xeString.get(id));
+                itogo = finalCarbs / SettingUser.xe;
+                itogo = new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                finalCarbs = new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
-                finalText.setText("Итого: "+itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
+                finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
 
             }
         });
@@ -209,7 +206,7 @@ public class AddFoodActivity extends AppCompatActivity {
     }
 
 
-    public void addListenerOnListView(){
+    public void addListenerOnListView() {
 
         listView.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
@@ -217,8 +214,8 @@ public class AddFoodActivity extends AppCompatActivity {
                     public boolean onItemLongClick(AdapterView<?> arg0, final View view,
                                                    final int position, long id) {
                         //  Toast.makeText(this, "Data not inserted", Toast.LENGTH_SHORT);
-                        final View view1=view;
-                        final  int position1=position;
+                        final View view1 = view;
+                        final int position1 = position;
                         android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(getApplicationContext())
                                 .setTitle("Удалить запись?")
                                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
@@ -230,13 +227,12 @@ public class AddFoodActivity extends AppCompatActivity {
                                         listView.setAdapter(customListView);
 
 
-
                                     }
                                 })
                                 .setNegativeButton("Нет", null).create();
                         dialog.show();
 
-                        return  true;
+                        return true;
                     }
                 }
 
@@ -246,33 +242,30 @@ public class AddFoodActivity extends AppCompatActivity {
     }
 
 
-
-
-
-    public void addListenerOnButtonSaveFood(){
-        buttonSaveFood.setOnClickListener( new View.OnClickListener(){
+    public void addListenerOnButtonSaveFood() {
+        buttonSaveFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int k =listView.getCount();
+                int k = listView.getCount();
                 Intent intent = new Intent();
-                if(k==0){
-                   // Toast.makeText(AddFoodActivity.this, "Добавьте продукты", Toast.LENGTH_LONG).show();
+                if (k == 0) {
+                    // Toast.makeText(AddFoodActivity.this, "Добавьте продукты", Toast.LENGTH_LONG).show();
                     setResult(-2, intent);
                     finish();
                     return;
                 }
 
-                ArrayList<String> tempGrams=new ArrayList<>();
-                ArrayList<String> tempcal=new ArrayList<>();
+                ArrayList<String> tempGrams = new ArrayList<>();
+                ArrayList<String> tempcal = new ArrayList<>();
                 for (int i = 0; i < listView.getAdapter().getCount(); i++) {
                     View viewTelefone = listView.getChildAt(i);
                     gramsEdit = (EditText) viewTelefone.findViewById(R.id.gramsEdit);
                     calEdit = (EditText) viewTelefone.findViewById(R.id.foodEdit);
-                    if(TextUtils.isEmpty(gramsEdit.getText().toString()) || TextUtils.isEmpty(calEdit.getText().toString())) {
+                    if (TextUtils.isEmpty(gramsEdit.getText().toString()) || TextUtils.isEmpty(calEdit.getText().toString())) {
                         Toast.makeText(getApplicationContext(), "Пожалуйста, заполните все поля", Toast.LENGTH_LONG).show();
-                       // gramsEdit.setError("Your message");
-                       // gramsEdit.setBackgroundColor(getResources().getColor(R.color.cuteColor));
-                      //  gramsEdit.set
+                        // gramsEdit.setError("Your message");
+                        // gramsEdit.setBackgroundColor(getResources().getColor(R.color.cuteColor));
+                        //  gramsEdit.set
                         return;
                     }
                     tempGrams.add(gramsEdit.getText().toString());
@@ -304,30 +297,30 @@ public class AddFoodActivity extends AppCompatActivity {
 
     //TODO view1 создать новый лейаут дизайн кастомный для мессаджбокса
 
-    public void addListenerOnButtonAddFood(){
-        buttonAddFood.setOnClickListener( new View.OnClickListener() {
+    public void addListenerOnButtonAddFood() {
+        buttonAddFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(v.getContext());
                 final EditText edittext = new EditText(v.getContext());
-                final CheckBox checkbox=new CheckBox(v.getContext());
-                LinearLayout linearLayout=new LinearLayout(v.getContext());
+                final CheckBox checkbox = new CheckBox(v.getContext());
+                LinearLayout linearLayout = new LinearLayout(v.getContext());
 
                 alert.setMessage("Введите данные");
 
-                final View view1=getLayoutInflater().inflate(R.layout.design_add_food_dialog, null);
-                final EditText editText1=(EditText)view1.findViewById(R.id.editText);
-                final EditText editText2=(EditText)view1.findViewById(R.id.editText2);
-                final EditText editText3=(EditText)view1.findViewById(R.id.editText3);
-                final CheckBox checkBox=(CheckBox) view1.findViewById(R.id.checkBox);
-                LinearLayout foodLayout=(LinearLayout) view1.findViewById(R.id.addFoodLayout);
+                final View view1 = getLayoutInflater().inflate(R.layout.design_add_food_dialog, null);
+                final EditText editText1 = (EditText) view1.findViewById(R.id.editText);
+                final EditText editText2 = (EditText) view1.findViewById(R.id.editText2);
+                final EditText editText3 = (EditText) view1.findViewById(R.id.editText3);
+                final CheckBox checkBox = (CheckBox) view1.findViewById(R.id.checkBox);
+                LinearLayout foodLayout = (LinearLayout) view1.findViewById(R.id.addFoodLayout);
 
                 alert.setView(view1);
 
                 alert.setPositiveButton("СОХРАНИТЬ", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         //What ever you want to do with the value
-                       // Editable YouEditTextValue = edittext.getText();
+                        // Editable YouEditTextValue = edittext.getText();
                         //OR
 
                         String YouEditTextValue = editText1.getText().toString();
@@ -339,31 +332,31 @@ public class AddFoodActivity extends AppCompatActivity {
                         customListView = new AddFoodActivity.CustomAdapter();
                         listView.setAdapter(customListView);
 
-                        finalCarbs=0.0;
-                        for(int i=0; i<xeString1.size(); i++){
-                            finalCarbs+= Double.parseDouble(xeString1.get(i));
+                        finalCarbs = 0.0;
+                        for (int i = 0; i < xeString1.size(); i++) {
+                            finalCarbs += Double.parseDouble(xeString1.get(i));
                         }
 
                         itogo = finalCarbs / SettingUser.xe;
-                        itogo= new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                        finalCarbs=new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                        itogo = new BigDecimal(itogo).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                        finalCarbs = new BigDecimal(finalCarbs).setScale(2, RoundingMode.HALF_UP).doubleValue();
                         finalText.setText("Итого: " + itogo.toString() + " ХЕ или " + finalCarbs.toString() + " грамм");
 
-                        if(checkBox.isChecked()){
+                        if (checkBox.isChecked()) {
                             //SettingUser SettingUser=new SettingUser(getApplicationContext());
                             //SettingUser.user_json_add(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
-                               //addJson(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
+                            //addJson(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
                             //TODO записывать еду пользователя в sqlite
-                            DatabaseHelper db= new DatabaseHelper(getApplicationContext());
+                            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                             db.insertDataProductUser(YouEditTextValue, YouEditTextValue2, YouEditTextValue3);
 
                             SettingUser.foodList.add(YouEditTextValue);
                             SettingUser.xeString.add(YouEditTextValue3);
                             SettingUser.grams.add(YouEditTextValue2);
-                         //   autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
-                          adapter = new ArrayAdapter(getBaseContext(), android.R.layout.select_dialog_item, SettingUser.foodList);
+                            //   autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.completeTxt);
+                            adapter = new ArrayAdapter(getBaseContext(), android.R.layout.select_dialog_item, SettingUser.foodList);
                             autoCompleteTextView.setAdapter(adapter);
-                          adapter.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
 
 
                         }
@@ -423,7 +416,7 @@ public class AddFoodActivity extends AppCompatActivity {
                     @Override
                     public void afterTextChanged(Editable s) {
                         // Check if edittext is empty
-                        String userArg=s.toString();
+                        String userArg = s.toString();
 
                         if (TextUtils.isEmpty(s) || userArg.equals("") || TextUtils.isEmpty(editText1.getText()) || TextUtils.isEmpty(editText3.getText())) {
                             // Disable ok button
@@ -432,8 +425,8 @@ public class AddFoodActivity extends AppCompatActivity {
                             return;
                         }
 
-                        if(userArg.equals("0")){
-                            userArg="1";
+                        if (userArg.equals("0")) {
+                            userArg = "1";
 
                             editText2.setText(userArg);
                             editText2.post(new Runnable() {
@@ -465,7 +458,7 @@ public class AddFoodActivity extends AppCompatActivity {
                     @Override
                     public void afterTextChanged(Editable s) {
                         // Check if edittext is empty
-                        String userArg=s.toString();
+                        String userArg = s.toString();
 
                         if (TextUtils.isEmpty(s) || userArg.equals("") || TextUtils.isEmpty(editText1.getText()) || TextUtils.isEmpty(editText2.getText())) {
                             // Disable ok button
@@ -487,49 +480,49 @@ public class AddFoodActivity extends AppCompatActivity {
 
     }
 
-   public  void addJson(String name, String grams, String carbs){
+    public void addJson(String name, String grams, String carbs) {
 
-       try {
-           String  json2;
-           FileOutputStream outputStream;
+        try {
+            String json2;
+            FileOutputStream outputStream;
 
-               outputStream = openFileOutput("userProduct2.json", Context.MODE_PRIVATE);
-              // outputStream.write(isCorrect.getBytes());
-               outputStream.close();
+            outputStream = openFileOutput("userProduct2.json", Context.MODE_PRIVATE);
+            // outputStream.write(isCorrect.getBytes());
+            outputStream.close();
 
-           InputStream is2 = getAssets().open("userProduct2.json");
-           int size2=is2.available();
-           byte[] buffer2 = new byte[size2];
-           is2.read(buffer2);
-           is2.close();
-           json2 = new String(buffer2, "UTF-8");
-           JSONArray jsonArray2 = new JSONArray(json2);
-           int l=jsonArray2.length();
+            InputStream is2 = getAssets().open("userProduct2.json");
+            int size2 = is2.available();
+            byte[] buffer2 = new byte[size2];
+            is2.read(buffer2);
+            is2.close();
+            json2 = new String(buffer2, "UTF-8");
+            JSONArray jsonArray2 = new JSONArray(json2);
+            int l = jsonArray2.length();
 
-           JSONObject jO = new JSONObject(); //new Json Object
+            JSONObject jO = new JSONObject(); //new Json Object
 
-           //Add data
-           jO.put("foodname", name);
-           jO.put("Carb", carbs);
-           jO.put("grams", grams);
-           jsonArray2.put(jO);
-           OutputStreamWriter outputStreamWriter = new OutputStreamWriter(getApplicationContext().openFileOutput("userProduct2.json", Context.MODE_PRIVATE));
-           //  outputStreamWriter.write(jO.toString() );
+            //Add data
+            jO.put("foodname", name);
+            jO.put("Carb", carbs);
+            jO.put("grams", grams);
+            jsonArray2.put(jO);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(getApplicationContext().openFileOutput("userProduct2.json", Context.MODE_PRIVATE));
+            //  outputStreamWriter.write(jO.toString() );
 
 
-           outputStreamWriter.write(jsonArray2.toString());
+            outputStreamWriter.write(jsonArray2.toString());
 
-           outputStreamWriter.close();
+            outputStreamWriter.close();
 
-       } catch (IOException e) {
-           e.printStackTrace();
-       } catch (JSONException e) {
-           e.printStackTrace();
-       }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-   }
+    }
 
-    class CustomAdapter extends BaseAdapter  implements View.OnTouchListener {
+    class CustomAdapter extends BaseAdapter implements View.OnTouchListener {
 
         @Override
         public int getCount() {
@@ -563,14 +556,14 @@ public class AddFoodActivity extends AppCompatActivity {
             return false;
         }
 
-      //об
+        //об
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-           // View view1=getLayoutInflater().inflate(R.layout.food_listview_design, null);
+            // View view1=getLayoutInflater().inflate(R.layout.food_listview_design, null);
 
             final ViewHolder holder;
-            if(view==null){
-                holder=new ViewHolder();
+            if (view == null) {
+                holder = new ViewHolder();
                 LayoutInflater inflater = AddFoodActivity.this.getLayoutInflater();
                 view = inflater.inflate(R.layout.food_listview_design, null);
                 holder.textView1 = (TextView) view.findViewById(R.id.nameFoodTxt);
@@ -578,18 +571,18 @@ public class AddFoodActivity extends AppCompatActivity {
                 holder.editText2 = (EditText) view.findViewById(R.id.gramsEdit);
                 view.setTag(holder);
 
-        }  else {
+            } else {
 
-            holder = (ViewHolder) view.getTag();
-        }
-            TextView nameFoodTxt= (TextView) view.findViewById(R.id.nameFoodTxt);
-            final EditText gramsEdit=(EditText) view.findViewById(R.id.gramsEdit);
-             final EditText foodEdit=(EditText) view.findViewById(R.id.foodEdit);
-            LinearLayout foodLayout=(LinearLayout) view.findViewById(R.id.layoutFood);
+                holder = (ViewHolder) view.getTag();
+            }
+            TextView nameFoodTxt = (TextView) view.findViewById(R.id.nameFoodTxt);
+            final EditText gramsEdit = (EditText) view.findViewById(R.id.gramsEdit);
+            final EditText foodEdit = (EditText) view.findViewById(R.id.foodEdit);
+            LinearLayout foodLayout = (LinearLayout) view.findViewById(R.id.layoutFood);
 
 
-                foodLayout.setVisibility(View.VISIBLE);
-                nameFoodTxt.setText(foodList1.get(i));
+            foodLayout.setVisibility(View.VISIBLE);
+            nameFoodTxt.setText(foodList1.get(i));
 
 
             holder.ref = i;
@@ -599,29 +592,28 @@ public class AddFoodActivity extends AppCompatActivity {
             holder.editText2.setText(grams1.get(i));
 
 
-
             holder.editText1.addTextChangedListener(new TextWatcher() {
 
-                    @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                        // TODO Auto-generated method stub
+                @Override
+                public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    // TODO Auto-generated method stub
 
-                    }
+                }
 
-                    @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                                  int arg3) {
-                        // TODO Auto-generated method stub
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                    // TODO Auto-generated method stub
 
-                    }
+                }
 
-                    @Override
-                    public void afterTextChanged(Editable arg0) {
-                        // TODO Auto-generated method stub
-                       // double temp=Integer.parseInt(xeString1.get(holder.ref))*Integer.parseInt(arg0.toString())/Integer.parseInt(grams1.get(holder.ref));
-                        xeString1.set(holder.ref, arg0.toString());
-                    }
-                });
+                @Override
+                public void afterTextChanged(Editable arg0) {
+                    // TODO Auto-generated method stub
+                    // double temp=Integer.parseInt(xeString1.get(holder.ref))*Integer.parseInt(arg0.toString())/Integer.parseInt(grams1.get(holder.ref));
+                    xeString1.set(holder.ref, arg0.toString());
+                }
+            });
 
 
             holder.editText1.setOnTouchListener(this);
@@ -630,8 +622,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
 
             //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-           // imm.showSoftInput( holder.editText1, InputMethodManager.SHOW_IMPLICIT);
-
+            // imm.showSoftInput( holder.editText1, InputMethodManager.SHOW_IMPLICIT);
 
 
             holder.editText2.addTextChangedListener(new TextWatcher() {
@@ -653,15 +644,15 @@ public class AddFoodActivity extends AppCompatActivity {
                 public void afterTextChanged(Editable arg0) {
                     // TODO Auto-generated method stub
                     //TODO на ноль делить нельзяяя
-                    String userArg=arg0.toString();
-                    if(userArg.equals("")|| (userArg.substring(userArg.length()-1)).equals(".")){
+                    String userArg = arg0.toString();
+                    if (userArg.equals("") || (userArg.substring(userArg.length() - 1)).equals(".")) {
                         foodEdit.setText(xeString1.get(holder.ref));
                         return;
                     }
 
 
-                    if(userArg.equals("0")){
-                        userArg="1";
+                    if (userArg.equals("0")) {
+                        userArg = "1";
                         gramsEdit.setText(userArg);
                         gramsEdit.post(new Runnable() {
                             @Override
@@ -671,41 +662,37 @@ public class AddFoodActivity extends AppCompatActivity {
                         });
                     }
 
-                  //  if(Double.parseDouble(userArg)<1){
-                        //grams1.set(holder.ref, "1");
+                    //  if(Double.parseDouble(userArg)<1){
+                    //grams1.set(holder.ref, "1");
                     //    userArg="1";
-                      //  gramsEdit.setText("1");
+                    //  gramsEdit.setText("1");
                     //}
 
 
-                    double temp=Double.parseDouble(xeString1.get(holder.ref))*Double.parseDouble(userArg)/Double.parseDouble(grams1.get(holder.ref));
+                    double temp = Double.parseDouble(xeString1.get(holder.ref)) * Double.parseDouble(userArg) / Double.parseDouble(grams1.get(holder.ref));
                     foodEdit.setText(Double.toString(temp));
                     grams1.set(holder.ref, userArg);
                 }
             });
 
-              gramsEdit.setText(grams1.get(i));
-              foodEdit.setText(xeString1.get(i));
+            gramsEdit.setText(grams1.get(i));
+            foodEdit.setText(xeString1.get(i));
 
 
-
-
-                return view;
-            }
-
-
-
-    private class ViewHolder {
-        TextView textView1;
-        EditText editText1;
-        EditText editText2;
-        int ref;
-        int ref2;
-    }
-
-
-
+            return view;
         }
+
+
+        private class ViewHolder {
+            TextView textView1;
+            EditText editText1;
+            EditText editText2;
+            int ref;
+            int ref2;
+        }
+
+
+    }
 
 }
 

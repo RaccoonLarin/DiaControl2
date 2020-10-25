@@ -26,7 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     private Button signup;
     private TextView txtCreateAcc;
     private String isCorrect; //false or token
-  //  private ProgressBar spinner;
+    //  private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,41 +41,42 @@ public class SignUpActivity extends AppCompatActivity {
     public final static boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
+
     public final static boolean isValidLogin(CharSequence target) {
-        return !TextUtils.isEmpty(target) && (!target.toString().contains(" "))&&(target.toString().matches("[a-zA-Z0-9]*")
-        &&(target.length()>=5));
+        return !TextUtils.isEmpty(target) && (!target.toString().contains(" ")) && (target.toString().matches("[a-zA-Z0-9]*")
+                && (target.length() >= 5));
     }
 
 
     //проверка верно ли введена структура пароля
     public final static boolean isValidPass(CharSequence target) {
-        return !TextUtils.isEmpty(target) && (target.length()>=8);
+        return !TextUtils.isEmpty(target) && (target.length() >= 8);
     }
 
 
-    public void onClick(View v){
+    public void onClick(View v) {
         try {
             // sigin.setBackgroundColor(Color.GRAY);
             String mailTxt = mail.getText().toString();
             String passTxt = pass.getText().toString();
-            if(!isValidLogin(mailTxt) ) {
+            if (!isValidLogin(mailTxt)) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Логин должен состоять из символов букв и цифр и длиной больше 4 символов", Toast.LENGTH_SHORT);
                 toast.show();
                 return;
 
-            } else if(!isValidPass(passTxt)){
+            } else if (!isValidPass(passTxt)) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Пароль должен состоять из 8 или более символов", Toast.LENGTH_SHORT);
                 toast.show();
                 return;
             }
 
-            new HttpPost().execute(ServerData.getIpServ()+"signuppost", mailTxt, passTxt).get();
-           // Thread.sleep(1000);
-            if(isCorrect.equals("false")){
+            new HttpPost().execute(ServerData.getIpServ() + "signuppost", mailTxt, passTxt).get();
+            // Thread.sleep(1000);
+            if (isCorrect.equals("false")) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Вы уже были ранее зарегестрированы", Toast.LENGTH_SHORT);
                 toast.show();
 
-            } else{
+            } else {
                 Toast toast = Toast.makeText(getApplicationContext(), "Вы успешено зарегестрированы", Toast.LENGTH_SHORT);
                 toast.show();
                 Intent intent = new Intent(getApplicationContext(), UserLogin.class);
@@ -84,8 +85,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
             //  new HttpPost().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).execute("http://192.168.1.48:8080/signinpost").get();
             //hread.sleep(3000);
-
-
 
 
         } catch (Exception e) {
@@ -98,19 +97,20 @@ public class SignUpActivity extends AppCompatActivity {
 
     class HttpPost extends AsyncTask<String, Integer, Void> {
         Toast toast;
-        protected String createJsonString(String... strings){
-            String jsonBody="{\"diary\": {\n\"SignUp\": {\n\"email\": " + "\"" + strings[0] + "\",\n" + "\"password\": " + "\"" + strings[1] +
-                    "\"\n"+"}\n}}";
 
-            return  jsonBody;
+        protected String createJsonString(String... strings) {
+            String jsonBody = "{\"diary\": {\n\"SignUp\": {\n\"email\": " + "\"" + strings[0] + "\",\n" + "\"password\": " + "\"" + strings[1] +
+                    "\"\n" + "}\n}}";
+
+            return jsonBody;
         }
 
         @Override
         protected void onPreExecute() {
             //  super.onPreExecute();
-            toast= Toast.makeText(getApplicationContext(), "Пожалуйста, подождите", Toast.LENGTH_SHORT);
+            toast = Toast.makeText(getApplicationContext(), "Пожалуйста, подождите", Toast.LENGTH_SHORT);
             toast.show();
-         //   spinner.setVisibility(View.VISIBLE);
+            //   spinner.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -118,56 +118,46 @@ public class SignUpActivity extends AppCompatActivity {
             String mailTxt = strings[1];
             String passTxt = strings[2];
 
-                OutputStream out = null;
-                BufferedReader reader=null;
+            OutputStream out = null;
+            BufferedReader reader = null;
+            try {
+                String urlString = strings[0];
+                String jsonBody = createJsonString(mailTxt, passTxt);
+                //  publishProgress(1);
+
+                URL url = new URL(urlString);
+
+                // Send POST data request
+
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(jsonBody);
+                wr.flush();
+
+                // Get the server response
+
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                // Read Server Response
+                while ((line = reader.readLine()) != null) {
+                    // Append server response in string
+                    isCorrect = sb.append(line).toString();
+                }
+
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+            } finally {
                 try {
-                    String urlString = strings[0];
-                    String jsonBody = createJsonString(mailTxt, passTxt);
-                  //  publishProgress(1);
-
-                    URL url = new URL(urlString);
-
-                    // Send POST data request
-
-                    URLConnection conn = url.openConnection();
-                    conn.setDoOutput(true);
-                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                    wr.write(jsonBody);
-                    wr.flush();
-
-                    // Get the server response
-
-                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line = null;
-
-                    // Read Server Response
-                    while((line = reader.readLine()) != null)
-                    {
-                        // Append server response in string
-                        isCorrect = sb.append(line).toString();
-                    }
-
-
-
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-
+                    reader.close();
+                } catch (Exception ex) {
                 }
-
-                finally {
-                    try
-                    {
-                        reader.close();
-                    }
-
-                    catch(Exception ex) {}
-                }
-
-
-
-
+            }
 
 
             return null;
@@ -176,14 +166,14 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-          // spinner.setProgress(1);
+            // spinner.setProgress(1);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-           // spinner.setProgress(0);
-           // spinner.setVisibility(View.GONE);
+            // spinner.setProgress(0);
+            // spinner.setVisibility(View.GONE);
             toast.cancel();
 
         }

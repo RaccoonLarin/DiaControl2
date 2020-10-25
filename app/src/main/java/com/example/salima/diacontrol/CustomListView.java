@@ -23,11 +23,13 @@ import java.util.ArrayList;
 
 public class CustomListView extends BaseAdapter {
 
-    private  Integer[] img;
-    public void  CustomListView(Integer [] img){
-        this.img=img;
+    private Integer[] img;
+
+    public void CustomListView(Integer[] img) {
+        this.img = img;
 
     }
+
     @Override
     public int getCount() {
         return img.length;
@@ -45,7 +47,7 @@ public class CustomListView extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-       // View view1=getL
+        // View view1=getL
         return null;
     }
 
